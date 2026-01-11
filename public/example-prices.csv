@@ -1,0 +1,12 @@
+system,type,option_kg,option_liters,new_price
+natture,abs,5,,4500
+natture,plusz,5,,6000
+natture,xl,20,,2500
+natture,l,20,,2500
+natture,m,18,,2600
+natture,s,15,,3300
+natture,onecoat,,1,25000
+natture,onecoat,,5,24000
+natture,dragon,,4,110000
+natture,top100,,1,40000
+natture,top100,,5,38000
