@@ -419,12 +419,6 @@ async function main() {
 
   console.log('✅ Effecto PU termékek feltöltve!');
 
-  // ============================================
-  // POOL RENDSZER
-  // ============================================
-  
-  console.log('📦 Pool termékek feltöltése...');
-
   // Pool - Alapozó (Arcicem Pool gyanta)
   await prisma.product.create({
     data: {
@@ -435,7 +429,7 @@ async function main() {
       info: 'Vízbázisú akrilgyanta medencékhez',
       options: {
         create: [
-          { liters: 25, price: 69382, m2: 200 }
+          { liters: 25, price: 88115, m2: 200 }
         ]
       }
     }
@@ -451,7 +445,7 @@ async function main() {
       info: 'Előkészítő mikrocement medencékhez - 2 réteg',
       options: {
         create: [
-          { kg: 18, price: 25575 }
+          { kg: 18, price: 32480 }
         ]
       }
     }
@@ -466,7 +460,7 @@ async function main() {
       info: 'Befejező mikrocement medencékhez - 1 réteg',
       options: {
         create: [
-          { kg: 18, price: 33591 }
+          { kg: 18, price: 42660 }
         ]
       }
     }
@@ -482,7 +476,7 @@ async function main() {
       info: 'Kötőanyag Aquaciment rendszerhez',
       options: {
         create: [
-          { liters: 25, price: 11200 }
+          { liters: 25, price: 14224 }
         ]
       }
     }
@@ -498,13 +492,11 @@ async function main() {
       info: 'Lakk mikrocement medencékhez',
       options: {
         create: [
-          { liters: 5, price: 60354, m2: 30 }
+          { liters: 5, price: 76650, m2: 30 }
         ]
       }
     }
   });
-
-  console.log('✅ Pool termékek feltöltve!');
 
   console.log('🎉 Minden rendszer adatbázisba töltve!');
 }
