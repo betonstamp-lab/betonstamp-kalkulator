@@ -466,22 +466,69 @@ async function main() {
     }
   });
 
-  // Pool - B komponens
+// Pool - B komponens XXL 5L
   await prisma.product.create({
     data: {
       system: 'pool',
       category: 'gyanta',
-      type: 'bkomp',
-      name: 'B komponens',
-      info: 'Kötőanyag Aquaciment rendszerhez',
+      type: 'bkomp_xxl_5l',
+      name: 'B komponens XXL 5L',
+      info: 'Kötőanyag Aquaciment XXL-hez',
       options: {
         create: [
-          { liters: 25, price: 14224 }
+          { liters: 5, price: 23030 }
         ]
       }
     }
   });
 
+  // Pool - B komponens XXL 25L
+  await prisma.product.create({
+    data: {
+      system: 'pool',
+      category: 'gyanta',
+      type: 'bkomp_xxl_25l',
+      name: 'B komponens XXL 25L',
+      info: 'Kötőanyag Aquaciment XXL-hez',
+      options: {
+        create: [
+          { liters: 25, price: 88115 }
+        ]
+      }
+    }
+  });
+
+  // Pool - B komponens XL 5L
+  await prisma.product.create({
+    data: {
+      system: 'pool',
+      category: 'gyanta',
+      type: 'bkomp_xl_5l',
+      name: 'B komponens XL 5L',
+      info: 'Kötőanyag Aquaciment XL-hez',
+      options: {
+        create: [
+          { liters: 5, price: 23030 }
+        ]
+      }
+    }
+  });
+
+  // Pool - B komponens XL 25L
+  await prisma.product.create({
+    data: {
+      system: 'pool',
+      category: 'gyanta',
+      type: 'bkomp_xl_25l',
+      name: 'B komponens XL 25L',
+      info: 'Kötőanyag Aquaciment XL-hez',
+      options: {
+        create: [
+          { liters: 25, price: 88030 }
+        ]
+      }
+    }
+  });
   // Pool - Lakk (Topsealer WT Pool)
   await prisma.product.create({
     data: {
