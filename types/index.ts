@@ -70,6 +70,11 @@ export interface Surface {
     medium: number;
     small: number;
   };
+  surfaceType?: 'padlo' | 'fal';
+  quartzPadloVastagabb?: 'super' | 'medium';
+  quartzPadloVekonyabb?: 'super' | 'medium';
+  quartzFalVastagabb?: 'big' | 'small';
+  quartzFalVekonyabb?: 'big' | 'small';
 }
 
 export interface CalculationResult {

@@ -240,6 +240,158 @@ export default function Calculator() {
       });
     }
     
+    // EFFECTO QUARTZ RENDSZER
+    if (system === 'effectoQuartz') {
+      const totalM2 = result.area;
+      const lakk = surface.lakk;
+      const alapozo = surface.alapozo;
+      const surfaceType = surface.surfaceType || 'padlo'; // padlo vagy fal
+      
+      if (!lakk) return result;
+      
+      // Alapozó - hozzáadjuk a rétegrendhez
+      if (alapozo && sys.alapozok[alapozo]) {
+        const alapozoData = sys.alapozok[alapozo];
+        result.layers.push(`1× ${alapozoData.name}`);
+        
+        const alapozoOption = alapozoData.options[0];
+        
+        if (alapozoOption.m2) {
+          result.materials.push({
+            category: 'Alapozó',
+            items: [{ name: alapozoData.name, amount: totalM2, unit: 'm2' }]
+          });
+        } else if (alapozoOption.kg) {
+          const kgPerM2 = alapozoOption.kg / alapozoOption.m2!;
+          const kgNeeded = totalM2 * kgPerM2;
+          result.materials.push({
+            category: 'Alapozó',
+            items: [{ name: alapozoData.name, amount: kgNeeded, unit: 'kg' }]
+          });
+        }
+      }
+      
+      // Mikrocement - Padló vagy Fal
+      if (surfaceType === 'padlo') {
+        // 2× Super/Medium (vastagabb) + 1× Big/Small (vékonyabb)
+        const vastagabb = surface.quartzPadloVastagabb || 'super';
+        const vekonyabb = surface.quartzPadloVekonyabb || 'medium';
+        
+        const vastagabbData = sys.padlo![vastagabb];
+        const vekonyabbData = sys.padlo![vekonyabb];
+        
+        const vastagabbKg = totalM2 * 2 * vastagabbData.kgPerM2;
+        const vekonyabbKg = totalM2 * 1 * vekonyabbData.kgPerM2;
+        
+        result.layers.push(`2× ${vastagabbData.name}`, `1× ${vekonyabbData.name}`);
+        
+        result.materials.push({
+          category: vastagabbData.name,
+          items: [{ name: vastagabbData.name, amount: vastagabbKg, unit: 'kg' }]
+        });
+        
+        result.materials.push({
+          category: vekonyabbData.name,
+          items: [{ name: vekonyabbData.name, amount: vekonyabbKg, unit: 'kg' }]
+        });
+      } else {
+        // Fal: 2× Big (vastagabb) + 1× Small (vékonyabb)
+        const vastagabb = surface.quartzFalVastagabb || 'big';
+        const vekonyabb = surface.quartzFalVekonyabb || 'small';
+        
+        const vastagabbData = sys.fal![vastagabb];
+        const vekonyabbData = sys.fal![vekonyabb];
+        
+        const vastagabbKg = totalM2 * 2 * vastagabbData.kgPerM2;
+        const vekonyabbKg = totalM2 * 1 * vekonyabbData.kgPerM2;
+        
+        result.layers.push(`2× ${vastagabbData.name}`, `1× ${vekonyabbData.name}`);
+        
+        result.materials.push({
+          category: vastagabbData.name,
+          items: [{ name: vastagabbData.name, amount: vastagabbKg, unit: 'kg' }]
+        });
+        
+        result.materials.push({
+          category: vekonyabbData.name,
+          items: [{ name: vekonyabbData.name, amount: vekonyabbKg, unit: 'kg' }]
+        });
+      }
+      
+      // Lakk - MINDIG 2 RÉTEG! - hozzáadjuk a rétegrendhez
+      const lakkData = sys.lakkok[lakk];
+      result.layers.push(`2× ${lakkData.name}`);
+      
+      const lakkM2 = totalM2 * 2;
+      result.materials.push({
+        category: lakkData.name,
+        items: [{ name: lakkData.name, amount: lakkM2, unit: 'm2' }]
+      });
+    }
+    
+    // EFFECTO PU RENDSZER
+    if (system === 'effectoPU') {
+      const totalM2 = result.area;
+      const lakk = surface.lakk;
+      const alapozo = surface.alapozo;
+      
+      if (!lakk) return result;
+      
+      // Alapozó - hozzáadjuk a rétegrendhez
+      if (alapozo && sys.alapozok[alapozo]) {
+        const alapozoData = sys.alapozok[alapozo];
+        result.layers.push(`1× ${alapozoData.name}`);
+        
+        const alapozoOption = alapozoData.options[0];
+        
+        if (alapozoOption.m2) {
+          result.materials.push({
+            category: 'Alapozó',
+            items: [{ name: alapozoData.name, amount: totalM2, unit: 'm2' }]
+          });
+        } else if (alapozoOption.kg) {
+          const kgPerM2 = alapozoOption.kg / alapozoOption.m2!;
+          const kgNeeded = totalM2 * kgPerM2;
+          result.materials.push({
+            category: 'Alapozó',
+            items: [{ name: alapozoData.name, amount: kgNeeded, unit: 'kg' }]
+          });
+        }
+      }
+      
+      // Mikrocement - 3 réteg mindig (kgPerM2 már tartalmazza a 3 réteget)
+      const totalPuLayers = surface.puLayers.big + surface.puLayers.medium + surface.puLayers.small;
+      if (totalPuLayers === 0) return result;
+      
+      (['big', 'medium', 'small'] as const).forEach(puType => {
+        if (surface.puLayers[puType] > 0) {
+          const puName = puType.toUpperCase();
+          const layerCount = surface.puLayers[puType];
+          result.layers.push(`${layerCount}× ${puName}`);
+          
+          const puData = sys.mikrocementek![puType];
+          // kgPerM2 = 3 rétegre, tehát 1 rétegre = kgPerM2 / 3
+          const kgPerLayer = puData.kgPerM2 / 3;
+          const puKg = totalM2 * layerCount * kgPerLayer;
+          
+          result.materials.push({
+            category: `Efectto PU ${puName}`,
+            items: [{ name: puData.name, amount: puKg, unit: 'kg' }]
+          });
+        }
+      });
+      
+      // Lakk - MINDIG 2 RÉTEG! - hozzáadjuk a rétegrendhez
+      const lakkData = sys.lakkok[lakk];
+      result.layers.push(`2× ${lakkData.name}`);
+      
+      const lakkM2 = totalM2 * 2;
+      result.materials.push({
+        category: lakkData.name,
+        items: [{ name: lakkData.name, amount: lakkM2, unit: 'm2' }]
+      });
+    }
+    
     return result;
   };
 
@@ -262,6 +414,9 @@ export default function Calculator() {
         });
       });
     });
+    
+    console.log('🔑 AGGREGATED KEYS:', Object.keys(aggregated));
+    console.log('📦 AGGREGATED OBJECT:', aggregated);
     
     const res: CalculationResult = {
       items: [],
@@ -338,12 +493,16 @@ export default function Calculator() {
           const [name, unit] = key.split('_');
           const totalAmount = aggregated[key].amount;
           
-          const alapozoKey = Object.keys(sys.alapozok).find(k => 
-            sys.alapozok[k].name === name
-          );
+          // Keressük meg melyik alapozó neve egyezik
+          const alapozoKey = Object.keys(sys.alapozok).find(k => {
+            const alapozo = sys.alapozok[k];
+            return alapozo && alapozo.name === name;
+          });
           
           if (alapozoKey) {
             const alapozoData = sys.alapozok[alapozoKey];
+            if (!alapozoData || !alapozoData.options) return;
+            
             const pkgs = unit === 'm2' 
               ? optimizeByM2(totalAmount, alapozoData.options)
               : optimizeByKg(totalAmount, alapozoData.options);
@@ -420,6 +579,8 @@ export default function Calculator() {
     // NATTURE - Lakkok
     Object.keys(sys.lakkok).forEach(lakkKey => {
       const lakkData = sys.lakkok[lakkKey];
+      if (!lakkData || !lakkData.name || !lakkData.options) return;  // ← Védelem
+      
       const matchingKeys = Object.keys(aggregated).filter(k => k.startsWith(lakkData.name));
       
       if (matchingKeys.length > 0 && system === 'natture') {
@@ -435,6 +596,171 @@ export default function Calculator() {
       }
     });
     
+    // EFFECTO QUARTZ - Alapozó
+    if (system === 'effectoQuartz') {
+      Object.keys(aggregated).forEach(key => {
+        if ((key.includes('Primacem') || key.includes('Primapox') || key.includes('Grip')) && !key.includes('gyanta')) {
+          const [name, unit] = key.split('_');
+          const totalAmount = aggregated[key].amount;
+          
+          const alapozoKey = Object.keys(sys.alapozok).find(k => {
+            const alapozo = sys.alapozok[k];
+            return alapozo && alapozo.name === name;
+          });
+          
+          if (alapozoKey) {
+            const alapozoData = sys.alapozok[alapozoKey];
+            if (!alapozoData || !alapozoData.options) return;
+            
+            const pkgs = unit === 'm2' 
+              ? optimizeByM2(totalAmount, alapozoData.options)
+              : optimizeByKg(totalAmount, alapozoData.options);
+            
+            res.items.push({
+              cat: `${name} (1 réteg)`,
+              pkgs: pkgs.map(p => ({ 
+                ...p, 
+                name: `${name} ${p.liters || p.kg}${p.liters ? 'L' : 'kg'}`, 
+                qty: p.qty || 0 
+              })),
+              price: pkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+            });
+          }
+        }
+      });
+    }
+    
+    // EFFECTO QUARTZ - Padló mikrocementek
+    if (system === 'effectoQuartz' && sys.padlo) {
+      (['super', 'medium'] as const).forEach(padloType => {
+        const padloData = sys.padlo![padloType];
+        const matchingKeys = Object.keys(aggregated).filter(k => k.startsWith(padloData.name));
+        
+        if (matchingKeys.length > 0) {
+          const totalKg = matchingKeys.reduce((sum, k) => sum + aggregated[k].amount, 0);
+          const pkgs = optimizeByKg(totalKg, padloData.options);
+          
+          res.items.push({
+            cat: `${padloData.name} (összesített)`,
+            pkgs: pkgs.map(p => ({ ...p, name: `${padloData.name} ${p.kg}kg`, qty: p.qty || 0 })),
+            price: pkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+          });
+        }
+      });
+    }
+    
+    // EFFECTO QUARTZ - Fal mikrocementek
+    if (system === 'effectoQuartz' && sys.fal) {
+      (['big', 'small'] as const).forEach(falType => {
+        const falData = sys.fal![falType];
+        const matchingKeys = Object.keys(aggregated).filter(k => k.startsWith(falData.name));
+        
+        if (matchingKeys.length > 0) {
+          const totalKg = matchingKeys.reduce((sum, k) => sum + aggregated[k].amount, 0);
+          const pkgs = optimizeByKg(totalKg, falData.options);
+          
+          res.items.push({
+            cat: `${falData.name} (összesített)`,
+            pkgs: pkgs.map(p => ({ ...p, name: `${falData.name} ${p.kg}kg`, qty: p.qty || 0 })),
+            price: pkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+          });
+        }
+      });
+    }
+    
+    // EFFECTO QUARTZ - Lakkok
+    if (system === 'effectoQuartz') {
+      Object.keys(sys.lakkok).forEach(lakkKey => {
+        const lakkData = sys.lakkok[lakkKey];
+        if (!lakkData || !lakkData.name || !lakkData.options) return;
+        
+        const matchingKeys = Object.keys(aggregated).filter(k => k.startsWith(lakkData.name));
+        
+        if (matchingKeys.length > 0) {
+          const totalM2 = matchingKeys.reduce((sum, k) => sum + aggregated[k].amount, 0);
+          const lakkPkgs = optimizeByM2(totalM2, lakkData.options);
+          
+          res.items.push({
+            cat: `${lakkData.name} (2 réteg)`,
+            pkgs: lakkPkgs.map(p => ({ ...p, name: `${lakkData.name} ${p.liters}L`, qty: p.qty || 0 })),
+            price: lakkPkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+          });
+        }
+      });
+    }
+    
+    // EFFECTO PU - Alapozó
+    if (system === 'effectoPU') {
+      Object.keys(aggregated).forEach(key => {
+        if ((key.includes('Primacem') || key.includes('Primapox') || key.includes('Grip')) && !key.includes('gyanta')) {
+          const [name, unit] = key.split('_');
+          const totalAmount = aggregated[key].amount;
+          
+          const alapozoKey = Object.keys(sys.alapozok).find(k => 
+            sys.alapozok[k].name === name
+          );
+          
+          if (alapozoKey) {
+            const alapozoData = sys.alapozok[alapozoKey];
+            const pkgs = unit === 'm2' 
+              ? optimizeByM2(totalAmount, alapozoData.options)
+              : optimizeByKg(totalAmount, alapozoData.options);
+            
+            res.items.push({
+              cat: `${name} (1 réteg)`,
+              pkgs: pkgs.map(p => ({ 
+                ...p, 
+                name: `${name} ${p.liters || p.kg}${p.liters ? 'L' : 'kg'}`, 
+                qty: p.qty || 0 
+              })),
+              price: pkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+            });
+          }
+        }
+      });
+    }
+    
+    // EFECTTO PU - Mikrocementek
+    (['big', 'medium', 'small'] as const).forEach(puType => {
+      const puData = sys.mikrocementek![puType];
+      const matchingKeys = Object.keys(aggregated).filter(k => k.startsWith(puData.name));
+      
+      if (matchingKeys.length > 0 && system === 'effectoPU') {
+        const totalKg = matchingKeys.reduce((sum, k) => sum + aggregated[k].amount, 0);
+        const puOptions = sys.mikroOptions![puType];
+        const pkgs = optimizeByKg(totalKg, puOptions);
+        
+        const typeName = puType === 'big' ? 'BIG' : puType === 'medium' ? 'MEDIUM' : 'SMALL';
+        
+        res.items.push({
+          cat: `${puData.name} (összesített)`,
+          pkgs: pkgs.map(p => ({ ...p, name: `${puData.name} ${p.kg}kg`, qty: p.qty || 0 })),
+          price: pkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+        });
+      }
+    });
+    
+    // EFFECTO PU - Lakkok
+    if (system === 'effectoPU') {
+      Object.keys(sys.lakkok).forEach(lakkKey => {
+        const lakkData = sys.lakkok[lakkKey];
+        if (!lakkData || !lakkData.name || !lakkData.options) return;
+        
+        const matchingKeys = Object.keys(aggregated).filter(k => k.startsWith(lakkData.name));
+        
+        if (matchingKeys.length > 0) {
+          const totalM2 = matchingKeys.reduce((sum, k) => sum + aggregated[k].amount, 0);
+          const lakkPkgs = optimizeByM2(totalM2, lakkData.options);
+          
+          res.items.push({
+            cat: `${lakkData.name} (2 réteg)`,
+            pkgs: lakkPkgs.map(p => ({ ...p, name: `${lakkData.name} ${p.liters}L`, qty: p.qty || 0 })),
+            price: lakkPkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+          });
+        }
+      });
+    }
+    
     res.total = res.items.reduce((sum, item) => sum + item.price, 0);
     
     return res;
@@ -444,23 +770,39 @@ export default function Calculator() {
   const calc = () => {
     if (!validate()) return;
     
-    if (system === 'pool' || system === 'natture') {
-      const surfaceCalculations: SurfaceCalculation[] = [];
-      surfaces.filter(s => parseFloat(s.area) > 0).forEach(surface => {
-        const surfaceResult = calculateSurface(surface, sys);
-        surfaceCalculations.push(surfaceResult);
-      });
-      
-      const aggregatedResult = aggregateResults(surfaceCalculations, sys);
-      aggregatedResult.layers = surfaceCalculations.map((sc, idx) => 
-        `Felület ${idx + 1} (${sc.area} m²): ${sc.layers.join(', ')}`
-      );
-      
-      setResult(aggregatedResult);
-      return;
-    }
+    console.log('🚀🚀🚀 CALC START V3 - System:', system);
     
-    alert('Effecto Quartz és Effecto PU még nincs implementálva az új logikával!');
+    // Minden rendszer ugyanazt a logikát használja
+    const surfaceCalculations: SurfaceCalculation[] = [];
+    surfaces.filter(s => parseFloat(s.area) > 0).forEach(surface => {
+      const surfaceResult = calculateSurface(surface, sys);
+      console.log('📊 Surface Result:', surfaceResult);
+      surfaceCalculations.push(surfaceResult);
+    });
+    
+    console.log('📦 All Surface Calculations:', surfaceCalculations);
+    
+    const aggregatedResult = aggregateResults(surfaceCalculations, sys);
+    
+    console.log('✅ Aggregated Result:', aggregatedResult);
+    console.log('🎯 Layers:', aggregatedResult.layers);
+    
+    // Rétegrend: minden felület külön, minden réteg új sorban
+    const allLayers: string[] = [];
+    surfaceCalculations.forEach((sc, idx) => {
+      if (surfaceCalculations.length > 1) {
+        allLayers.push(`Felület ${idx + 1} (${sc.area} m²):`);
+      }
+      sc.layers.forEach(layer => {
+        allLayers.push(layer);
+      });
+    });
+    
+    aggregatedResult.layers = allLayers;
+    
+    console.log('🎯 Final Layers:', aggregatedResult.layers);
+    
+    setResult(aggregatedResult);
   };
 
   const resetCalc = () => {
@@ -528,8 +870,8 @@ export default function Calculator() {
                 className="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition text-gray-900 font-medium bg-white"
               >
                 <option value="natture">Natture</option>
-                <option value="effectoQuartz">Effecto Quartz</option>
-                <option value="effectoPU">Effecto PU</option>
+                <option value="effectoQuartz">Efectto Quartz</option>
+                <option value="effectoPU">Efectto PU</option>
                 <option value="pool">Pool</option>
               </select>
             </div>
@@ -619,6 +961,79 @@ export default function Calculator() {
                         </div>
                         <p className="mt-2 text-xs text-gray-600">
                           Összesen: {surface.layers.xl + surface.layers.l + surface.layers.m + surface.layers.s} / 3 réteg
+                        </p>
+                      </div>
+                    )}
+
+                    {system === 'effectoQuartz' && parseFloat(surface.area) > 0 && (
+                      <div className="mt-3 pt-3 border-t border-gray-300">
+                        <p className="text-xs font-medium text-gray-600 mb-2">
+                          Felület típusa:
+                        </p>
+                        <select
+                          value={surface.surfaceType || 'padlo'}
+                          onChange={(e) => updateSurface(surface.id, 'surfaceType', e.target.value)}
+                          className="w-full p-2 text-sm border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition text-gray-900 font-medium bg-white mb-3"
+                        >
+                          <option value="padlo">Padló</option>
+                          <option value="fal">Fal</option>
+                        </select>
+
+                        {surface.surfaceType === 'fal' ? (
+                          <div>
+                            <p className="text-xs font-medium text-gray-600 mb-2">
+                              Fal mikrocementek (automatikusan 2× Big + 1× Small):
+                            </p>
+                            <div className="bg-blue-50 p-3 rounded-lg">
+                              <p className="text-xs text-blue-800">
+                                ✓ 2 réteg Big grain (vastagabb)
+                              </p>
+                              <p className="text-xs text-blue-800">
+                                ✓ 1 réteg Small grain (vékonyabb)
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <p className="text-xs font-medium text-gray-600 mb-2">
+                              Padló mikrocementek (automatikusan 2× Super + 1× Medium):
+                            </p>
+                            <div className="bg-blue-50 p-3 rounded-lg">
+                              <p className="text-xs text-blue-800">
+                                ✓ 2 réteg Super grain (vastagabb)
+                              </p>
+                              <p className="text-xs text-blue-800">
+                                ✓ 1 réteg Medium grain (vékonyabb)
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {system === 'effectoPU' && parseFloat(surface.area) > 0 && (
+                      <div className="mt-3 pt-3 border-t border-gray-300">
+                        <p className="text-xs font-medium text-gray-600 mb-2">
+                          Mikrocement rétegek (összesen 3 kell):
+                        </p>
+                        <div className="grid grid-cols-3 gap-2">
+                          {(['big', 'medium', 'small'] as const).map(t => (
+                            <div key={t} className="bg-white p-2 rounded-lg border border-gray-200">
+                              <label className="block text-xs font-medium mb-1 text-gray-700">
+                                {t === 'big' ? 'Big grain' : t === 'medium' ? 'Medium grain' : 'Small grain'}
+                              </label>
+                              <select
+                                value={surface.puLayers[t]}
+                                onChange={(e)=>updateSurfacePuLayers(surface.id, t, parseInt(e.target.value))}
+                                className="w-full p-1 text-sm border border-gray-300 rounded focus:border-blue-500 focus:outline-none text-gray-900 font-medium bg-white"
+                              >
+                                {[0,1,2,3].map(n=><option key={n} value={n}>{n}</option>)}
+                              </select>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="mt-2 text-xs text-gray-600">
+                          Összesen: {surface.puLayers.big + surface.puLayers.medium + surface.puLayers.small} / 3 réteg
                         </p>
                       </div>
                     )}

@@ -161,104 +161,289 @@ export const PRODUCTS: Record<string, SystemProducts> = {
     }
   },
   effectoQuartz: {
-    name: 'Effecto Quartz',
+    name: 'Efectto Quartz',
     alapozok: {
       abs: {
         name: 'Primacem ABS',
-        info: 'Univerzális alapozó',
-        options: [{ kg: 5, price: 4178, m2: 50 }]
+        info: 'Nedvszívó alapozó',
+        options: [
+          { liters: 1, price: 5670, m2: 10 },
+          { liters: 5, price: 20890, m2: 50 }
+        ]
       },
       plusz: {
         name: 'Primacem Plusz',
-        info: 'Erősebb tapadás',
-        options: [{ kg: 5, price: 5608, m2: 50 }]
+        info: 'Nem nedvszívó alapozó',
+        options: [
+          { liters: 1, price: 7199, m2: 10 },
+          { liters: 5, price: 28040, m2: 50 }
+        ]
+      },
+      barrier: {
+        name: 'Primapox 100 Barrier',
+        info: 'Párazáró kétkomponensű alapozó',
+        options: [
+          { kg: 5, price: 71520, m2: 10 },
+          { kg: 20, price: 190395, m2: 40 }
+        ]
+      },
+      grip: {
+        name: 'Primacem Grip',
+        info: 'Homokos tapadó híd',
+        options: [{ kg: 5, price: 21690, m2: 20 }]
       }
     },
     padlo: {
       super: {
         name: 'Super grain',
-        kgPerM2: 2.25,
-        info: 'Padló - 2 réteg',
-        options: [{ kg: 20, price: 2620 }]
+        kgPerM2: 1.3,
+        info: 'Padló - vastagabb szemcse (2 réteg)',
+        options: [
+          { kg: 6, price: 31580 },
+          { kg: 17, price: 75490 }
+        ]
       },
       medium: {
         name: 'Medium grain',
-        kgPerM2: 1.125,
-        info: 'Padló - 1 réteg',
-        options: [{ kg: 20, price: 2620 }]
+        kgPerM2: 0.45,
+        info: 'Padló - vékonyabb szemcse (1 réteg)',
+        options: [
+          { kg: 6, price: 33110 },
+          { kg: 17, price: 80380 }
+        ]
       }
     },
     fal: {
       big: {
         name: 'Big grain',
-        kgPerM2: 1.5,
-        info: 'Fal - durva szemcse',
-        options: [{ kg: 20, price: 2620 }]
+        kgPerM2: 0.9,
+        info: 'Fal - vastagabb szemcse (2 réteg)',
+        options: [
+          { kg: 6, price: 31580 },
+          { kg: 17, price: 75490 }
+        ]
       },
       small: {
         name: 'Small grain',
-        kgPerM2: 0.75,
-        info: 'Fal - finom szemcse',
-        options: [{ kg: 20, price: 2620 }]
+        kgPerM2: 0.25,
+        info: 'Fal - vékonyabb szemcse (1 réteg)',
+        options: [
+          { kg: 6, price: 32340 },
+          { kg: 17, price: 75487 }
+        ]
       }
     },
     lakkok: {
-      presealer: {
-        name: 'PreSealer',
-        info: 'Alapozó lakk',
-        options: [{ liters: 5, price: 10916, m2: 50 }]
+      onecoat_matt: {
+        name: 'ONE Coat (matt)',
+        info: 'Kétrétegű lakk (A+B komponens)',
+        needPresealer: false,
+        options: [
+          { liters: 1.2, price: 24190, m2: 16 },
+          { liters: 6, price: 118670, m2: 80 }
+        ]
       },
-      topsealer: {
-        name: 'TopSealer',
-        info: 'Végső lakk',
-        options: [{ liters: 5, price: 23734, m2: 80 }]
+      onecoat_selyem: {
+        name: 'ONE Coat (selyemfény)',
+        info: 'Kétrétegű lakk (A+B komponens)',
+        needPresealer: false,
+        options: [
+          { liters: 1.2, price: 24190, m2: 16 },
+          { liters: 6, price: 118670, m2: 80 }
+        ]
+      },
+      onecoat_fenyes: {
+        name: 'ONE Coat (fényes)',
+        info: 'Kétrétegű lakk (A+B komponens)',
+        needPresealer: false,
+        options: [
+          { liters: 1.2, price: 24190, m2: 16 },
+          { liters: 6, price: 118670, m2: 80 }
+        ]
+      },
+      dragon_matt: {
+        name: 'Dragon (matt)',
+        info: 'Prémium minőség (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 4, price: 105930, m2: 53 }]
+      },
+      dragon_selyem: {
+        name: 'Dragon (selyemfény)',
+        info: 'Prémium minőség (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 4, price: 105930, m2: 53 }]
+      },
+      dragon_fenyes: {
+        name: 'Dragon (fényes)',
+        info: 'Prémium minőség (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 4, price: 105930, m2: 53 }]
+      },
+      top100_matt: {
+        name: 'TOP 100 (matt)',
+        info: 'Kétrétegű lakk',
+        needPresealer: false,
+        options: [
+          { liters: 1, price: 39360, m2: 14 },
+          { liters: 5, price: 184650, m2: 71 }
+        ]
+      },
+      top100_fenyes: {
+        name: 'TOP 100 (fényes)',
+        info: 'Kétrétegű lakk',
+        needPresealer: false,
+        options: [
+          { liters: 1, price: 39360, m2: 14 },
+          { liters: 5, price: 184650, m2: 71 }
+        ]
+      },
+      toppro_lassukotesu: {
+        name: 'TOP PRO (lassú kötésű)',
+        info: 'Professzionális lakk (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 1.44, price: 57985, m2: 18 }]
+      },
+      toppro_gyorskotesu: {
+        name: 'TOP PRO (gyors kötésű)',
+        info: 'Professzionális lakk (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 1.44, price: 57985, m2: 18 }]
       }
     }
   },
   effectoPU: {
-    name: 'Effecto PU',
+    name: 'Efectto PU',
     alapozok: {
       abs: {
         name: 'Primacem ABS',
-        info: 'Univerzális alapozó',
-        options: [{ kg: 5, price: 4178, m2: 50 }]
+        info: 'Nedvszívó alapozó',
+        options: [
+          { liters: 1, price: 5670, m2: 10 },
+          { liters: 5, price: 20890, m2: 50 }
+        ]
+      },
+      plusz: {
+        name: 'Primacem Plusz',
+        info: 'Nem nedvszívó alapozó',
+        options: [
+          { liters: 1, price: 7199, m2: 10 },
+          { liters: 5, price: 28040, m2: 50 }
+        ]
       },
       barrier: {
         name: 'Primapox 100 Barrier',
-        info: '2 komponensű, vízálló',
-        options: [{ kg: 20, price: 9520, m2: 40 }]
+        info: 'Párazáró kétkomponensű alapozó',
+        options: [
+          { kg: 5, price: 71520, m2: 10 },
+          { kg: 20, price: 190395, m2: 40 }
+        ]
+      },
+      grip: {
+        name: 'Primacem Grip',
+        info: 'Homokos tapadó híd',
+        options: [{ kg: 5, price: 21690, m2: 20 }]
       }
     },
     mikrocementek: {
       big: {
-        name: 'PU Big',
-        kgPerM2: 1.5,
-        info: 'Nagy szemcse, 3 réteg',
-        options: [{ kg: 20, price: 3870 }]
+        name: 'Efectto PU Big grain',
+        kgPerM2: 2.7,
+        info: 'Nagy szemcse (A+B komponens), 3 réteg = 2.7 kg/m²',
+        options: [{ kg: 10.875, price: 80605 }]
       },
       medium: {
-        name: 'PU Medium',
-        kgPerM2: 1.125,
-        info: 'Közepes szemcse, 3 réteg',
-        options: [{ kg: 20, price: 3870 }]
+        name: 'Efectto PU Medium grain',
+        kgPerM2: 1.35,
+        info: 'Közepes szemcse (A+B komponens), 3 réteg = 1.35 kg/m²',
+        options: [{ kg: 10.875, price: 80605 }]
       },
       small: {
-        name: 'PU Small',
+        name: 'Efectto PU Small grain',
         kgPerM2: 0.75,
-        info: 'Finom szemcse, 3 réteg',
-        options: [{ kg: 20, price: 3870 }]
+        info: 'Finom szemcse (A+B komponens), 3 réteg = 0.75 kg/m²',
+        options: [{ kg: 10.875, price: 80605 }]
       }
     },
     mikroOptions: {
-      big: [{ kg: 20, price: 3870 }],
-      medium: [{ kg: 20, price: 3870 }],
-      small: [{ kg: 20, price: 3870 }]
+      big: [{ kg: 10.875, price: 80605 }],
+      medium: [{ kg: 10.875, price: 80605 }],
+      small: [{ kg: 10.875, price: 80605 }]
     },
     lakkok: {
-      pu: {
-        name: 'PU Lakk',
-        info: '2 komponensű PU lakk',
-        options: [{ liters: 6, price: 53700, m2: 72 }]
+      onecoat_matt: {
+        name: 'ONE Coat (matt)',
+        info: 'Kétrétegű lakk (A+B komponens)',
+        needPresealer: false,
+        options: [
+          { liters: 1.2, price: 24190, m2: 16 },
+          { liters: 6, price: 118670, m2: 80 }
+        ]
+      },
+      onecoat_selyem: {
+        name: 'ONE Coat (selyemfény)',
+        info: 'Kétrétegű lakk (A+B komponens)',
+        needPresealer: false,
+        options: [
+          { liters: 1.2, price: 24190, m2: 16 },
+          { liters: 6, price: 118670, m2: 80 }
+        ]
+      },
+      onecoat_fenyes: {
+        name: 'ONE Coat (fényes)',
+        info: 'Kétrétegű lakk (A+B komponens)',
+        needPresealer: false,
+        options: [
+          { liters: 1.2, price: 24190, m2: 16 },
+          { liters: 6, price: 118670, m2: 80 }
+        ]
+      },
+      dragon_matt: {
+        name: 'Dragon (matt)',
+        info: 'Prémium minőség (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 4, price: 105930, m2: 53 }]
+      },
+      dragon_selyem: {
+        name: 'Dragon (selyemfény)',
+        info: 'Prémium minőség (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 4, price: 105930, m2: 53 }]
+      },
+      dragon_fenyes: {
+        name: 'Dragon (fényes)',
+        info: 'Prémium minőség (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 4, price: 105930, m2: 53 }]
+      },
+      top100_matt: {
+        name: 'TOP 100 (matt)',
+        info: 'Kétrétegű lakk',
+        needPresealer: false,
+        options: [
+          { liters: 1, price: 39360, m2: 14 },
+          { liters: 5, price: 184650, m2: 71 }
+        ]
+      },
+      top100_fenyes: {
+        name: 'TOP 100 (fényes)',
+        info: 'Kétrétegű lakk',
+        needPresealer: false,
+        options: [
+          { liters: 1, price: 39360, m2: 14 },
+          { liters: 5, price: 184650, m2: 71 }
+        ]
+      },
+      toppro_lassukotesu: {
+        name: 'TOP PRO (lassú kötésű)',
+        info: 'Professzionális lakk (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 1.44, price: 57985, m2: 18 }]
+      },
+      toppro_gyorskotesu: {
+        name: 'TOP PRO (gyors kötésű)',
+        info: 'Professzionális lakk (A+B komponens)',
+        needPresealer: false,
+        options: [{ liters: 1.44, price: 57985, m2: 18 }]
       }
     }
   },
