@@ -1752,8 +1752,7 @@ export default function Calculator() {
                     
                     {/* Fejléc - rejtett mobilon */}
                     <div className="hidden md:flex justify-end gap-2 mb-2 text-xs font-semibold text-gray-500 border-b pb-2">
-                      <span className="w-28 text-right">Kiszerelés szerint</span>
-                      <span className="w-28 text-right">Anyagszükséglet szerint</span>
+                   
                     </div>
                     
                     <div className="space-y-4">
