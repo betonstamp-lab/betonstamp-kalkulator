@@ -93,7 +93,7 @@ export default function CalculatorPage() {
       </div>
 
       {/* Kalkulátor komponens a profil adatokkal */}
-      <Calculator userProfile={profile} />
+      <Calculator />
     </div>
   );
 }
