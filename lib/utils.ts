@@ -4,6 +4,9 @@ export function optimizeByM2(totalM2: number, options: ProductOption[]): Product
   const valid = options.filter(o => o.price > 0 && o.m2 && o.m2 > 0);
   if (!valid.length) return [];
   
+  // Rendezzük méret szerint csökkenő sorrendbe
+  valid.sort((a, b) => (b.m2 || 0) - (a.m2 || 0));
+  
   if (valid.length === 1) {
     const piecesNeeded = Math.ceil(totalM2 / valid[0].m2!);
     return [{ ...valid[0], qty: piecesNeeded }];
@@ -12,25 +15,36 @@ export function optimizeByM2(totalM2: number, options: ProductOption[]): Product
   let best: ProductOption[] | null = null;
   let bestPrice = Infinity;
 
-  const maxLarge = Math.ceil(totalM2 / Math.max(...valid.map(v => v.m2!))) + 3;
+  // Maximum darabszám a legkisebb kiszerelésből
+  const smallestM2 = Math.min(...valid.map(v => v.m2!));
+  const maxSmall = Math.ceil(totalM2 / smallestM2) + 5;
+  
+  // Legnagyobb kiszerelés max darabszáma
+  const largestM2 = Math.max(...valid.map(v => v.m2!));
+  const maxLarge = Math.ceil(totalM2 / largestM2) + 3;
 
+  // Próbáljuk ki az összes kombinációt
   for (let i = 0; i <= maxLarge; i++) {
-    for (let j = 0; j <= maxLarge; j++) {
-      const combo: ProductOption[] = [];
+    for (let j = 0; j <= maxSmall; j++) {
       let covered = 0;
       let price = 0;
+      const combo: ProductOption[] = [];
 
+      // Nagy kiszerelés (valid[0] - 50m²)
       if (valid[0] && i > 0) {
-        combo.push({ ...valid[0], qty: i });
         covered += valid[0].m2! * i;
         price += valid[0].price * i;
-      }
-      if (valid[1] && j > 0) {
-        combo.push({ ...valid[1], qty: j });
-        covered += valid[1].m2! * j;
-        price += valid[1].price * j;
+        combo.push({ ...valid[0], qty: i });
       }
       
+      // Kis kiszerelés (valid[1] - 1m²)
+      if (valid[1] && j > 0) {
+        covered += valid[1].m2! * j;
+        price += valid[1].price * j;
+        combo.push({ ...valid[1], qty: j });
+      }
+      
+      // Ha lefedi a szükséges területet és olcsóbb mint az eddigi legjobb
       if (covered >= totalM2 && price < bestPrice) {
         bestPrice = price;
         best = combo;
@@ -45,6 +59,9 @@ export function optimizeByKg(totalKg: number, options: ProductOption[]): Product
   const valid = options.filter(o => o.price > 0 && o.kg);
   if (!valid.length) return [];
 
+  // Rendezzük méret szerint növekvő sorrendbe (kis, nagy)
+  valid.sort((a, b) => (a.kg || 0) - (b.kg || 0));
+
   if (valid.length === 1) {
     const piecesNeeded = Math.ceil(totalKg / valid[0].kg!);
     return [{ ...valid[0], qty: piecesNeeded }];
@@ -54,17 +71,20 @@ export function optimizeByKg(totalKg: number, options: ProductOption[]): Product
   let bestPrice = Infinity;
 
   const maxLarge = Math.ceil(totalKg / valid[1].kg!) + 3;
+  const maxSmall = Math.ceil(totalKg / valid[0].kg!) + 3;
 
   for (let countLarge = 0; countLarge <= maxLarge; countLarge++) {
-    const coveredByLarge = countLarge * valid[1].kg!;
-    const remaining = totalKg - coveredByLarge;
-    const countSmall = remaining > 0 ? Math.ceil(remaining / valid[0].kg!) : 0;
-
-    const price = (countLarge * valid[1].price) + (countSmall * valid[0].price);
-
-    if (price < bestPrice) {
-      bestPrice = price;
-      best = { countLarge, countSmall };
+    for (let countSmall = 0; countSmall <= maxSmall; countSmall++) {
+      const covered = (countLarge * valid[1].kg!) + (countSmall * valid[0].kg!);
+      
+      if (covered >= totalKg) {
+        const price = (countLarge * valid[1].price) + (countSmall * valid[0].price);
+        
+        if (price < bestPrice) {
+          bestPrice = price;
+          best = { countLarge, countSmall };
+        }
+      }
     }
   }
 
@@ -93,16 +113,20 @@ export function optimizeByLiters(totalLiters: number, options: ProductOption[]):
     let best: { countLarge: number; countSmall: number } | null = null;
     let bestPrice = Infinity;
     const maxLarge = Math.ceil(totalLiters / valid[0].liters!) + 3;
+    const maxSmall = Math.ceil(totalLiters / valid[1].liters!) + 5;
     
     for (let countLarge = 0; countLarge <= maxLarge; countLarge++) {
-      const coveredByLarge = countLarge * valid[0].liters!;
-      const remaining = totalLiters - coveredByLarge;
-      const countSmall = remaining > 0 ? Math.ceil(remaining / valid[1].liters!) : 0;
-      const price = (countLarge * valid[0].price) + (countSmall * valid[1].price);
-      
-      if (price < bestPrice) {
-        bestPrice = price;
-        best = { countLarge, countSmall };
+      for (let countSmall = 0; countSmall <= maxSmall; countSmall++) {
+        const covered = (countLarge * valid[0].liters!) + (countSmall * valid[1].liters!);
+        
+        if (covered >= totalLiters) {
+          const price = (countLarge * valid[0].price) + (countSmall * valid[1].price);
+          
+          if (price < bestPrice) {
+            bestPrice = price;
+            best = { countLarge, countSmall };
+          }
+        }
       }
     }
     

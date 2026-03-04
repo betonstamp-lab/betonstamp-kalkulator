@@ -12,7 +12,6 @@ export interface SurfaceCalculation {
     }[];
   }[];
 }
-
 export interface AggregatedMaterial {
   name: string;
   category: string;
@@ -21,9 +20,7 @@ export interface AggregatedMaterial {
   packages: ProductOption[];
   totalPrice: number;
 }
-
 export type MikrocementSystem = 'natture' | 'effectoQuartz' | 'effectoPU' | 'pool';
-
 export interface ProductOption {
   kg?: number;
   liters?: number;
@@ -32,13 +29,11 @@ export interface ProductOption {
   qty?: number;
   name?: string;
 }
-
 export interface AlapozoProduct {
   name: string;
   info?: string;
   options: ProductOption[];
 }
-
 export interface MikrocementProduct {
   name: string;
   kgPerM2: number;
@@ -46,14 +41,12 @@ export interface MikrocementProduct {
   info?: string;
   options?: ProductOption[];
 }
-
 export interface LakkProduct {
   name: string;
   info?: string;
   needPresealer?: boolean;
   options: ProductOption[];
 }
-
 export interface Surface {
   id: number;
   area: string;
@@ -76,7 +69,6 @@ export interface Surface {
   quartzFalVastagabb?: 'big' | 'small';
   quartzFalVekonyabb?: 'big' | 'small';
 }
-
 export interface CalculationResult {
   items: {
     cat: string;
@@ -87,8 +79,8 @@ export interface CalculationResult {
   layers: string[];
   surfaces: Surface[];
   totalM2: number;
+  surfaceResults?: any[];
 }
-
 export interface SystemProducts {
   name?: string;
   alapozok: Record<string, AlapozoProduct>;

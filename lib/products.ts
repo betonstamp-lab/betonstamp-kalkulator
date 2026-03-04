@@ -79,7 +79,7 @@ export const PRODUCTS: Record<string, SystemProducts> = {
       { liters: 25, price: 77975, m2: 0 }
     ],
     presealer: [
-      { liters: 1, price: 14967, m2: 16 },
+      { liters: 1, price: 19100, m2: 16 },
       { liters: 5, price: 54580, m2: 80 }
     ],
     lakkok: {
