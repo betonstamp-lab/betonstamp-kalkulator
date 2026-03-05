@@ -14,26 +14,40 @@ export async function POST(request: NextRequest) {
 
     const credentials = Buffer.from(`${systemId}:${apiKey}`).toString('base64');
 
+    const contactData = {
+      FirstName: body.firstName || '',
+      LastName: body.lastName || '',
+      Email: body.email,
+      Phone: body.phone || '',
+      BusinessName: body.companyName || '',
+      City: body.city || '',
+      Description: body.newsletterConsent 
+        ? 'Mikrocement Kalkulátor regisztráció - Hírlevélre feliratkozott' 
+        : 'Mikrocement Kalkulátor regisztráció - Hírlevélre NEM iratkozott fel',
+    };
+
+    console.log('MiniCRM request:', JSON.stringify(contactData));
+
     const response = await fetch(`https://r3.minicrm.hu/Api/R3/Contact`, {
       method: 'PUT',
       headers: {
         'Authorization': `Basic ${credentials}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        FirstName: body.firstName || '',
-        LastName: body.lastName || '',
-        Email: body.email,
-        Phone: body.phone || '',
-        BusinessName: body.companyName || '',
-        City: body.city || '',
-        Description: body.newsletterConsent 
-          ? 'Mikrocement Kalkulátor regisztráció - Hírlevélre feliratkozott' 
-          : 'Mikrocement Kalkulátor regisztráció - Hírlevélre NEM iratkozott fel',
-      }),
+      body: JSON.stringify(contactData),
     });
 
-    const data = await response.json();
+    const responseText = await response.text();
+    console.log('MiniCRM response status:', response.status);
+    console.log('MiniCRM response body:', responseText);
+
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      console.error('MiniCRM non-JSON response:', responseText);
+      return NextResponse.json({ error: 'MiniCRM invalid response', details: responseText }, { status: 500 });
+    }
     
     if (!response.ok) {
       console.error('MiniCRM error:', data);
