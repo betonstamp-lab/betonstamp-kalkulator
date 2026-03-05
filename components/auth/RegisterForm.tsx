@@ -126,7 +126,27 @@ export default function RegisterForm({ onSwitch }: RegisterFormProps) {
         if (profileError) {
           console.error('Profile error:', profileError);
         }
-
+        // MiniCRM integráció
+        try {
+          const nameParts = formData.name.split(' ');
+          const lastName = nameParts[0] || '';
+          const firstName = nameParts.slice(1).join(' ') || '';
+          
+          await fetch('/api/minicrm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              email: formData.email,
+              phone: formData.phone,
+              companyName: formData.isCompany ? formData.companyName : '',
+              city: formData.city || '',
+            }),
+          });
+        } catch (crmError) {
+          console.error('MiniCRM error:', crmError);
+        }
         setSuccess(true);
       }
     } catch (err) {
