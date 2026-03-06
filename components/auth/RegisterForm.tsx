@@ -106,7 +106,7 @@ export default function RegisterForm({ onSwitch }: RegisterFormProps) {
       if (authData.user) {
         const { error: profileError } = await supabase
           .from('profiles')
-          .insert({
+          .upsert({
             id: authData.user.id,
             email: formData.email,
             name: formData.name,

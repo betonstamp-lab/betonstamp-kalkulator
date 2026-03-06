@@ -12,49 +12,120 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'MiniCRM not configured' }, { status: 500 });
     }
 
-    const credentials = Buffer.from(`${apiKey}:${apiKey}`).toString('base64');
+    const credentials = Buffer.from(`${systemId}:${apiKey}`).toString('base64');
+    const headers = {
+      'Authorization': `Basic ${credentials}`,
+      'Content-Type': 'application/json',
+    };
 
+    // 1. Kontakt létrehozása
     const contactData = {
+      Type: 'Person',
       FirstName: body.firstName || '',
       LastName: body.lastName || '',
       Email: body.email,
       Phone: body.phone || '',
-      BusinessName: body.companyName || '',
-      City: body.city || '',
-      Description: body.newsletterConsent 
-        ? 'Mikrocement Kalkulátor regisztráció - Hírlevélre feliratkozott' 
-        : 'Mikrocement Kalkulátor regisztráció - Hírlevélre NEM iratkozott fel',
     };
 
-    console.log('MiniCRM request:', JSON.stringify(contactData));
+    console.log('MiniCRM contact request:', JSON.stringify(contactData));
 
-    const response = await fetch(`https://r3.minicrm.hu/Api/R3/Contact`, {
+    const contactResponse = await fetch('https://r3.minicrm.hu/Api/R3/Contact', {
       method: 'PUT',
-      headers: {
-        'Authorization': `Basic ${credentials}`,
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify(contactData),
     });
 
-    const responseText = await response.text();
-    console.log('MiniCRM response status:', response.status);
-    console.log('MiniCRM response body:', responseText);
+    const contactText = await contactResponse.text();
+    console.log('MiniCRM contact response:', contactResponse.status, contactText);
 
-    let data;
+    let contactResult;
     try {
-      data = JSON.parse(responseText);
+      contactResult = JSON.parse(contactText);
     } catch {
-      console.error('MiniCRM non-JSON response:', responseText);
-      return NextResponse.json({ error: 'MiniCRM invalid response', details: responseText }, { status: 500 });
-    }
-    
-    if (!response.ok) {
-      console.error('MiniCRM error:', data);
-      return NextResponse.json({ error: 'MiniCRM error', details: data }, { status: response.status });
+      console.error('MiniCRM contact non-JSON:', contactText);
+      return NextResponse.json({ error: 'MiniCRM contact error', details: contactText }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, contactId: data.Id });
+    if (!contactResponse.ok || !contactResult.Id) {
+      return NextResponse.json({ error: 'MiniCRM contact error', details: contactResult }, { status: 500 });
+    }
+
+    const contactId = contactResult.Id;
+
+    // 2. Ha cég van, létrehozzuk a céget és hozzárendeljük a kontaktot
+    let businessId = null;
+    if (body.companyName) {
+      const businessData = {
+        Type: 'Business',
+        Name: body.companyName,
+      };
+
+      const businessResponse = await fetch('https://r3.minicrm.hu/Api/R3/Contact', {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(businessData),
+      });
+
+      const businessText = await businessResponse.text();
+      console.log('MiniCRM business response:', businessResponse.status, businessText);
+
+      try {
+        const businessResult = JSON.parse(businessText);
+        if (businessResult.Id) {
+          businessId = businessResult.Id;
+          // Kontakt hozzárendelése a céghez
+          await fetch(`https://r3.minicrm.hu/Api/R3/Contact/${contactId}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ BusinessId: businessId }),
+          });
+        }
+      } catch {
+        console.error('MiniCRM business error:', businessText);
+      }
+    }
+
+    // 3. Adatlap (projekt) létrehozása az Értékesítés modulban
+    const projectData: Record<string, any> = {
+      CategoryId: 70,
+      ContactId: contactId,
+      StatusId: 3687,
+      Name: `${body.lastName} ${body.firstName} - Kalkulátor regisztráció`,
+      Vezeteknev: body.lastName || '',
+      Keresztnev: body.firstName || '',
+      EmailCim: body.email || '',
+      Telefonszam: body.phone || '',
+      Varos: body.city || '',
+    };
+
+    if (businessId) {
+      projectData.BusinessId = businessId;
+    }
+
+    console.log('MiniCRM project request:', JSON.stringify(projectData));
+
+    const projectResponse = await fetch('https://r3.minicrm.hu/Api/R3/Project', {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(projectData),
+    });
+
+    const projectText = await projectResponse.text();
+    console.log('MiniCRM project response:', projectResponse.status, projectText);
+
+    let projectResult;
+    try {
+      projectResult = JSON.parse(projectText);
+    } catch {
+      console.error('MiniCRM project non-JSON:', projectText);
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      contactId, 
+      projectId: projectResult?.Id,
+      newsletterConsent: body.newsletterConsent,
+    });
   } catch (error) {
     console.error('MiniCRM integration error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
