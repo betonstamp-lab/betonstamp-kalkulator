@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'MiniCRM not configured' }, { status: 500 });
     }
 
-    const credentials = Buffer.from(`${systemId}:${apiKey}`).toString('base64');
+    const credentials = Buffer.from(`${apiKey}:${apiKey}`).toString('base64');
 
     const contactData = {
       FirstName: body.firstName || '',
