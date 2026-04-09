@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/shared/supabase';
 
 interface LoginFormProps {
   onSwitch: () => void;
@@ -39,7 +39,7 @@ export default function LoginForm({ onSwitch }: LoginFormProps) {
       }
 
       if (data.session) {
-        router.push('/calculator');
+        router.push('/calculators/mikrocement');
       }
     } catch (err) {
       setError('Hiba történt a bejelentkezés során');

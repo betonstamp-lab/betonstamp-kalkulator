@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/shared/supabase';
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
 import Image from 'next/image';
@@ -16,7 +16,7 @@ export default function AuthPage() {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        router.push('/calculator');
+        router.push('/calculators/mikrocement');
       } else {
         setLoading(false);
       }
