@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase, UserProfile } from '@/lib/supabase';
+import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Calculator from '@/components/Calculator';
 export default function CalculatorPage() {
   const [loading, setLoading] = useState(true);
