@@ -393,27 +393,45 @@ export const PRODUCTS: Record<string, SystemProducts> = {
         kgPerM2: 2.7,
         info: 'Nagy szemcse (A+B komponens), 3 réteg = 2.7 kg/m²',
         tooltip: 'Az Efectto PU BIG GRAIN egy nagy teljesítményű, kétkomponensű, vízalapú poliuretán mikrocement, folytonos dekoratív felületek kialakítására, beltérben és kültérben egyaránt.',
-        options: [{ kg: 10.875, price: 80605 }]
+        options: [
+          { kg: 10.875, price: 80605 },
+          { kg: 2.21, price: 33412 }
+        ]
       },
       medium: {
         name: 'Efectto PU Medium grain',
         kgPerM2: 1.35,
         info: 'Közepes szemcse (A+B komponens), 3 réteg = 1.35 kg/m²',
         tooltip: 'Az Efectto PU MEDIUM GRAIN egy nagy teljesítményű, kétkomponensű, vízalapú poliuretán mikrocement, folytonos dekoratív felületek kialakítására, beltérben és kültérben egyaránt.',
-        options: [{ kg: 10.875, price: 80605 }]
+        options: [
+          { kg: 10.875, price: 80605 },
+          { kg: 2.21, price: 33517 }
+        ]
       },
       small: {
         name: 'Efectto PU Small grain',
         kgPerM2: 0.75,
         info: 'Finom szemcse (A+B komponens), 3 réteg = 0.75 kg/m²',
         tooltip: 'Az Efectto PU SMALL GRAIN egy nagy teljesítményű, kétkomponensű, vízalapú poliuretán mikrocement, folytonos dekoratív felületek kialakítására, beltérben és kültérben egyaránt.',
-        options: [{ kg: 10.875, price: 80605 }]
+        options: [
+          { kg: 10.875, price: 80605 },
+          { kg: 2.21, price: 33592 }
+        ]
       }
     },
     mikroOptions: {
-      big: [{ kg: 10.875, price: 80605 }],
-      medium: [{ kg: 10.875, price: 80605 }],
-      small: [{ kg: 10.875, price: 80605 }]
+      big: [
+        { kg: 10.875, price: 80605 },
+        { kg: 2.21, price: 33412 }
+      ],
+      medium: [
+        { kg: 10.875, price: 80605 },
+        { kg: 2.21, price: 33517 }
+      ],
+      small: [
+        { kg: 10.875, price: 80605 },
+        { kg: 2.21, price: 33592 }
+      ]
     },
     lakkok: {
       onecoat_matt: {
@@ -511,7 +529,10 @@ export const PRODUCTS: Record<string, SystemProducts> = {
         name: 'Arcicem Pool 25L vízbázisú akrilgyanta, az Atlanttic Aquaciment "B" komponense és alapozója (TT01016)',
         info: 'Vízbázisú akrilgyanta medencékhez',
         tooltip: 'Az Acricem Pool egy vízalapú akrilgyanta, amelyet az Atlanttic Aquaciment® medence-mikrocement rendszerhez fejlesztettek ki.',
-        options: [{ liters: 25, price: 88115, m2: 200 }]
+        options: [
+          { liters: 5, price: 23030, m2: 50 },
+          { liters: 25, price: 88115, m2: 250 }
+        ]
       }
     },
     mikrocementek: {
@@ -535,7 +556,7 @@ export const PRODUCTS: Record<string, SystemProducts> = {
         name: 'Topsealer WT Pool 5L - lakk mikrocement medencékhez (TT02070)',
         info: 'Medence lakk - 2 réteg',
         tooltip: 'A Topsealer® WT Pool egy lítiumsó-alapú, vízalapú zárólakk az Atlanttic rendszerhez, amely védő és konszolidáló filmet képez.',
-        options: [{ liters: 5, price: 76650, m2: 80 }]
+        options: [{ liters: 5, price: 76650, m2: 83 }]
       }
     }
   }
