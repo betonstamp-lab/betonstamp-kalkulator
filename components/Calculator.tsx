@@ -2059,7 +2059,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                 }`}
                               >
                                 <div className="w-6 h-6 rounded border border-gray-300 shrink-0" style={{ backgroundColor: '#efede8' }} />
-                                <span className="text-sm font-medium text-gray-800">White</span>
+                                <span className="text-sm font-medium text-gray-800">Fehér</span>
                               </button>
                               <button
                                 onClick={() => updateSurface(surface.id, 'selectedColor', null)}
@@ -2070,7 +2070,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                 }`}
                               >
                                 <div className="w-6 h-6 rounded border border-gray-300 shrink-0" style={{ backgroundColor: '#f5f0e0' }} />
-                                <span className="text-sm font-medium text-gray-800">Natural White</span>
+                                <span className="text-sm font-medium text-gray-800">Törtfehér (pigment nélkül)</span>
                               </button>
                             </div>
                           </div>
