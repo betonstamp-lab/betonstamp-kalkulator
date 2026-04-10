@@ -71,6 +71,7 @@ export interface Surface {
   quartzPadloVekonyabb?: 'super' | 'medium';
   quartzFalVastagabb?: 'big' | 'small';
   quartzFalVekonyabb?: 'big' | 'small';
+  selectedColor?: string | null;
 }
 export interface CalculationResult {
   items: {
