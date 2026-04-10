@@ -60,6 +60,19 @@ export default function LoginForm({ onSwitch }: LoginFormProps) {
     }
 
     try {
+      // Ellenőrizzük hogy létezik-e fiók ezzel az email címmel
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .single();
+
+      if (!profile) {
+        setError('Ezzel az email címmel nincs fiók regisztrálva.');
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
