@@ -326,11 +326,14 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
     if (system === 'pool') {
       const totalM2 = result.area;
       
-      result.layers.push('1× Arcicem Pool gyanta');
-      result.materials.push({
-        category: 'Arcicem Pool gyanta',
-        items: [{ name: 'Arcicem Pool 25L', amount: totalM2 / 200, unit: 'db' }]
-      });
+      const alapozoData = sys.alapozok.arcicem;
+      if (alapozoData) {
+        result.layers.push(`1× ${alapozoData.name}`);
+        result.materials.push({
+          category: 'Alapozó',
+          items: [{ name: alapozoData.name, amount: totalM2, unit: 'm2' }]
+        });
+      }
       
       const xxlKg = totalM2 * sys.mikrocementek!.xxl.kgPerM2;
       result.layers.push('2× Aquaciment XXL');
@@ -621,12 +624,34 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
     };
     
     // Pool - Arcicem Pool alapozó
-    if (system === 'pool' && aggregated['Arcicem Pool 25L_db']) {
-      const totalDb = Math.ceil(aggregated['Arcicem Pool 25L_db'].amount);
-      res.items.push({
-        cat: 'Arcicem Pool gyanta (összesített)',
-        pkgs: [{ liters: 25, price: 88115, qty: totalDb, name: 'Arcicem Pool 25L' }],
-        price: totalDb * 88115
+    if (system === 'pool') {
+      Object.keys(aggregated).forEach(key => {
+        if (key.includes('Arcicem')) {
+          const name = key.substring(0, key.lastIndexOf('_'));
+          const totalAmount = aggregated[key].amount;
+
+          const alapozoKey = Object.keys(sys.alapozok).find(k => {
+            const alapozo = sys.alapozok[k];
+            return alapozo && alapozo.name === name;
+          });
+
+          if (alapozoKey) {
+            const alapozoData = sys.alapozok[alapozoKey];
+            if (!alapozoData || !alapozoData.options) return;
+
+            const pkgs = optimizeByM2(totalAmount, alapozoData.options);
+
+            res.items.push({
+              cat: `${alapozoData.name} (1 réteg)`,
+              pkgs: pkgs.map(p => ({
+                ...p,
+                name: `${alapozoData.name} ${p.liters}L`,
+                qty: p.qty || 0
+              })),
+              price: pkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0)
+            });
+          }
+        }
       });
     }
     
@@ -1382,23 +1407,36 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
 
     // POOL rendszer
     if (system === 'pool') {
-      if (materialsByCategory['Arcicem Pool gyanta']) {
-        const mat = materialsByCategory['Arcicem Pool gyanta'];
-        const needed = mat.amount;
-        const qty = Math.ceil(needed);
-        const got = qty;
-        const price = qty * 88115;
-        
-        items.push({
-          cat: 'Arcicem Pool gyanta',
-          pkgs: [{ liters: 25, price: 88115, qty, name: 'Arcicem Pool 25L' }],
-          price,
-          needed: needed * 25,
-          got: got * 25,
-          leftover: (got - needed) * 25,
-          unit: 'L'
+      if (materialsByCategory['Alapozó']) {
+        const mat = materialsByCategory['Alapozó'];
+        const alapozoKey = Object.keys(sys.alapozok).find(k => {
+          const a = sys.alapozok[k];
+          return a && a.name === mat.name;
         });
-        total += price;
+
+        if (alapozoKey) {
+          const alapozoData = sys.alapozok[alapozoKey];
+          if (alapozoData && alapozoData.options) {
+            const firstOption = alapozoData.options[0];
+            const pkgs = optimizeByM2(mat.amount, alapozoData.options);
+            const price = pkgs.reduce((s, p) => s + p.price * (p.qty || 0), 0);
+
+            const gotLiters = pkgs.reduce((sum, p) => sum + (p.liters || 0) * (p.qty || 0), 0);
+            const litersPerM2 = firstOption.liters && firstOption.m2 ? firstOption.liters / firstOption.m2 : 0;
+            const neededLiters = mat.amount * litersPerM2;
+
+            items.push({
+              cat: `${mat.name} (1 réteg)`,
+              pkgs: pkgs.map(p => ({ ...p, name: `${mat.name} ${p.liters}L`, qty: p.qty || 0 })),
+              price,
+              needed: neededLiters,
+              got: gotLiters,
+              leftover: gotLiters - neededLiters,
+              unit: 'L'
+            });
+            total += price;
+          }
+        }
       }
 
       if (materialsByCategory['Aquaciment XXL']) {
