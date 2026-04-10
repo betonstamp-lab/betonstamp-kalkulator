@@ -13,17 +13,17 @@ export const PIGMENT_DENSITIES: Record<string, number> = {
   'ROJO INTENSO': 1.17,      // becsült érték (ROJO NARANJA alapján)
 };
 
-// Arcocem Basic product prices and sizes
-export const PIGMENT_PRODUCTS: Record<string, { name: string; options: { liters: number; price: number }[] }> = {
-  'AMARILLO': { name: 'Arcocem Basic Amarillo', options: [{ liters: 0.5, price: 20545 }, { liters: 1, price: 30385 }] },
-  'AZUL': { name: 'Arcocem Basic Azul', options: [{ liters: 0.5, price: 46075 }, { liters: 1, price: 70580 }] },
-  'BLANCO': { name: 'Arcocem Basic Blanco', options: [{ liters: 0.5, price: 23170 }, { liters: 1, price: 34505 }] },
-  'NEGRO': { name: 'Arcocem Basic Negro', options: [{ liters: 0.5, price: 17155 }, { liters: 1, price: 25495 }] },
-  'ROJO NARANJA': { name: 'Arcocem Basic Rojo Naranja', options: [{ liters: 0.5, price: 20545 }, { liters: 1, price: 30385 }] },
-  'VERDE': { name: 'Arcocem Basic Verde', options: [{ liters: 0.5, price: 32945 }, { liters: 1, price: 49930 }] },
-  'AMARILLO VAINILLA': { name: 'Arcocem Basic Amarillo Vainilla', options: [{ liters: 1, price: 26995 }] },
-  'NEGRO HUMO': { name: 'Arcocem Basic Negro Humo', options: [{ liters: 1, price: 25420 }] },
-  'ROJO INTENSO': { name: 'Arcocem Basic Rojo Ferrari', options: [{ liters: 1, price: 40160 }] },
+// Arcocem Basic product prices, sizes and Shoprenter SKUs
+export const PIGMENT_PRODUCTS: Record<string, { name: string; options: { liters: number; price: number; sku: string }[] }> = {
+  'AMARILLO': { name: 'Arcocem Basic Amarillo', options: [{ liters: 0.5, price: 20545, sku: 'TT04503' }, { liters: 1, price: 30385, sku: 'TT04003' }] },
+  'AZUL': { name: 'Arcocem Basic Azul', options: [{ liters: 0.5, price: 46075, sku: 'TT04506' }, { liters: 1, price: 70580, sku: 'TT04006' }] },
+  'BLANCO': { name: 'Arcocem Basic Blanco', options: [{ liters: 0.5, price: 23170, sku: 'TT04502' }, { liters: 1, price: 34505, sku: 'TT04002' }] },
+  'NEGRO': { name: 'Arcocem Basic Negro', options: [{ liters: 0.5, price: 17155, sku: 'TT04501' }, { liters: 1, price: 25495, sku: 'TT04001' }] },
+  'ROJO NARANJA': { name: 'Arcocem Basic Rojo Naranja', options: [{ liters: 0.5, price: 20545, sku: 'TT04505' }, { liters: 1, price: 30385, sku: 'TT04005' }] },
+  'VERDE': { name: 'Arcocem Basic Verde', options: [{ liters: 0.5, price: 32945, sku: 'TT04504' }, { liters: 1, price: 49930, sku: 'TT04004' }] },
+  'AMARILLO VAINILLA': { name: 'Arcocem Basic Amarillo Vainilla', options: [{ liters: 1, price: 26995, sku: 'TT04608' }] },
+  'NEGRO HUMO': { name: 'Arcocem Basic Negro Humo', options: [{ liters: 1, price: 25420, sku: 'TT04612' }] },
+  'ROJO INTENSO': { name: 'Arcocem Basic Rojo Intenso', options: [{ liters: 1, price: 40160, sku: 'TT04611' }] },
 };
 
 // Sealer key to pigment recipe type mapping

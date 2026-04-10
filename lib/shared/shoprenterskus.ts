@@ -87,6 +87,25 @@ export const SHOPRENTER_SKUS: Record<string, string> = {
   'Aquaciment XL_18kg': 'TT01051',
   'Topsealer WT Pool_5L': 'TT02070',
 
+  // === PIGMENTEK - ARCOCEM BASIC ===
+  // 1L kiszerelés
+  'Arcocem Basic Amarillo_1L': 'TT04003',
+  'Arcocem Basic Amarillo Vainilla_1L': 'TT04608',
+  'Arcocem Basic Azul_1L': 'TT04006',
+  'Arcocem Basic Blanco_1L': 'TT04002',
+  'Arcocem Basic Negro_1L': 'TT04001',
+  'Arcocem Basic Negro Humo_1L': 'TT04612',
+  'Arcocem Basic Rojo Intenso_1L': 'TT04611',
+  'Arcocem Basic Rojo Naranja_1L': 'TT04005',
+  'Arcocem Basic Verde_1L': 'TT04004',
+  // 0.5L kiszerelés
+  'Arcocem Basic Amarillo_0.5L': 'TT04503',
+  'Arcocem Basic Azul_0.5L': 'TT04506',
+  'Arcocem Basic Blanco_0.5L': 'TT04502',
+  'Arcocem Basic Negro_0.5L': 'TT04501',
+  'Arcocem Basic Rojo Naranja_0.5L': 'TT04505',
+  'Arcocem Basic Verde_0.5L': 'TT04504',
+
   // === B KOMPONENSEK (külön SKU-k, a COMPANION_PRODUCTS használja) ===
   'B komp. One Coat/Dragon_1L': 'TT02016',
   'B komp. TOP PRO+ FAST_0.64kg': 'TT02142',
