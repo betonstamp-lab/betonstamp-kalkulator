@@ -328,7 +328,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
     if (system === 'pool') {
       const totalM2 = result.area;
       
-      const alapozoData = sys.alapozok.arcicem;
+      const alapozoData = sys.alapozok.acricem;
       if (alapozoData) {
         result.layers.push(`1× ${alapozoData.name}`);
         result.materials.push({
@@ -625,10 +625,10 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
       totalM2: surfaces.reduce((sum, s) => sum + (parseFloat(s.area) || 0), 0)
     };
     
-    // Pool - Arcicem Pool alapozó
+    // Pool - Acricem Pool alapozó
     if (system === 'pool') {
       Object.keys(aggregated).forEach(key => {
-        if (key.includes('Arcicem')) {
+        if (key.includes('Acricem')) {
           const name = key.substring(0, key.lastIndexOf('_'));
           const totalAmount = aggregated[key].amount;
 
@@ -1705,8 +1705,11 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           Alapozó (1 réteg):
                         </label>
                         {Object.keys(sys.alapozok).length === 1 ? (
-                          <p className="text-sm text-gray-800 font-medium p-2 bg-white border-2 border-gray-200 rounded-lg">
+                          <p className="text-sm text-gray-800 font-medium p-2 bg-white border-2 border-gray-200 rounded-lg flex items-center">
                             {sys.alapozok[Object.keys(sys.alapozok)[0]].name}
+                            {sys.alapozok[Object.keys(sys.alapozok)[0]].tooltip && (
+                              <Tooltip text={sys.alapozok[Object.keys(sys.alapozok)[0]].tooltip!} />
+                            )}
                           </p>
                         ) : (
                           <TooltipSelect

@@ -525,10 +525,10 @@ export const PRODUCTS: Record<string, SystemProducts> = {
     name: 'Pool',
     tooltip: 'Az Atlanttic Aquaciment® kétkomponensű mikrocement rendszert kifejezetten medencékben való alkalmazásra fejlesztették ki.',
     alapozok: {
-      arcicem: {
-        name: 'Arcicem Pool vízbázisú akrilgyanta, az Atlanttic Aquaciment "B" komponense és alapozója (TT01016)',
+      acricem: {
+        name: 'Acricem Pool',
         info: 'Vízbázisú akrilgyanta medencékhez',
-        tooltip: 'Az Acricem Pool egy vízalapú akrilgyanta, amelyet az Atlanttic Aquaciment® medence-mikrocement rendszerhez fejlesztettek ki.',
+        tooltip: 'Az Acricem Pool egy vízalapú akrilgyanta (az Atlanttic Aquaciment "B" komponense és alapozója), amelyet az Atlanttic Aquaciment® medence-mikrocement rendszerhez fejlesztettek ki.',
         options: [
           { liters: 5, price: 23030, m2: 50 },
           { liters: 25, price: 88115, m2: 250 }
@@ -537,14 +537,14 @@ export const PRODUCTS: Record<string, SystemProducts> = {
     },
     mikrocementek: {
       xxl: { 
-        name: 'Atlanttic Aquaciment XXL 18Kg - előkészítő mikrocement medencékhez (TT01050)', 
+        name: 'Atlanttic Aquaciment XXL 18Kg - előkészítő mikrocement medencékhez', 
         kgPerM2: 4.05,
         info: '2 réteg',
         tooltip: 'Az Atlanttic Aquaciment® kétkomponensű mikrocement rendszert kifejezetten medencékben való alkalmazásra fejlesztették ki.',
         options: [{ kg: 18, price: 32480 }]
       },
       xl: { 
-        name: 'Atlanttic Aquaciment XL 18Kg - befejező mikrocement medencékhez (TT01051)', 
+        name: 'Atlanttic Aquaciment XL 18Kg - befejező mikrocement medencékhez', 
         kgPerM2: 1.53,
         info: '1 réteg',
         tooltip: 'Az Atlanttic Aquaciment® kétkomponensű mikrocement rendszert kifejezetten medencékben való alkalmazásra fejlesztették ki.',
@@ -553,7 +553,7 @@ export const PRODUCTS: Record<string, SystemProducts> = {
     },
     lakkok: {
       wt: {
-        name: 'Topsealer WT Pool 5L - lakk mikrocement medencékhez (TT02070)',
+        name: 'Topsealer WT Pool 5L - lakk mikrocement medencékhez',
         info: 'Medence lakk - 2 réteg',
         tooltip: 'A Topsealer® WT Pool egy lítiumsó-alapú, vízalapú zárólakk az Atlanttic rendszerhez, amely védő és konszolidáló filmet képez.',
         options: [{ liters: 5, price: 76650, m2: 83 }]
