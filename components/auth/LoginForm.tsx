@@ -39,7 +39,7 @@ export default function LoginForm({ onSwitch }: LoginFormProps) {
       }
 
       if (data.session) {
-        router.push('/calculators/mikrocement');
+        router.push('/calculators');
       }
     } catch (err) {
       setError('Hiba történt a bejelentkezés során');

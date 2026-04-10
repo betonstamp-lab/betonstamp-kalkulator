@@ -16,7 +16,7 @@ export default function AuthPage() {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        router.push('/calculators/mikrocement');
+        router.push('/calculators');
       } else {
         setLoading(false);
       }
