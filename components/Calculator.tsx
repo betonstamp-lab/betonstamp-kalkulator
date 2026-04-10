@@ -232,10 +232,12 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
 
   const addSurface = () => {
     const newId = Math.max(...surfaces.map(s => s.id), 0) + 1;
-    setSurfaces([...surfaces, { 
-      id: newId, 
+    const alapozokKeys = Object.keys(sys.alapozok);
+    const defaultAlapozo = alapozokKeys.length === 1 ? alapozokKeys[0] : '';
+    setSurfaces([...surfaces, {
+      id: newId,
       area: '',
-      alapozo: '',
+      alapozo: defaultAlapozo,
       lakk: '',
       layers: { xl: 0, l: 0, m: 0, s: 0 },
       puLayers: { big: 0, medium: 0, small: 0 }
@@ -1633,11 +1635,14 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                 value={system}
                 onChange={(val) => {
                   if (!val) return;
+                  const newSys = PRODUCTS[val as MikrocementSystem];
+                  const alapozokKeys = Object.keys(newSys.alapozok);
+                  const defaultAlapozo = alapozokKeys.length === 1 ? alapozokKeys[0] : '';
                   setSystem(val as MikrocementSystem);
-                  setSurfaces([{ 
-                    id: 1, 
+                  setSurfaces([{
+                    id: 1,
                     area: '',
-                    alapozo: '',
+                    alapozo: defaultAlapozo,
                     lakk: '',
                     layers: { xl: 0, l: 0, m: 0, s: 0 },
                     puLayers: { big: 0, medium: 0, small: 0 }
@@ -1699,17 +1704,23 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                         <label className="block text-xs font-medium text-gray-600 mb-1">
                           Alapozó (1 réteg):
                         </label>
-                        <TooltipSelect
-                          value={surface.alapozo}
-                          onChange={(val) => updateSurface(surface.id, 'alapozo', val)}
-                          placeholder="Válassz alapozót..."
-                          options={Object.keys(sys.alapozok).map(k => ({
-                            key: k,
-                            name: sys.alapozok[k].name,
-                            tooltip: sys.alapozok[k].tooltip
-                          }))}
-                        />
-                        {surface.alapozo && sys.alapozok[surface.alapozo].info && (
+                        {Object.keys(sys.alapozok).length === 1 ? (
+                          <p className="text-sm text-gray-800 font-medium p-2 bg-white border-2 border-gray-200 rounded-lg">
+                            {sys.alapozok[Object.keys(sys.alapozok)[0]].name}
+                          </p>
+                        ) : (
+                          <TooltipSelect
+                            value={surface.alapozo}
+                            onChange={(val) => updateSurface(surface.id, 'alapozo', val)}
+                            placeholder="Válassz alapozót..."
+                            options={Object.keys(sys.alapozok).map(k => ({
+                              key: k,
+                              name: sys.alapozok[k].name,
+                              tooltip: sys.alapozok[k].tooltip
+                            }))}
+                          />
+                        )}
+                        {surface.alapozo && sys.alapozok[surface.alapozo]?.info && (
                           <p className="mt-1 text-xs text-gray-500">
                             {sys.alapozok[surface.alapozo].info}
                           </p>

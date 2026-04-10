@@ -526,7 +526,7 @@ export const PRODUCTS: Record<string, SystemProducts> = {
     tooltip: 'Az Atlanttic Aquaciment® kétkomponensű mikrocement rendszert kifejezetten medencékben való alkalmazásra fejlesztették ki.',
     alapozok: {
       arcicem: {
-        name: 'Arcicem Pool 25L vízbázisú akrilgyanta, az Atlanttic Aquaciment "B" komponense és alapozója (TT01016)',
+        name: 'Arcicem Pool vízbázisú akrilgyanta, az Atlanttic Aquaciment "B" komponense és alapozója (TT01016)',
         info: 'Vízbázisú akrilgyanta medencékhez',
         tooltip: 'Az Acricem Pool egy vízalapú akrilgyanta, amelyet az Atlanttic Aquaciment® medence-mikrocement rendszerhez fejlesztettek ki.',
         options: [
