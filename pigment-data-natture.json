@@ -1,0 +1,5026 @@
+{
+  "Natture S WT": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "8.5300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "1.5500"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "5.2000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "12.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "2.0000"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "18.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.0500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "1.2000"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "40.0000"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "3.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_wt": "4.0000"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_wt": "53.4000"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.0200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.0100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.0040"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_s_wt": "0.1040"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_wt": "0.2200"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "1.1000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.8000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.1800"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "4.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.1300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_wt": "0.6800"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "5.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "4.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "5.6000"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "2.5420"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.8000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "1.9900"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "94.4300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.2700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "54.3500"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "5.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_wt": "2.8400"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "1.7100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.4570"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "1.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.6500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "2.5000"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "23.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "15.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "40.0000"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "9.4000"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.7000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.2000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.2500"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "16.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "7.6300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "5.5300"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_s_wt": "28.6000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "5.7200"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "18.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.0500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "1.2000"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "0.4500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "10.0000"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "3.1000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.2500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.1500"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_s_wt": "43.0000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "25.0000"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "27.4800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "4.6800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "7.1000"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "2.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "1.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_wt": "8.0000"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.2500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_wt": "0.4600"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "2.8000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "25.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "9.6000"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "4.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.4000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "1.1000"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "1.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "5.1500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.7100"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_s_wt": "4.1000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "1.7000"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.8600"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_wt": "22.1700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.1500"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "1.6910"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "3.1400"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.3000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "2.2000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.3800"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.2000"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.6000"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_wt": "7.0000"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_s_wt": "0.4000"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "51.7000"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "40.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "5.0000"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.6500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "0.3200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.0250"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "54.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_s_wt": "38.6700"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "3.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "5.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "2.0000"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "2.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "1.8000"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "6.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "3.6000"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "7.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "13.2000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "4.5000"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "5.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "3.6600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.9000"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_wt": "1.8000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "25.0000"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.7000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "1.6000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_wt": "0.7000"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_wt": "3.0000"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_wt": "4.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_wt": "5.0000"
+      }
+    ]
+  },
+  "Natture M WT": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "11.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "2.0000"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "3.6400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "8.3900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "1.4000"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "12.5900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.8400"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "23.6000"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_wt": "1.3300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.3300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_wt": "3.5400"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_wt": "30.0000"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.0000"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_m_wt": "0.0700"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_wt": "0.1500"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.7700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.5600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.1300"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "3.1500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.0900"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_wt": "0.4800"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "2.9500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "2.2100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "3.3900"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "1.7800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "1.2600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "1.4000"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "38.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.3800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "23.2000"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "2.6000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_wt": "1.2000"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "1.2000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.3200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "1.0500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "1.1500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "1.7500"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "8.8500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "4.4300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "13.5700"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.3500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "6.5700"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.1400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.1700"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "11.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "5.5100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "3.0900"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_m_wt": "20.0000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "4.0000"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "12.5900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.8400"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "0.1520"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "4.9000"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "2.1700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.1700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.1000"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_m_wt": "16.2300"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "29.5000"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "12.4000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "1.7800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "3.1400"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "1.4000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "1.0500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.7000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_wt": "5.5900"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.5400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_wt": "0.4500"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.8900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "8.8500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "3.6900"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "2.9500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.5900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.7700"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "1.0500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "3.6000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.5000"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_m_wt": "2.8700"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "1.1900"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.6000"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_wt": "11.2000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.1000"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "1.1900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "2.2000"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.2100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "1.5400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.2700"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.8400"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.4200"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_wt": "4.9000"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_m_wt": "0.2800"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "28.0000"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "20.6500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "2.9500"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.4500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.2200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.0200"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "36.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_m_wt": "27.0400"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "2.1000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "3.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "1.4000"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.5200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.3000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.5900"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "4.2000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "0.7000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "2.5200"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "4.9000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "9.2300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "3.1500"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "3.8500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "2.5600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.6300"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_wt": "0.3100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "9.9400"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "1.1200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_wt": "0.4900"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_wt": "2.1000"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_wt": "2.8000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_wt": "3.5000"
+      }
+    ]
+  },
+  "Natture L WT": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "9.3300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.9200"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "3.0800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "7.1200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "1.1900"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "10.6700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.7100"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "20.0100"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_wt": "1.1300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.2800"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_wt": "3.0000"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_wt": "25.4400"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.0000"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_l_wt": "0.0600"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_wt": "0.1300"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.6500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.4700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.1100"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "2.6700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.0800"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_wt": "0.4000"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "2.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "1.8800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "2.8800"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "1.5100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "1.0700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "1.1800"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "32.2240"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.3220"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "19.6740"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "2.2050"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_wt": "1.0180"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "1.0100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.2700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.8900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.9800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "1.4800"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "7.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "3.7500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "11.5100"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.3000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "5.5700"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.4200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.1200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.1500"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "9.7500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "4.6700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "2.6200"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_l_wt": "16.9600"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "3.3900"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "10.6700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.7100"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "0.1290"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "4.1600"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "1.8400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.1500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.0900"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_l_wt": "13.7600"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "25.0200"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "10.5200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "1.5100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "2.6600"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "1.1900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.8900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.5900"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_wt": "4.7400"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.4600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_wt": "0.3800"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.7500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "7.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "3.1300"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "2.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.6500"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "0.8900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "3.0500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.4200"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_l_wt": "2.4300"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "1.0100"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.5100"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_wt": "13.1500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.0900"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "1.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "1.8600"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.1800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "1.3000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.2300"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.7100"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.3600"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_wt": "4.1500"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_l_wt": "0.2400"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "23.7400"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "17.5100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "2.5000"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.3900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.1900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.0100"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "32.3100"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_l_wt": "22.9300"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "1.7800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "2.9700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "1.1900"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.4400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.2500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.5000"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "3.5600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.5900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "2.1300"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "4.1500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "7.8300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "2.6700"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "3.2600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "2.1700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.5300"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_wt": "0.2600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "8.4300"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.4200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "0.9500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_wt": "0.4200"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_wt": "1.7800"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_wt": "2.3700"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_wt": "2.9700"
+      }
+    ]
+  },
+  "Natture XL WT": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "7.9200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.7800"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "2.6200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "6.0400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "1.0100"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "9.0600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.6000"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "16.9900"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_wt": "0.9600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.2300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_wt": "2.5500"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_wt": "21.6000"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.0000"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_xl_wt": "0.0500"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_wt": "0.1100"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.5500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.4000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.0900"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "2.2700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.0700"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_wt": "0.3400"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "2.1200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "1.5900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "2.4400"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "1.2800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.9100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "1.0000"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "27.3600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.2740"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "16.7040"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "1.8720"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_wt": "0.8640"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.8600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.2300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.7600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.8300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "1.2600"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "6.3700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "3.1900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "9.7700"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.2500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "4.7300"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.3500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.1000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.1300"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "8.2700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "3.9700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "2.2300"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_xl_wt": "14.4000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "2.8800"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "9.0600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.6000"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "0.1090"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "3.5300"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "1.5600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.1300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.0800"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_xl_wt": "11.6800"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "21.2400"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "8.9300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "1.2800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "2.2600"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "1.0100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.7600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.5000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_wt": "4.0300"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.3900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_wt": "0.3200"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.6400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "6.3700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "2.6600"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "2.1200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.4200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.5500"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "0.7500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "2.5900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.3600"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_xl_wt": "2.0600"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "0.8600"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.4300"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_wt": "11.1600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.0700"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.8500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "1.5800"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.1500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "1.1100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.1900"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.6000"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.3000"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_wt": "3.5200"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_xl_wt": "0.2000"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "20.1600"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "14.8700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "2.1200"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.3300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.1600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.0100"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "27.4400"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_xl_wt": "19.4700"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "1.5100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "2.5200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "1.0100"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.3700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.2100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.4200"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "3.0200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.5000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "1.8100"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "3.5200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "6.6500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "2.2700"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "2.7700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "1.8400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.4500"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_wt": "0.2200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "7.1600"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.3500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "0.8100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_wt": "0.3500"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_wt": "1.5100"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_wt": "2.0100"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_wt": "2.5200"
+      }
+    ]
+  },
+  "Natture S TOP100": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "4.7700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.8700"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "2.9100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "6.7100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "1.1200"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "10.0700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.6700"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "22.3800"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "1.6800"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_top100": "2.2400"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_top100": "29.8700"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.0110"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.0060"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.0020"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_s_top100": "0.0600"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_top100": "0.1200"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.6200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.4500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.1000"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "2.5200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.0700"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_top100": "0.3800"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "3.0800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "2.5200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "3.1300"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "1.4200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "1.0100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "1.1100"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "52.8260"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.7080"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "30.4060"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "2.8000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_top100": "1.5900"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.9600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.2600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.8400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.9200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "1.4000"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "12.8700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "8.3900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "22.3800"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.2800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "5.2600"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.3900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.1100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.1400"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "9.2300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "4.2700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "3.1000"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_s_top100": "16.0000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "3.2000"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "10.0700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.6700"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "0.2520"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "5.5900"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "1.7300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.1400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.0800"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_s_top100": "24.0600"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "13.9900"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "15.3800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "2.6200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "3.9700"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "1.1200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.8400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.5600"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_top100": "4.4800"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.1400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.5600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_top100": "0.2600"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "1.5700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "13.9900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "5.3700"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "2.5200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.7800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.6200"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "0.8400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "2.8800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.4000"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_s_top100": "2.2900"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "0.9500"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.4800"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_top100": "12.4000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.0800"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.9500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "1.7600"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.1700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "1.2300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.2100"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.6700"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.3400"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_s_top100": "3.9200"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_s_top100": "0.2200"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "28.9200"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "22.3800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "2.8000"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.3600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.1800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.0100"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "30.4800"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_s_top100": "21.6300"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "1.6800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "2.8000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "1.1200"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "1.1200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.8400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "1.0100"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "3.3600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.5600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "2.0100"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "3.9200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "7.3800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "2.5200"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "3.0800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "2.0500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.5000"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_s_top100": "1.0100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "13.9900"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.3900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "0.9000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_s_top100": "0.3900"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_s_top100": "1.6800"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_s_top100": "2.2400"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_s_top100": "2.8000"
+      }
+    ]
+  },
+  "Natture M TOP100": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "6.0500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.6000"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "2.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "4.6200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.7700"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "6.9200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.0200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.4600"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "12.9800"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_top100": "0.7300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.1800"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_top100": "1.9500"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_top100": "16.5000"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.0000"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_m_top100": "0.0400"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_top100": "0.0800"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.4200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.3100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.0700"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "1.7300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.0500"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_top100": "0.2600"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "1.6200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "1.2200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "1.8700"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.9800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.6900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.7700"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "20.9000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.2090"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "12.7600"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "1.4300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_top100": "0.6600"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.6600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.1800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.5800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.6300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.9600"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "4.8700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "2.4300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "7.4600"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.1900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "3.6200"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.2700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.0800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.1000"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "6.3200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "3.0300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "1.7000"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_m_top100": "11.0000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "2.2000"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "6.9200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.0200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.4600"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "0.0800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "2.7000"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "1.1900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.1000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.0600"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_m_top100": "8.9200"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "16.2300"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "6.8200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.9800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "1.7300"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.7700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.5800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.3800"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_top100": "3.0800"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.3000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_top100": "0.2500"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "4.8700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "2.0300"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "1.6200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.3200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.4200"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "0.5800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "1.9800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.2700"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_m_top100": "1.5800"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "0.6500"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.3300"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_top100": "8.5300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.0600"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.6500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "1.2100"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.1200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.8500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.1500"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.4600"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.2300"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_m_top100": "2.6900"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_m_top100": "0.1500"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "15.4000"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "11.3600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "1.6200"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.2500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.1200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.0100"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "20.9600"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_m_top100": "14.8700"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "1.1500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "1.9200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.7700"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.2800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.1600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.3200"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "2.3100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.3800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "1.3800"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "2.6900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "5.0800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "1.7300"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "2.1200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "1.4100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.3500"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_m_top100": "0.1700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "5.4700"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.2700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "0.6200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_m_top100": "0.2700"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_m_top100": "1.1500"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_m_top100": "1.5400"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_m_top100": "1.9200"
+      }
+    ]
+  },
+  "Natture L TOP100": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "5.1700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.5100"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "1.7100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "3.9400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.6600"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "5.9200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.0200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.3900"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "11.0900"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_top100": "0.6200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.1500"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_top100": "1.6600"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_top100": "14.1000"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0000"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_l_top100": "0.0300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_top100": "0.0700"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.3600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.2600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0600"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "1.4800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.0400"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_top100": "0.2200"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "1.3900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "1.0400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "1.5900"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.8400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.5900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.6500"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "17.8600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.1790"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "10.9040"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "1.2220"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_top100": "0.5640"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.5600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.1500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.5400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.8200"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "4.1600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "2.0800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "6.3800"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.1600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "3.0900"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.2300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.0700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0800"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "5.4000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "2.5900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "1.4500"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_l_top100": "9.4000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "1.8800"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "5.9200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.0200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.3900"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "0.0700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "2.3000"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "1.0200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.0800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0500"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_l_top100": "7.6300"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "13.8700"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "5.8300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.8400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "1.4800"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.6600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.4900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.3300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_top100": "2.6300"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.2600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_top100": "0.2100"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.4200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "4.1600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "1.7300"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "1.3900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.2800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.3600"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "0.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "1.6900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.2300"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_l_top100": "1.3500"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "0.5600"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.2800"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_top100": "7.2900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0500"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.5600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "1.0300"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.1000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.7200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.1200"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.3900"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.2000"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_l_top100": "2.3000"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_l_top100": "0.1300"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "13.1600"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "9.7100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "1.3900"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.2100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.1100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.0100"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "17.9100"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_l_top100": "12.7100"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.9900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "1.6400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.6600"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.2400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.1400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.2800"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "1.9700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.3300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "1.1800"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "2.3000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "4.3400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "1.4800"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "1.8100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "1.2000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.3000"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_l_top100": "0.1500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "4.6700"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.2300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.5300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_l_top100": "0.2300"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_l_top100": "0.9900"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_l_top100": "1.3100"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_l_top100": "1.6400"
+      }
+    ]
+  },
+  "Natture XL TOP100": {
+    "ACERO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "4.5700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.4500"
+      }
+    ],
+    "ADRA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "1.5100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "3.4800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.5800"
+      }
+    ],
+    "AZAFRAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "5.2200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.3500"
+      }
+    ],
+    "AZUL PROFUNDO": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "9.7900"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_top100": "0.5500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.1300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_top100": "1.4700"
+      }
+    ],
+    "BLANCO": [
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_top100": "12.4500"
+      }
+    ],
+    "BLANCO ROTO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0000"
+      }
+    ],
+    "BLUSH": [
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_xl_top100": "0.0300"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_top100": "0.0600"
+      }
+    ],
+    "BONE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.3200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.2300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0500"
+      }
+    ],
+    "BREEZE": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "1.3100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0400"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_top100": "0.2000"
+      }
+    ],
+    "CAFE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "1.2200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.9200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "1.4100"
+      }
+    ],
+    "CAIRO": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.7400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.5200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.5800"
+      }
+    ],
+    "CALABAZA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "15.7700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.1580"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "9.6280"
+      }
+    ],
+    "CEMENTO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "1.0790"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_top100": "0.4980"
+      }
+    ],
+    "CHAMPAGNE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.5000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.1300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0000"
+      }
+    ],
+    "CLAY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.4400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.4800"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.7300"
+      }
+    ],
+    "COBRE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "3.6700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "1.8400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "5.6300"
+      }
+    ],
+    "CORAL": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.1500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "2.7300"
+      }
+    ],
+    "COTTON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.2000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0700"
+      }
+    ],
+    "DESERT TAN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "4.7700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "2.2900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "1.2800"
+      }
+    ],
+    "EUCALYPTUS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_xl_top100": "8.3000"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "1.6600"
+      }
+    ],
+    "GINGER": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "5.2200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0100"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.3500"
+      }
+    ],
+    "HIMALAYA": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "0.0600"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "2.0300"
+      }
+    ],
+    "INDIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.9000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0400"
+      }
+    ],
+    "JADE": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_xl_top100": "6.7300"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "12.2400"
+      }
+    ],
+    "KALAHARI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "5.1500"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.7400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "1.3000"
+      }
+    ],
+    "KHAKI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.5800"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.4400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.2900"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_top100": "2.3200"
+      }
+    ],
+    "LIQUEN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.2300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_top100": "0.1900"
+      }
+    ],
+    "MARRON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.3700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "3.6700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "1.5300"
+      }
+    ],
+    "MOJAVE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "1.2200"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.2400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.3200"
+      }
+    ],
+    "MOON": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "0.4300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "1.4900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.2100"
+      }
+    ],
+    "MOSS": [
+      {
+        "arcocem_basic": "AMARILLO VAINILLA",
+        "natture_xl_top100": "1.1900"
+      },
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "0.4900"
+      }
+    ],
+    "NEBULA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.2500"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_top100": "6.4300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0400"
+      }
+    ],
+    "PAPYRUS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.4900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.9100"
+      }
+    ],
+    "PEARL GREY": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.0900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.6400"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.1100"
+      }
+    ],
+    "PERLA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.3500"
+      }
+    ],
+    "PINK": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.1700"
+      },
+      {
+        "arcocem_basic": "BLANCO",
+        "natture_xl_top100": "2.0300"
+      },
+      {
+        "arcocem_basic": "ROJO INTENSO",
+        "natture_xl_top100": "0.1200"
+      }
+    ],
+    "PIZARRA": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "11.6200"
+      }
+    ],
+    "PLOMO": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "8.5700"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "1.2200"
+      }
+    ],
+    "PORCELAIN": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.1900"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.0900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.0100"
+      }
+    ],
+    "PURE BLACK": [
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "15.8100"
+      },
+      {
+        "arcocem_basic": "NEGRO HUMO",
+        "natture_xl_top100": "11.2200"
+      }
+    ],
+    "RAFFIA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.8700"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "1.4500"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.5800"
+      }
+    ],
+    "SAHARA": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.2100"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.1200"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.2400"
+      }
+    ],
+    "SALMON": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "1.7400"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.2900"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "1.0400"
+      }
+    ],
+    "SAMOS": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "2.0300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "3.8300"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "1.3100"
+      }
+    ],
+    "SAND": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "1.6000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "1.0600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.2600"
+      }
+    ],
+    "SHALE GREY": [
+      {
+        "arcocem_basic": "AZUL ",
+        "natture_xl_top100": "0.1300"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "4.1300"
+      }
+    ],
+    "SPIKE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.2000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.4600"
+      },
+      {
+        "arcocem_basic": "ROJO NARANJA",
+        "natture_xl_top100": "0.2000"
+      }
+    ],
+    "UNIVERSE": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "0.0000"
+      },
+      {
+        "arcocem_basic": "NEGRO",
+        "natture_xl_top100": "0.8700"
+      }
+    ],
+    "WASABI": [
+      {
+        "arcocem_basic": "AMARILLO",
+        "natture_xl_top100": "1.1600"
+      },
+      {
+        "arcocem_basic": "VERDE",
+        "natture_xl_top100": "1.4500"
+      }
+    ]
+  }
+}

@@ -5,6 +5,7 @@ import { PRODUCTS } from '@/lib/calculators/mikrocement/products';
 import { optimizeByM2, optimizeByKg, optimizeByLiters } from '@/lib/shared/utils';
 import { SHOPRENTER_SKUS, COMPANION_PRODUCTS } from '@/lib/shared/shoprenterskus';
 import { MikrocementSystem, Surface, CalculationResult, SurfaceCalculation, SystemProducts } from '@/types';
+import { NATTURE_COLORS, NATTURE_COLOR_HEX, SEALER_TO_PIGMENT_TYPE } from '@/lib/calculators/mikrocement/pigments';
 
 const Tooltip = ({ text }: { text: string }) => {
   const [open, setOpen] = useState(false);
@@ -126,13 +127,14 @@ const TooltipSelect = ({ value, onChange, options, placeholder }: {
 export default function Calculator({ profile }: { profile?: { role?: string; partner_discount?: number; name?: string } | null }) {
   const [system, setSystem] = useState<MikrocementSystem>('natture');
   const [surfaces, setSurfaces] = useState<Surface[]>([
-    { 
-      id: 1, 
+    {
+      id: 1,
       area: '',
       alapozo: '',
       lakk: '',
       layers: { xl: 0, l: 0, m: 0, s: 0 },
-      puLayers: { big: 0, medium: 0, small: 0 }
+      puLayers: { big: 0, medium: 0, small: 0 },
+      selectedColor: null
     }
   ]);
   const [result, setResult] = useState<CalculationResult | null>(null);
@@ -240,7 +242,8 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
       alapozo: defaultAlapozo,
       lakk: '',
       layers: { xl: 0, l: 0, m: 0, s: 0 },
-      puLayers: { big: 0, medium: 0, small: 0 }
+      puLayers: { big: 0, medium: 0, small: 0 },
+      selectedColor: null
     }]);
   };
 
@@ -250,7 +253,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
     }
   };
 
-  const updateSurface = (id: number, field: string, value: string) => {
+  const updateSurface = (id: number, field: string, value: string | null) => {
     setSurfaces(surfaces.map(s => s.id === id ? { ...s, [field]: value } : s));
   };
 
@@ -1570,13 +1573,14 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
   };
 
   const resetCalc = () => {
-    setSurfaces([{ 
-      id: 1, 
+    setSurfaces([{
+      id: 1,
       area: '',
       alapozo: '',
       lakk: '',
       layers: { xl: 0, l: 0, m: 0, s: 0 },
-      puLayers: { big: 0, medium: 0, small: 0 }
+      puLayers: { big: 0, medium: 0, small: 0 },
+      selectedColor: null
     }]);
     setResult(null);
     setErrors([]);
@@ -1645,7 +1649,8 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                     alapozo: defaultAlapozo,
                     lakk: '',
                     layers: { xl: 0, l: 0, m: 0, s: 0 },
-                    puLayers: { big: 0, medium: 0, small: 0 }
+                    puLayers: { big: 0, medium: 0, small: 0 },
+                    selectedColor: null
                   }]);
                   setResult(null);
                   setErrors([]);
@@ -1844,7 +1849,9 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                         </label>
                         <TooltipSelect
                           value={surface.lakk}
-                          onChange={(val) => updateSurface(surface.id, 'lakk', val)}
+                          onChange={(val) => {
+                            setSurfaces(surfaces.map(s => s.id === surface.id ? { ...s, lakk: val, selectedColor: null } : s));
+                          }}
                           placeholder="Válassz lakkot..."
                           options={Object.keys(sys.lakkok).map(k => ({
                             key: k,
@@ -1856,6 +1863,45 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           <p className="mt-1 text-xs text-gray-500">
                             {sys.lakkok[surface.lakk].info}
                           </p>
+                        )}
+
+                        {system === 'natture' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && (
+                          <div className="mt-3">
+                            <label className="block text-xs font-medium text-gray-600 mb-2">
+                              Szín választása (opcionális):
+                            </label>
+                            {surface.selectedColor && (
+                              <div className="mb-2 flex items-center gap-2">
+                                <div className="w-6 h-6 rounded border border-gray-300" style={{ backgroundColor: NATTURE_COLOR_HEX[surface.selectedColor] }} />
+                                <span className="text-sm font-medium text-gray-800">{surface.selectedColor}</span>
+                                <button
+                                  onClick={() => updateSurface(surface.id, 'selectedColor', null)}
+                                  className="text-xs text-red-500 hover:text-red-700 ml-2"
+                                >
+                                  ✕ Törlés
+                                </button>
+                              </div>
+                            )}
+                            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+                              {NATTURE_COLORS.map(color => (
+                                <button
+                                  key={color}
+                                  onClick={() => updateSurface(surface.id, 'selectedColor', color)}
+                                  className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
+                                    surface.selectedColor === color
+                                      ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                                      : 'border-gray-200 hover:border-gray-400'
+                                  }`}
+                                >
+                                  <div
+                                    className="w-full aspect-square rounded-sm mb-1"
+                                    style={{ backgroundColor: NATTURE_COLOR_HEX[color] }}
+                                  />
+                                  <span className="text-[9px] leading-tight text-center text-gray-600 break-words">{color}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         )}
                       </div>
                     )}
