@@ -2476,7 +2476,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                         
                         const formatLeftover = (name: string, amount: number, unit: string) => {
                           if (name.includes('Arcocem Basic') && unit === 'L') {
-                            return `${(amount * 1000).toFixed(1)} mL`;
+                            return `${amount.toFixed(4)} L`;
                           }
                           return `${amount.toFixed(2)} ${unit}`;
                         };
