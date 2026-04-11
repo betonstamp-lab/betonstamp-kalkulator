@@ -102,11 +102,11 @@ export default function CalculatorsPage() {
         </p>
 
         {/* Cards grid */}
-        <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12 justify-items-center">
           {/* Mikrocement - ACTIVE */}
           <Link
             href="/calculators/mikrocement"
-            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02]"
+            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full max-w-sm"
           >
             <div className="h-32 md:h-40 flex items-center justify-center mb-4">
               <Image
@@ -132,7 +132,7 @@ export default function CalculatorsPage() {
           {/* Pigment - ACTIVE */}
           <Link
             href="/calculators/pigment"
-            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02]"
+            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full max-w-sm"
           >
             <div className="h-32 md:h-40 flex items-center justify-center mb-4">
               <Image
@@ -156,7 +156,7 @@ export default function CalculatorsPage() {
           </Link>
 
           {/* Vakolat - COMING SOON */}
-          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale">
+          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale w-full max-w-sm">
             <span className="absolute top-3 right-3 bg-brand-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">
               Hamarosan
             </span>
@@ -175,8 +175,8 @@ export default function CalculatorsPage() {
             </p>
           </div>
 
-          {/* Beton/Overlay - COMING SOON */}
-          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale">
+          {/* Bélyegzett Beton - COMING SOON */}
+          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale w-full max-w-sm">
             <span className="absolute top-3 right-3 bg-brand-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">
               Hamarosan
             </span>
@@ -189,9 +189,29 @@ export default function CalculatorsPage() {
                 className="max-h-28 md:max-h-36 w-auto object-contain"
               />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Beton/Overlay<br />Kalkulátor</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Bélyegzett Beton<br />Kalkulátor</h2>
             <p className="text-sm text-gray-500 mb-4 flex-1">
-              Beton és overlay rendszerek anyagszükséglet kalkulátora. Hamarosan elérhető!
+              A bélyegzett betonfelületek létrehozásához szükséges anyagrendszerek kalkulátora.
+            </p>
+          </div>
+
+          {/* Overlay - COMING SOON */}
+          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale w-full max-w-sm">
+            <span className="absolute top-3 right-3 bg-brand-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">
+              Hamarosan
+            </span>
+            <div className="h-32 md:h-40 flex items-center justify-center mb-4">
+              <Image
+                src="/images/betonstamp-logo.png"
+                alt="BetonStamp"
+                width={320}
+                height={160}
+                className="max-h-28 md:max-h-36 w-auto object-contain"
+              />
+            </div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Overlay<br />Kalkulátor</h2>
+            <p className="text-sm text-gray-500 mb-4 flex-1">
+              Meglévő betonfelületekre alkalmazandó 1cm vastagságú anyag rendszerének kalkulátora.
             </p>
           </div>
         </div>
