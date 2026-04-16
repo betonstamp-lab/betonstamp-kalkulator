@@ -33,6 +33,28 @@ interface OverlayResult {
 
 const formatFt = (n: number) => `${n.toLocaleString('hu-HU')} Ft`;
 
+const Tooltip = ({ text }: { text: string }) => {
+  const [open, setOpen] = useState(false);
+  if (!text) return null;
+  return (
+    <div className="relative inline-block ml-1">
+      <span
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        className="w-4 h-4 inline-flex items-center justify-center text-[10px] font-bold bg-brand-50 text-brand-800 rounded-full cursor-help hover:bg-brand-100 transition border border-brand-300"
+      >?</span>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setOpen(false); }} />
+          <div className="absolute bottom-full mb-2 w-64 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-50 leading-relaxed left-0 sm:left-1/2 sm:-translate-x-1/2">
+            {text}
+            <div className="absolute top-full left-4 sm:left-1/2 sm:-translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 export default function OverlayCalculatorPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -44,6 +66,7 @@ export default function OverlayCalculatorPage() {
   const [overlayColor, setOverlayColor] = useState<string>('');
   const [lacquer, setLacquer] = useState<Lacquer>(null);
   const [area, setArea] = useState('');
+  const [reliefEnabled, setReliefEnabled] = useState<boolean>(true);
   const [result, setResult] = useState<OverlayResult | null>(null);
   const [cartLoading, setCartLoading] = useState(false);
   const [cartError, setCartError] = useState<string | null>(null);
@@ -188,16 +211,18 @@ export default function OverlayCalculatorPage() {
         sku: liquid.sku,
       });
 
-      // 4) Relief — csak folyékony technológiánál
-      const relief = OVERLAY_SUPPORTING_PRODUCTS.relief;
-      const reliefQty = Math.ceil(areaNum / relief.m2PerUnit);
-      lines.push({
-        name: 'Masters Relief Enhancer',
-        packaging: '150 gr',
-        qty: reliefQty,
-        subtotal: reliefQty * relief.price,
-        sku: relief.sku,
-      });
+      // 4) Relief — csak folyékony technológiánál, ha a felhasználó kéri
+      if (reliefEnabled) {
+        const relief = OVERLAY_SUPPORTING_PRODUCTS.relief;
+        const reliefQty = Math.ceil(areaNum / relief.m2PerUnit);
+        lines.push({
+          name: 'Masters Relief Enhancer',
+          packaging: '150 gr',
+          qty: reliefQty,
+          subtotal: reliefQty * relief.price,
+          sku: relief.sku,
+        });
+      }
     }
 
     // 5) Lakk
@@ -293,10 +318,27 @@ export default function OverlayCalculatorPage() {
         </p>
 
         <div className="w-full max-w-2xl space-y-6">
-          {/* Technológia */}
+          {/* 1) Terület */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
+              Terület (m²)
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              value={area}
+              onChange={(e) => { setArea(e.target.value); setResult(null); }}
+              placeholder="Pl. 20"
+              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
+            />
+          </div>
+
+          {/* 2) Technológia */}
+          <div>
+            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
               Technológia
+              <Tooltip text="Por leválasztó: száraz porral történő leválasztás. Folyékony leválasztó: folyékony szerrel történő leválasztás, opcionálisan Relief domborulatkiemelővel kiegészítve." />
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
@@ -317,12 +359,12 @@ export default function OverlayCalculatorPage() {
                     : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                 }`}
               >
-                Folyékony leválasztós (Relief-fel)
+                Folyékony leválasztós
               </button>
             </div>
           </div>
 
-          {/* Leválasztó szín - csak por technológiánál */}
+          {/* 3) Leválasztó por színe - csak por technológiánál */}
           {technology === 'por' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -353,7 +395,7 @@ export default function OverlayCalculatorPage() {
             </div>
           )}
 
-          {/* Overlay szín */}
+          {/* 4) Overlay szín */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Overlay szín
@@ -391,17 +433,50 @@ export default function OverlayCalculatorPage() {
                     style={{ backgroundColor: c.hex }}
                   />
                   <span className="text-[9px] leading-tight text-center text-gray-600 break-words">
-                    {c.key}
+                    {c.name}
                   </span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Lakk */}
+          {/* 5) Relief toggle - csak folyékony leválasztós technológiánál */}
+          {technology === 'folyekony' && (
+            <div>
+              <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                Relief domborulatkiemelő
+                <Tooltip text="A Relief domborulatkiemelő kiemeli a bélyegzett felület mintázatának részleteit. Opcionális, csak folyékony leválasztós technológiánál használható." />
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => { setReliefEnabled(true); setResult(null); }}
+                  className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                    reliefEnabled
+                      ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                  }`}
+                >
+                  Igen
+                </button>
+                <button
+                  onClick={() => { setReliefEnabled(false); setResult(null); }}
+                  className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                    !reliefEnabled
+                      ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                  }`}
+                >
+                  Nem
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 6) Lakk */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
               Lakk
+              <Tooltip text="Az AD verzió csúszásgátló adalékot tartalmaz, kültéri és nedves környezetben ajánlott." />
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
@@ -427,23 +502,7 @@ export default function OverlayCalculatorPage() {
             </div>
           </div>
 
-          {/* Terület */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Terület (m²)
-            </label>
-            <input
-              type="number"
-              step="0.1"
-              min="0"
-              value={area}
-              onChange={(e) => { setArea(e.target.value); setResult(null); }}
-              placeholder="Pl. 20"
-              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
-            />
-          </div>
-
-          {/* Calculate */}
+          {/* 7) Calculate */}
           <button
             onClick={handleCalculate}
             disabled={!isFormValid}
