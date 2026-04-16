@@ -10,6 +10,9 @@ import {
   OVERLAY_KG_PER_BAG,
   OVERLAY_M2_PER_BAG,
   OVERLAY_SUPPORTING_PRODUCTS,
+  DESMOCEM_POWDER_COLORS,
+  DESMOCEM_POWDER_KG,
+  DESMOCEM_POWDER_M2_PER_UNIT,
   RELIEF_COLORS,
   RELIEF_PRICE,
   RELIEF_ML,
@@ -17,7 +20,6 @@ import {
 } from '@/lib/calculators/overlay/products';
 
 type Technology = 'por' | 'folyekony' | null;
-type PowderColor = 'noir' | 'antracita' | null;
 type Lacquer = 'normal' | 'ad' | null;
 
 interface OverlayResultLine {
@@ -69,7 +71,7 @@ export default function OverlayCalculatorPage() {
   const router = useRouter();
 
   const [technology, setTechnology] = useState<Technology>(null);
-  const [powderColor, setPowderColor] = useState<PowderColor>(null);
+  const [powderColor, setPowderColor] = useState<string>('');
   const [overlayColor, setOverlayColor] = useState<string>('');
   const [lacquer, setLacquer] = useState<Lacquer>(null);
   const [area, setArea] = useState('');
@@ -113,7 +115,10 @@ export default function OverlayCalculatorPage() {
   const handleTechnologyChange = (tech: Technology) => {
     setTechnology(tech);
     if (tech !== 'por') {
-      setPowderColor(null);
+      setPowderColor('');
+    }
+    if (tech !== 'folyekony') {
+      setReliefColor('');
     }
     setResult(null);
   };
@@ -121,7 +126,7 @@ export default function OverlayCalculatorPage() {
   const areaNum = parseFloat(area);
   const isFormValid =
     technology !== null &&
-    (technology !== 'por' || powderColor !== null) &&
+    (technology !== 'por' || powderColor !== '') &&
     overlayColor !== '' &&
     lacquer !== null &&
     !isNaN(areaNum) &&
@@ -200,22 +205,16 @@ export default function OverlayCalculatorPage() {
 
     // 3) Leválasztó
     if (technology === 'por') {
-      const powder =
-        powderColor === 'noir'
-          ? OVERLAY_SUPPORTING_PRODUCTS.leszvalaszto_por_noir
-          : OVERLAY_SUPPORTING_PRODUCTS.leszvalaszto_por_antracita;
-      const powderQty = Math.ceil(areaNum / powder.m2PerUnit);
+      const selectedPowder = DESMOCEM_POWDER_COLORS.find(c => c.key === powderColor);
+      const powderQty = Math.ceil(areaNum / DESMOCEM_POWDER_M2_PER_UNIT);
       lines.push({
-        name:
-          powderColor === 'noir'
-            ? 'Desmocem Powder Noir'
-            : 'Desmocem Powder Antracita',
+        name: `Desmocem Powder ${selectedPowder?.name ?? powderColor}`,
         packaging: '10 kg',
         qty: powderQty,
-        subtotal: powderQty * powder.price,
-        sku: powder.sku,
-        needed: areaNum * (powder.kg / powder.m2PerUnit),
-        got: powderQty * powder.kg,
+        subtotal: powderQty * (selectedPowder?.price ?? 0),
+        sku: selectedPowder?.sku ?? '',
+        needed: areaNum * (DESMOCEM_POWDER_KG / DESMOCEM_POWDER_M2_PER_UNIT),
+        got: powderQty * DESMOCEM_POWDER_KG,
         unit: 'kg',
       });
     } else {
@@ -396,29 +395,45 @@ export default function OverlayCalculatorPage() {
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                 Leválasztó por színe
-                <Tooltip text="A Desmocem Powder színes leválasztópor a bélyegzéskor árnyalatot ad a felületnek és megakadályozza a bélyeg ragadását. Válaszd azt a színt, amelyik illik a kiválasztott Overlay színhez." />
+                <Tooltip text="Desmocem Powder formaleválasztó por. Bélyegzett beton mintázatának kiemelésére szolgál. 10kg-os kiszerelés, ~70 m² lefedettség." />
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
-                  onClick={() => { setPowderColor('noir'); setResult(null); }}
-                  className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-                    powderColor === 'noir'
-                      ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
-                      : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-                  }`}
-                >
-                  Desmocem Powder Noir (fekete)
-                </button>
-                <button
-                  onClick={() => { setPowderColor('antracita'); setResult(null); }}
-                  className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-                    powderColor === 'antracita'
-                      ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
-                      : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-                  }`}
-                >
-                  Desmocem Powder Antracita (sötétszürke)
-                </button>
+              {powderColor && (
+                <div className="mb-2 flex items-center gap-2">
+                  <div
+                    className="w-6 h-6 rounded border border-gray-300"
+                    style={{ backgroundColor: DESMOCEM_POWDER_COLORS.find(c => c.key === powderColor)?.hex || '#ccc' }}
+                  />
+                  <span className="text-sm font-medium text-gray-800">
+                    {DESMOCEM_POWDER_COLORS.find(c => c.key === powderColor)?.name}
+                  </span>
+                  <button
+                    onClick={() => { setPowderColor(''); setResult(null); }}
+                    className="text-xs text-red-500 hover:text-red-700 ml-2"
+                  >
+                    ✕ Törlés
+                  </button>
+                </div>
+              )}
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {DESMOCEM_POWDER_COLORS.map(c => (
+                  <button
+                    key={c.key}
+                    onClick={() => { setPowderColor(c.key); setResult(null); }}
+                    className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
+                      powderColor === c.key
+                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                        : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                  >
+                    <div
+                      className="w-full aspect-square rounded-sm mb-1"
+                      style={{ backgroundColor: c.hex }}
+                    />
+                    <span className="text-[9px] leading-tight text-center text-gray-600 break-words">
+                      {c.name}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -505,7 +520,7 @@ export default function OverlayCalculatorPage() {
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                 Relief szín
-                <Tooltip text="A Masters Relief Enhancer kontrasztot ad a bélyegzett felületnek. 8 szín közül választhat." />
+                <Tooltip text="A Masters Relief Enhancer kontrasztot ad a bélyegzett felületnek. Por formában kapható, vízzel kell elkeverni. 150 ml-es kiszerelés, ~30 m² lefedettség." />
               </label>
               {reliefColor && (
                 <div className="mb-2 flex items-center gap-2">

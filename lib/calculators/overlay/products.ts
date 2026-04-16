@@ -34,20 +34,6 @@ export const OVERLAY_SUPPORTING_PRODUCTS = {
     liters: 5,
     m2PerUnit: 50,
   },
-  leszvalaszto_por_noir: {
-    name: 'Desmocem Powder Noir 10kg',
-    sku: 'TT11303',
-    price: 30323,
-    kg: 10,
-    m2PerUnit: 70,
-  },
-  leszvalaszto_por_antracita: {
-    name: 'Desmocem Powder Antracita 10kg',
-    sku: 'TT11302',
-    price: 23835,
-    kg: 10,
-    m2PerUnit: 70,
-  },
   leszvalaszto_folyekony: {
     name: 'Desmocem Liquid 5L',
     sku: 'TT11300',
@@ -72,6 +58,26 @@ export const OVERLAY_SUPPORTING_PRODUCTS = {
 } as const;
 
 export type OverlaySupportingProductKey = keyof typeof OVERLAY_SUPPORTING_PRODUCTS;
+
+export const DESMOCEM_POWDER_COLORS = [
+  { key: 'ANTRACITA', name: 'Antracita (sötétszürke)', sku: 'TT11303', hex: '#3d3d3d', price: 23835 },
+  { key: 'BLANCO', name: 'Blanco (fehér)', sku: 'TT11306', hex: '#f0ede6', price: 23835 },
+  { key: 'CREMA', name: 'Crema (krém)', sku: 'TT11307', hex: '#e7d5b0', price: 23835 },
+  { key: 'GRIS', name: 'Gris (szürke)', sku: 'TT11304', hex: '#808080', price: 23835 },
+  { key: 'GRIS_CLARO', name: 'Gris Claro (világosszürke)', sku: 'TT11305', hex: '#b8b8b8', price: 23835 },
+  { key: 'PIERRE', name: 'Pierre (bézses homokkő)', sku: 'TT11313', hex: '#c2b3a1', price: 23835 },
+  { key: 'ROJO', name: 'Rojo (vörös)', sku: 'TT11308', hex: '#a03020', price: 23835 },
+  { key: 'MARRON_CLARO', name: 'Marron Claro (világosbarna)', sku: 'TT11312', hex: '#a0825a', price: 30323 },
+  { key: 'NOGAL', name: 'Nogal (dióbarna)', sku: 'TT11309', hex: '#5c3a1e', price: 30323 },
+  { key: 'NOIR', name: 'Noir (fekete)', sku: 'TT11302', hex: '#1a1a1a', price: 30323 },
+  { key: 'TOSTADO', name: 'Tostado (sárgásbarna)', sku: 'TT11311', hex: '#c49a5c', price: 30323 },
+] as const;
+
+export type DesmocemPowderColorKey = typeof DESMOCEM_POWDER_COLORS[number]['key'];
+
+// Minden Desmocem Powder színnél azonos
+export const DESMOCEM_POWDER_KG = 10;
+export const DESMOCEM_POWDER_M2_PER_UNIT = 70;
 
 export const RELIEF_COLORS = [
   { key: 'BLACK', name: 'Black (fekete)', sku: 'MREHAU-BLACK', hex: '#2c2c2c' },
