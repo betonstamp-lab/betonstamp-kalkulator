@@ -22,6 +22,9 @@ interface OverlayResultLine {
   qty: number;
   subtotal: number;
   sku: string;
+  needed: number;
+  got: number;
+  unit: string;
 }
 
 interface OverlayResult {
@@ -170,6 +173,9 @@ export default function OverlayCalculatorPage() {
       qty: primacemQty,
       subtotal: primacemQty * primacem.price,
       sku: primacem.sku,
+      needed: areaNum * (primacem.liters / primacem.m2PerUnit),
+      got: primacemQty * primacem.liters,
+      unit: 'L',
     });
 
     // 2) Overlay (kiválasztott színnel)
@@ -181,6 +187,9 @@ export default function OverlayCalculatorPage() {
       qty: overlayQty,
       subtotal: overlayQty * OVERLAY_PRICE_PER_BAG,
       sku: selectedColor?.sku ?? '',
+      needed: areaNum * (OVERLAY_KG_PER_BAG / OVERLAY_M2_PER_BAG),
+      got: overlayQty * OVERLAY_KG_PER_BAG,
+      unit: 'kg',
     });
 
     // 3) Leválasztó
@@ -199,6 +208,9 @@ export default function OverlayCalculatorPage() {
         qty: powderQty,
         subtotal: powderQty * powder.price,
         sku: powder.sku,
+        needed: areaNum * (powder.kg / powder.m2PerUnit),
+        got: powderQty * powder.kg,
+        unit: 'kg',
       });
     } else {
       const liquid = OVERLAY_SUPPORTING_PRODUCTS.leszvalaszto_folyekony;
@@ -209,6 +221,9 @@ export default function OverlayCalculatorPage() {
         qty: liquidQty,
         subtotal: liquidQty * liquid.price,
         sku: liquid.sku,
+        needed: areaNum * (liquid.liters / liquid.m2PerUnit),
+        got: liquidQty * liquid.liters,
+        unit: 'L',
       });
 
       // 4) Relief — csak folyékony technológiánál, ha a felhasználó kéri
@@ -221,6 +236,9 @@ export default function OverlayCalculatorPage() {
           qty: reliefQty,
           subtotal: reliefQty * relief.price,
           sku: relief.sku,
+          needed: areaNum * (relief.ml / relief.m2PerUnit),
+          got: reliefQty * relief.ml,
+          unit: 'ml',
         });
       }
     }
@@ -240,6 +258,9 @@ export default function OverlayCalculatorPage() {
       qty: lakkQty,
       subtotal: lakkQty * lakk.price,
       sku: lakk.sku,
+      needed: areaNum * (lakk.liters / lakk.m2PerUnit),
+      got: lakkQty * lakk.liters,
+      unit: 'L',
     });
 
     const net = lines.reduce((s, l) => s + l.subtotal, 0);
@@ -349,7 +370,7 @@ export default function OverlayCalculatorPage() {
                     : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                 }`}
               >
-                Por leválasztós
+                Por leválasztó
               </button>
               <button
                 onClick={() => handleTechnologyChange('folyekony')}
@@ -359,7 +380,7 @@ export default function OverlayCalculatorPage() {
                     : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                 }`}
               >
-                Folyékony leválasztós
+                Folyékony leválasztó
               </button>
             </div>
           </div>
@@ -367,8 +388,9 @@ export default function OverlayCalculatorPage() {
           {/* 3) Leválasztó por színe - csak por technológiánál */}
           {technology === 'por' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                 Leválasztó por színe
+                <Tooltip text="A Desmocem Powder színes leválasztópor a bélyegzéskor árnyalatot ad a felületnek és megakadályozza a bélyeg ragadását. Válaszd azt a színt, amelyik illik a kiválasztott Overlay színhez." />
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
@@ -379,7 +401,7 @@ export default function OverlayCalculatorPage() {
                       : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                   }`}
                 >
-                  Desmocem Powder Noir
+                  Desmocem Powder Noir (fekete)
                 </button>
                 <button
                   onClick={() => { setPowderColor('antracita'); setResult(null); }}
@@ -389,7 +411,7 @@ export default function OverlayCalculatorPage() {
                       : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                   }`}
                 >
-                  Desmocem Powder Antracita
+                  Desmocem Powder Antracita (sötétszürke)
                 </button>
               </div>
             </div>
@@ -559,6 +581,33 @@ export default function OverlayCalculatorPage() {
                   <span>{formatFt(result.partnerPrice)}</span>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Maradék anyagok */}
+        {result && result.lines.some(l => l.got - l.needed > 0.01) && (
+          <div className="w-full max-w-2xl mt-6 bg-gradient-to-r from-brand-50 to-brand-50 p-5 rounded-xl border-2 border-brand-200">
+            <h3 className="font-bold text-lg mb-3 text-brand-900">
+              Maradék anyagok
+            </h3>
+            <div className="space-y-1">
+              {result.lines.map((line, idx) => {
+                const leftover = line.got - line.needed;
+                if (leftover <= 0.01) return null;
+                return (
+                  <div key={idx} className="flex items-center gap-2 text-sm text-gray-700">
+                    <span className="w-2 h-2 bg-brand-600 rounded-full shrink-0"></span>
+                    <span className="flex-1">{line.name}:</span>
+                    <span className="text-gray-500">
+                      felhasznált {line.needed.toFixed(2)} {line.unit}
+                    </span>
+                    <span className="font-semibold text-brand-700">
+                      maradék {leftover.toFixed(2)} {line.unit}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
