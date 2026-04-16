@@ -347,7 +347,7 @@ export default function PigmentCalculatorPage() {
 
       {/* Footer */}
       <p className="py-6 text-sm text-gray-400 text-center">
-        © 2024 Betonstamp Kft. - Minden jog fenntartva.
+        © 2026 Betonstamp Kft. - Minden jog fenntartva.
       </p>
     </div>
   );

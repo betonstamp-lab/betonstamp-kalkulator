@@ -2569,7 +2569,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
 
         <div className="mt-6 text-center text-sm text-gray-600">
           <p>Topciment Professzionális Mikrocement Rendszerek</p>
-          <p className="mt-1">© 2024 - Minden jog fenntartva</p>
+          <p className="mt-1">© 2026 - Minden jog fenntartva</p>
         </div>
       </div>
     </div>

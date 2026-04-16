@@ -93,7 +93,7 @@ export default function AuthPage() {
 
       {/* Footer */}
       <p className="mt-8 text-sm text-gray-500 text-center">
-        © 2024 Topciment Professzionális Mikrocement Rendszerek
+        © 2026 Topciment Professzionális Mikrocement Rendszerek
       </p>
     </div>
   );
