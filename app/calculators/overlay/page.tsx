@@ -390,55 +390,7 @@ export default function OverlayCalculatorPage() {
             </div>
           </div>
 
-          {/* 3) Leválasztó por színe - csak por technológiánál */}
-          {technology === 'por' && (
-            <div>
-              <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                Leválasztó por színe
-                <Tooltip text="Desmocem Powder formaleválasztó por. Bélyegzett beton mintázatának kiemelésére szolgál. 10kg-os kiszerelés, ~70 m² lefedettség." />
-              </label>
-              {powderColor && (
-                <div className="mb-2 flex items-center gap-2">
-                  <div
-                    className="w-6 h-6 rounded border border-gray-300"
-                    style={{ backgroundColor: DESMOCEM_POWDER_COLORS.find(c => c.key === powderColor)?.hex || '#ccc' }}
-                  />
-                  <span className="text-sm font-medium text-gray-800">
-                    {DESMOCEM_POWDER_COLORS.find(c => c.key === powderColor)?.name}
-                  </span>
-                  <button
-                    onClick={() => { setPowderColor(''); setResult(null); }}
-                    className="text-xs text-red-500 hover:text-red-700 ml-2"
-                  >
-                    ✕ Törlés
-                  </button>
-                </div>
-              )}
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                {DESMOCEM_POWDER_COLORS.map(c => (
-                  <button
-                    key={c.key}
-                    onClick={() => { setPowderColor(c.key); setResult(null); }}
-                    className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
-                      powderColor === c.key
-                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
-                        : 'border-gray-200 hover:border-gray-400'
-                    }`}
-                  >
-                    <div
-                      className="w-full aspect-square rounded-sm mb-1"
-                      style={{ backgroundColor: c.hex }}
-                    />
-                    <span className="text-[9px] leading-tight text-center text-gray-600 break-words">
-                      {c.name}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 4) Overlay szín */}
+          {/* 3) Overlay szín */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Overlay szín
@@ -482,6 +434,54 @@ export default function OverlayCalculatorPage() {
               ))}
             </div>
           </div>
+
+          {/* 4) Leválasztó por színe - csak por technológiánál */}
+          {technology === 'por' && (
+            <div>
+              <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                Leválasztó por színe
+                <Tooltip text="Desmocem Powder formaleválasztó por. Bélyegzett beton mintázatának kiemelésére szolgál. 10kg-os kiszerelés, ~70 m² lefedettség." />
+              </label>
+              {powderColor && (
+                <div className="mb-2 flex items-center gap-2">
+                  <div
+                    className="w-6 h-6 rounded border border-gray-300"
+                    style={{ backgroundColor: DESMOCEM_POWDER_COLORS.find(c => c.key === powderColor)?.hex || '#ccc' }}
+                  />
+                  <span className="text-sm font-medium text-gray-800">
+                    {DESMOCEM_POWDER_COLORS.find(c => c.key === powderColor)?.name}
+                  </span>
+                  <button
+                    onClick={() => { setPowderColor(''); setResult(null); }}
+                    className="text-xs text-red-500 hover:text-red-700 ml-2"
+                  >
+                    ✕ Törlés
+                  </button>
+                </div>
+              )}
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+                {DESMOCEM_POWDER_COLORS.map(c => (
+                  <button
+                    key={c.key}
+                    onClick={() => { setPowderColor(c.key); setResult(null); }}
+                    className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
+                      powderColor === c.key
+                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                        : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                  >
+                    <div
+                      className="w-full aspect-square rounded-sm mb-1"
+                      style={{ backgroundColor: c.hex }}
+                    />
+                    <span className="text-[9px] leading-tight text-center text-gray-600 break-words">
+                      {c.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 5) Relief toggle - csak folyékony leválasztós technológiánál */}
           {technology === 'folyekony' && (
