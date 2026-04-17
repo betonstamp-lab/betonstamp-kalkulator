@@ -10,6 +10,12 @@ import {
   EFECTTO_PIGMENT_LABELS,
   EfecttoPigmentRecipe,
 } from '@/lib/calculators/pigment/efectto_quartz_pigments';
+import {
+  getEfecttoColorHex,
+  sortEfecttoColors,
+} from '@/lib/calculators/pigment/efectto_color_hex';
+
+const SORTED_QUARTZ_COLORS = sortEfecttoColors(EFECTTO_QUARTZ_COLORS);
 
 const QUARTZ_PRODUCTS = [
   { value: 'small', label: 'Efectto Quartz Small Grain' },
@@ -214,33 +220,59 @@ export default function EfecttoQuartzCalculatorPage() {
               Szín
               <Tooltip text="A Gábor recept szerinti pigment mennyiségek. 1 kg kész mikrocementre vonatkoznak." />
             </label>
-            {color && (
-              <div className="mb-2 flex items-center gap-2">
-                <div className="w-6 h-6 rounded border border-gray-300 bg-gray-200" />
-                <span className="text-sm font-medium text-gray-800">{color}</span>
-                <button
-                  onClick={() => { setColor(''); setResult(null); }}
-                  className="text-xs text-red-500 hover:text-red-700 ml-2"
-                >
-                  ✕ Törlés
-                </button>
-              </div>
-            )}
+            {color && (() => {
+              const selectedHex = getEfecttoColorHex(color);
+              return (
+                <div className="mb-2 flex items-center gap-2">
+                  <div
+                    className="w-6 h-6 rounded border border-gray-300"
+                    style={{ backgroundColor: selectedHex || '#e5e7eb' }}
+                  />
+                  <span className={`text-sm font-medium text-gray-800 ${!selectedHex ? 'line-through decoration-red-500 decoration-2' : ''}`}>
+                    {color}
+                  </span>
+                  <button
+                    onClick={() => { setColor(''); setResult(null); }}
+                    className="text-xs text-red-500 hover:text-red-700 ml-2"
+                  >
+                    ✕ Törlés
+                  </button>
+                </div>
+              );
+            })()}
             <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
-              {EFECTTO_QUARTZ_COLORS.map(c => (
-                <button
-                  key={c}
-                  onClick={() => { setColor(c); setResult(null); }}
-                  className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
-                    color === c
-                      ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
-                      : 'border-gray-200 hover:border-gray-400'
-                  }`}
-                >
-                  <div className="w-full aspect-square rounded-sm mb-1 bg-gray-200" />
-                  <span className="text-[9px] leading-tight text-center text-gray-600 break-words">{c}</span>
-                </button>
-              ))}
+              {SORTED_QUARTZ_COLORS.map(c => {
+                const hex = getEfecttoColorHex(c);
+                return (
+                  <button
+                    key={c}
+                    onClick={() => { setColor(c); setResult(null); }}
+                    className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
+                      color === c
+                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                        : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                  >
+                    <div className="relative w-full aspect-square rounded-sm mb-1 overflow-hidden" style={{ backgroundColor: hex || '#e5e7eb' }}>
+                      {!hex && (
+                        <svg
+                          className="absolute inset-0 w-full h-full text-red-500"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                          strokeLinecap="round"
+                          aria-hidden="true"
+                        >
+                          <line x1="3" y1="3" x2="21" y2="21" />
+                          <line x1="21" y1="3" x2="3" y2="21" />
+                        </svg>
+                      )}
+                    </div>
+                    <span className={`text-[9px] leading-tight text-center text-gray-600 break-words ${!hex ? 'line-through decoration-red-500' : ''}`}>{c}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
