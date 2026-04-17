@@ -9,8 +9,8 @@ import Link from 'next/link';
 const SYSTEMS = [
   { key: 'natture', label: 'Natture', logo: '/images/natture.png', href: '/calculators/pigment/natture', active: true },
   { key: 'pool', label: 'Atlanttic', logo: '/images/Atlanttic_Topciment_Logo_200px.png', href: '/calculators/pigment/pool', active: true },
-  { key: 'efecttoQuartz', label: 'Efectto Quartz', logo: '/images/efectto_quartz.png', href: '/calculators/pigment/efectto-quartz', active: false },
-  { key: 'efecttoPU', label: 'Efectto PU', logo: '/images/Efectto_PU_logo_web.png', href: '/calculators/pigment/efectto-pu', active: false },
+  { key: 'efecttoQuartz', label: 'Efectto Quartz', logo: '/images/efectto_quartz.png', href: '/calculators/pigment/efectto-quartz', active: true },
+  { key: 'efecttoPU', label: 'Efectto PU', logo: '/images/Efectto_PU_logo_web.png', href: '/calculators/pigment/efectto-pu', active: true },
 ];
 
 export default function PigmentCalculatorPage() {
