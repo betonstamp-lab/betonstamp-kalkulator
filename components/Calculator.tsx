@@ -534,80 +534,68 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
         }
       }
       
+      // Padló: 2× Big Grain + 1× Medium Grain (Super Grain kifutó); Fal: 2× Big + 1× Small
+      let vastagabbData, vekonyabbData, vastagabbGrain: string, vekonyabbGrain: string;
       if (surfaceType === 'padlo') {
-        const vastagabb = surface.quartzPadloVastagabb || 'super';
-        const vekonyabb = surface.quartzPadloVekonyabb || 'medium';
-        
-        const vastagabbData = sys.padlo![vastagabb];
-        const vekonyabbData = sys.padlo![vekonyabb];
-        
-        const vastagabbKg = totalM2 * 2 * vastagabbData.kgPerM2;
-        const vekonyabbKg = totalM2 * 1 * vekonyabbData.kgPerM2;
-        
-        result.layers.push(`2× ${vastagabbData.name}`, `1× ${vekonyabbData.name}`);
-        
-        result.materials.push({
-          category: vastagabbData.name,
-          items: [{ name: vastagabbData.name, amount: vastagabbKg, unit: 'kg' }]
-        });
-        
-        result.materials.push({
-          category: vekonyabbData.name,
-          items: [{ name: vekonyabbData.name, amount: vekonyabbKg, unit: 'kg' }]
-        });
+        vastagabbData = sys.fal!.big;
+        vekonyabbData = sys.padlo!.medium;
+        vastagabbGrain = 'big';
+        vekonyabbGrain = 'medium';
       } else {
         const vastagabb = surface.quartzFalVastagabb || 'big';
         const vekonyabb = surface.quartzFalVekonyabb || 'small';
+        vastagabbData = sys.fal![vastagabb];
+        vekonyabbData = sys.fal![vekonyabb];
+        vastagabbGrain = vastagabb;
+        vekonyabbGrain = vekonyabb;
+      }
 
-        const vastagabbData = sys.fal![vastagabb];
-        const vekonyabbData = sys.fal![vekonyabb];
+      const vastagabbKg = totalM2 * 2 * vastagabbData.kgPerM2;
+      const vekonyabbKg = totalM2 * 1 * vekonyabbData.kgPerM2;
 
-        const vastagabbKg = totalM2 * 2 * vastagabbData.kgPerM2;
-        const vekonyabbKg = totalM2 * 1 * vekonyabbData.kgPerM2;
+      result.layers.push(`2× ${vastagabbData.name}`, `1× ${vekonyabbData.name}`);
 
-        result.layers.push(`2× ${vastagabbData.name}`, `1× ${vekonyabbData.name}`);
+      result.materials.push({
+        category: vastagabbData.name,
+        items: [{ name: vastagabbData.name, amount: vastagabbKg, unit: 'kg' }]
+      });
 
-        result.materials.push({
-          category: vastagabbData.name,
-          items: [{ name: vastagabbData.name, amount: vastagabbKg, unit: 'kg' }]
+      result.materials.push({
+        category: vekonyabbData.name,
+        items: [{ name: vekonyabbData.name, amount: vekonyabbKg, unit: 'kg' }]
+      });
+
+      // Pigment számítás: minden szemcseméretre amelynek van receptje (Super Grain-t kihagyja)
+      if (surface.selectedColor && SEALER_TO_PIGMENT_TYPE[lakk]) {
+        const pigmentTotals: Record<string, number> = {};
+        const grainKgPairs: Array<[string, number]> = [
+          [vastagabbGrain, vastagabbKg],
+          [vekonyabbGrain, vekonyabbKg],
+        ];
+        grainKgPairs.forEach(([grain, kg]) => {
+          if (grain !== 'big' && grain !== 'medium' && grain !== 'small') return;
+          const recipe = EFECTTO_QUARTZ_RECIPES[grain]?.[surface.selectedColor as keyof typeof EFECTTO_QUARTZ_RECIPES['small']];
+          if (!recipe) return;
+          (Object.keys(recipe) as (keyof EfecttoPigmentRecipe)[]).forEach(key => {
+            const gPerKg = recipe[key];
+            if (gPerKg === undefined || gPerKg === 0) return;
+            const productKey = EFECTTO_PIGMENT_TO_PRODUCT_KEY[key];
+            if (!productKey) return;
+            if (!pigmentTotals[productKey]) pigmentTotals[productKey] = 0;
+            pigmentTotals[productKey] += gPerKg * kg;
+          });
         });
 
-        result.materials.push({
-          category: vekonyabbData.name,
-          items: [{ name: vekonyabbData.name, amount: vekonyabbKg, unit: 'kg' }]
+        Object.entries(pigmentTotals).forEach(([productKey, totalGrams]) => {
+          const product = PIGMENT_PRODUCTS[productKey];
+          if (!product) return;
+          // Spec: 1 g ≈ 1 ml → totalLiters = grams / 1000
+          const totalLiters = totalGrams / 1000;
+          result.materials.push({
+            category: `Pigment - ${product.name}`,
+            items: [{ name: product.name, amount: totalLiters, unit: 'L' }]
+          });
         });
-
-        // Pigment számítás (csak fal módban — padló Super Grain-nek nincs receptje)
-        if (surface.selectedColor && SEALER_TO_PIGMENT_TYPE[lakk]) {
-          const pigmentTotals: Record<string, number> = {};
-          const grainKgPairs: Array<['big' | 'small', number]> = [
-            [vastagabb as 'big' | 'small', vastagabbKg],
-            [vekonyabb as 'big' | 'small', vekonyabbKg],
-          ];
-          grainKgPairs.forEach(([grain, kg]) => {
-            const recipe = EFECTTO_QUARTZ_RECIPES[grain]?.[surface.selectedColor as keyof typeof EFECTTO_QUARTZ_RECIPES['small']];
-            if (!recipe) return;
-            (Object.keys(recipe) as (keyof EfecttoPigmentRecipe)[]).forEach(key => {
-              const gPerKg = recipe[key];
-              if (gPerKg === undefined || gPerKg === 0) return;
-              const productKey = EFECTTO_PIGMENT_TO_PRODUCT_KEY[key];
-              if (!productKey) return;
-              if (!pigmentTotals[productKey]) pigmentTotals[productKey] = 0;
-              pigmentTotals[productKey] += gPerKg * kg;
-            });
-          });
-
-          Object.entries(pigmentTotals).forEach(([productKey, totalGrams]) => {
-            const product = PIGMENT_PRODUCTS[productKey];
-            if (!product) return;
-            // Spec: 1 g ≈ 1 ml → totalLiters = grams / 1000
-            const totalLiters = totalGrams / 1000;
-            result.materials.push({
-              category: `Pigment - ${product.name}`,
-              items: [{ name: product.name, amount: totalLiters, unit: 'L' }]
-            });
-          });
-        }
       }
 
       const lakkData = sys.lakkok[lakk];
@@ -2099,11 +2087,11 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                         ) : (
                           <div>
                             <p className="text-xs font-medium text-gray-600 mb-2">
-                              Padló mikrocementek (automatikusan 2× Super + 1× Medium):
+                              Padló mikrocementek (automatikusan 2× Big + 1× Medium):
                             </p>
                             <div className="bg-brand-50 p-3 rounded-lg">
                               <p className="text-xs text-brand-800">
-                                ✔ 2 réteg Super grain (vastagabb)
+                                ✔ 2 réteg Big grain (vastagabb)
                               </p>
                               <p className="text-xs text-brand-800">
                                 ✔ 1 réteg Medium grain (vékonyabb)
@@ -2206,7 +2194,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           </div>
                         )}
 
-                        {system === 'effectoQuartz' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && (surface.surfaceType || 'padlo') === 'fal' && (
+                        {system === 'effectoQuartz' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && (
                           <div className="mt-3">
                             <label className="block text-xs font-medium text-gray-600 mb-2">
                               Szín választása (opcionális):
