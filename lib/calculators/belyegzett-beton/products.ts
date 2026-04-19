@@ -51,7 +51,7 @@ export const DESMOCEM_LIQUID_PRODUCTS = {
   small: { name: 'Desmocem Liquid 5L',  sku: 'TT11300', price: 23760, liters: 5 },
   large: { name: 'Desmocem Liquid 18L', sku: 'TT11301', price: 70276, liters: 18 },
 } as const;
-export const DESMOCEM_LIQUID_M2_PER_5L = 30; // 5L = 30 m2
+export const DESMOCEM_LIQUID_M2_PER_5L = 50; // 5L = 50 m2 (10 m2/liter, konzisztens az Overlay-jel)
 
 // Masters Relief Enhancer (8 szín, 150ml, 30 m2/doboz)
 export const RELIEF_COLORS = [
@@ -76,7 +76,9 @@ export const SEALCEM_M70_PRODUCTS = {
   normal:   { name: 'Sealcem DSV M70 18L (normál)',         sku: 'TT11001', price: 85654, liters: 18 },
   antislip: { name: 'Sealcem DSV M70 AD 18L (csúszásgátló)', sku: 'TT11015', price: 97260, liters: 18 },
 } as const;
-export const SEALCEM_M70_M2_PER_18L = 50;
+// Sealcem DSV M70: 1 réteg → 100 m²/18L lefedettség
+// 2 réteg esetén 50 m², 3 réteg esetén ~33 m² (ezt a page.tsx számolja rétegszám × képlet alapján)
+export const SEALCEM_M70_M2_PER_18L_SINGLE_LAYER = 100;
 
 // Fibra Vidrio Top 12mm (poliszál)
 export const POLISZAL = {

@@ -18,7 +18,7 @@ import {
   RELIEF_PRICE,
   RELIEF_M2_PER_BOX,
   SEALCEM_M70_PRODUCTS,
-  SEALCEM_M70_M2_PER_18L,
+  SEALCEM_M70_M2_PER_18L_SINGLE_LAYER,
   POLISZAL,
   POLISZAL_KG_PER_M3,
 } from '@/lib/calculators/belyegzett-beton/products';
@@ -273,7 +273,8 @@ function calculateSurface(s: Surface): SurfaceResult | null {
 
   // Lakk
   const lakkLayers = s.thickness === 10 ? 2 : 3;
-  const lakkLiters = (area * lakkLayers) / SEALCEM_M70_M2_PER_18L * 18;
+  // 1 réteg 18L-es lakk 100 m²-t fed; rétegszám szerint arányosan
+  const lakkLiters = (area * lakkLayers * 18) / SEALCEM_M70_M2_PER_18L_SINGLE_LAYER;
   const lakk18L = Math.ceil(lakkLiters / 18);
   const lakkProduct = s.lakkType === 'normal' ? SEALCEM_M70_PRODUCTS.normal : SEALCEM_M70_PRODUCTS.antislip;
   stampLines.push({
