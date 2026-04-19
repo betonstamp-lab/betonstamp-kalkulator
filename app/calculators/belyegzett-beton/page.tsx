@@ -766,7 +766,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
       <div>
         <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
           Technológia
-          <Tooltip text="Felületkeményítős: a friss beton tetejére Stonecem Floor port szórnak. Pigmentált: a betont már eleve pigmentálva öntik." />
+          <Tooltip text={"Felületkeményítős: a friss beton tetejére Stonecem Floor port szórnak.\nPigmentált: a betont már eleve pigmentálva öntik."} />
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
@@ -810,7 +810,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
       <div>
         <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
           Vastagság
-          <Tooltip text="10 cm: járófelület (2 réteg lakk). 15 cm: gépjárműforgalom (3 réteg lakk)." />
+          <Tooltip text={"10 cm: járófelület (2 réteg lakk).\n15 cm: gépjárműforgalom (3 réteg lakk)."} />
         </label>
         <div className="grid grid-cols-2 gap-3">
           <button
@@ -855,7 +855,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
       <div>
         <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
           {surface.technology === 'felkemenyit' ? 'Stonecem Floor szín' : 'Arcocem Fast szín'}
-          <Tooltip text="Felületkeményítős esetén 25 kg vödörben kapható, pigmentált beton esetén 5 kg zsákban." />
+          <Tooltip text={"Felületkeményítős esetén 25 kg vödörben kapható.\nPigmentált beton esetén 5 kg zsákban."} />
         </label>
         {selectedColor && (
           <div className="mb-2 flex items-center gap-2">
@@ -1022,7 +1022,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
       <div>
         <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
           Lakk típus
-          <Tooltip text="Az AD verzió csúszásgátló adalékot tartalmaz, kültéri és nedves környezetben ajánlott. Rétegszám automatikus: 10 cm → 2 réteg, 15 cm → 3 réteg." />
+          <Tooltip text={"Az AD verzió csúszásgátló adalékot tartalmaz, kültéri és nedves környezetben ajánlott.\nRétegszám automatikus: 10 cm → 2 réteg, 15 cm → 3 réteg."} />
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
