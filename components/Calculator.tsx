@@ -2179,7 +2179,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                   onClick={() => updateSurface(surface.id, 'selectedColor', color)}
                                   className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                                     surface.selectedColor === color
-                                      ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                                      ? 'border-brand-500 shadow-md'
                                       : 'border-gray-200 hover:border-gray-400'
                                   }`}
                                 >
@@ -2223,7 +2223,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                     onClick={() => updateSurface(surface.id, 'selectedColor', color)}
                                     className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                                       surface.selectedColor === color
-                                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                                        ? 'border-brand-500 shadow-md'
                                         : 'border-gray-200 hover:border-gray-400'
                                     }`}
                                   >
@@ -2280,7 +2280,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                     onClick={() => updateSurface(surface.id, 'selectedColor', color)}
                                     className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                                       surface.selectedColor === color
-                                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                                        ? 'border-brand-500 shadow-md'
                                         : 'border-gray-200 hover:border-gray-400'
                                     }`}
                                   >
@@ -2318,7 +2318,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                 onClick={() => updateSurface(surface.id, 'selectedColor', surface.selectedColor === 'BLANCO' ? null : 'BLANCO')}
                                 className={`flex-1 flex items-center gap-2 p-2 rounded border-2 transition-all ${
                                   surface.selectedColor === 'BLANCO'
-                                    ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                                    ? 'border-brand-500 shadow-md'
                                     : 'border-gray-200 hover:border-gray-400'
                                 }`}
                               >
@@ -2329,7 +2329,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                 onClick={() => updateSurface(surface.id, 'selectedColor', null)}
                                 className={`flex-1 flex items-center gap-2 p-2 rounded border-2 transition-all ${
                                   !surface.selectedColor
-                                    ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                                    ? 'border-brand-500 shadow-md'
                                     : 'border-gray-200 hover:border-gray-400'
                                 }`}
                               >
