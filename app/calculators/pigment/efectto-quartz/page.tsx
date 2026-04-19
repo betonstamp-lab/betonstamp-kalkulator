@@ -249,7 +249,7 @@ export default function EfecttoQuartzCalculatorPage() {
                     onClick={() => { setColor(c); setResult(null); }}
                     className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                       color === c
-                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                        ? 'border-brand-500 shadow-md'
                         : 'border-gray-200 hover:border-gray-400'
                     }`}
                   >

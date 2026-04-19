@@ -401,7 +401,7 @@ export default function OverlayCalculatorPage() {
                   onClick={() => { setOverlayColor(c.key); setResult(null); }}
                   className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                     overlayColor === c.key
-                      ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                      ? 'border-brand-500 shadow-md'
                       : 'border-gray-200 hover:border-gray-400'
                   }`}
                 >
@@ -428,7 +428,7 @@ export default function OverlayCalculatorPage() {
                 onClick={() => handleTechnologyChange('por')}
                 className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
                   technology === 'por'
-                    ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                     : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                 }`}
               >
@@ -438,7 +438,7 @@ export default function OverlayCalculatorPage() {
                 onClick={() => handleTechnologyChange('folyekony')}
                 className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
                   technology === 'folyekony'
-                    ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                     : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                 }`}
               >
@@ -478,7 +478,7 @@ export default function OverlayCalculatorPage() {
                     onClick={() => { setPowderColor(c.key); setResult(null); }}
                     className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                       powderColor === c.key
-                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                        ? 'border-brand-500 shadow-md'
                         : 'border-gray-200 hover:border-gray-400'
                     }`}
                   >
@@ -507,7 +507,7 @@ export default function OverlayCalculatorPage() {
                   onClick={() => { setReliefEnabled(true); setResult(null); }}
                   className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
                     reliefEnabled
-                      ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                      ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                       : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                   }`}
                 >
@@ -517,7 +517,7 @@ export default function OverlayCalculatorPage() {
                   onClick={() => { setReliefEnabled(false); setResult(null); }}
                   className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
                     !reliefEnabled
-                      ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                      ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                       : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                   }`}
                 >
@@ -558,7 +558,7 @@ export default function OverlayCalculatorPage() {
                     onClick={() => { setReliefColor(c.key); setResult(null); }}
                     className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                       reliefColor === c.key
-                        ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                        ? 'border-brand-500 shadow-md'
                         : 'border-gray-200 hover:border-gray-400'
                     }`}
                   >
@@ -586,7 +586,7 @@ export default function OverlayCalculatorPage() {
                 onClick={() => { setLacquer('normal'); setResult(null); }}
                 className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
                   lacquer === 'normal'
-                    ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                     : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                 }`}
               >
@@ -596,7 +596,7 @@ export default function OverlayCalculatorPage() {
                 onClick={() => { setLacquer('ad'); setResult(null); }}
                 className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
                   lacquer === 'ad'
-                    ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                     : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                 }`}
               >

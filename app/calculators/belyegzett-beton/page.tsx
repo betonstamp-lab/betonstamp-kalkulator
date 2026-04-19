@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Image from 'next/image';
@@ -39,6 +39,17 @@ interface Surface {
   powderColorKey: string;
   reliefs: Record<string, number>;
   lakkType: LakkType;
+  result: SurfaceResult | null;
+}
+
+function isSurfaceValid(s: Surface): boolean {
+  const area = parseFloat(s.area);
+  const concretePrice = parseFloat(s.concretePrice);
+  if (isNaN(area) || area <= 0) return false;
+  if (isNaN(concretePrice) || concretePrice < 0) return false;
+  if (!s.colorKey) return false;
+  if (s.separator === 'por' && !s.powderColorKey) return false;
+  return true;
 }
 
 interface LineItem {
@@ -80,7 +91,12 @@ const Tooltip = ({ text }: { text: string }) => {
         <>
           <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setOpen(false); }} />
           <div className="fixed left-4 right-4 bottom-4 p-4 bg-gray-800 text-white text-sm rounded-lg shadow-xl z-50 leading-relaxed sm:absolute sm:left-1/2 sm:right-auto sm:bottom-full sm:top-auto sm:mb-2 sm:w-64 sm:-translate-x-1/2 sm:text-xs sm:p-3">
-            {text}
+            {text.split('\n').map((line, i, arr) => (
+              <span key={i}>
+                {line}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
             <div className="hidden sm:block absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
           </div>
         </>
@@ -112,6 +128,7 @@ function createEmptySurface(id: number): Surface {
     powderColorKey: '',
     reliefs: {},
     lakkType: 'normal',
+    result: null,
   };
 }
 
@@ -407,7 +424,12 @@ export default function BelyegzettBetonCalculatorPage() {
   };
 
   const updateSurface = (id: number, patch: Partial<Surface>) => {
-    setSurfaces(prev => prev.map(s => s.id === id ? { ...s, ...patch } : s));
+    setSurfaces(prev => prev.map(s => {
+      if (s.id !== id) return s;
+      // Ha a `result` nincs a patch-ben, töröljük (mezőváltoztatás → eredmény elvész)
+      const clearResult = !('result' in patch);
+      return { ...s, ...patch, ...(clearResult ? { result: null } : {}) };
+    }));
   };
 
   const addSurface = () => {
@@ -420,12 +442,17 @@ export default function BelyegzettBetonCalculatorPage() {
     setSurfaces(surfaces.filter(s => s.id !== id));
   };
 
-  const results = useMemo(() => {
-    return surfaces.map(s => ({ surface: s, result: calculateSurface(s) }));
-  }, [surfaces]);
+  const calculateSurfaceById = (id: number) => {
+    setSurfaces(prev => prev.map(s => {
+      if (s.id !== id) return s;
+      const result = calculateSurface(s);
+      return { ...s, result };
+    }));
+  };
 
-  const validResults = results.map(r => r.result).filter((r): r is SurfaceResult => r !== null);
+  const validResults = surfaces.map(s => s.result).filter((r): r is SurfaceResult => r !== null);
   const aggregated = validResults.length > 0 ? aggregateResults(validResults) : null;
+  const allCalculated = surfaces.every(s => s.result !== null);
 
   const handleAddToCart = async () => {
     if (!aggregated) return;
@@ -549,27 +576,27 @@ export default function BelyegzettBetonCalculatorPage() {
         </p>
 
         <div className="w-full max-w-3xl space-y-6">
-          {surfaces.map((surface, idx) => {
-            const surfaceResult = results.find(r => r.surface.id === surface.id)?.result ?? null;
-            return (
-              <SurfaceBlock
-                key={surface.id}
-                surface={surface}
-                index={idx}
-                totalSurfaces={surfaces.length}
-                result={surfaceResult}
-                isPartner={isPartner}
-                onUpdate={(patch) => updateSurface(surface.id, patch)}
-                onRemove={() => removeSurface(surface.id)}
-              />
-            );
-          })}
+          {surfaces.map((surface, idx) => (
+            <SurfaceBlock
+              key={surface.id}
+              surface={surface}
+              index={idx}
+              totalSurfaces={surfaces.length}
+              isPartner={isPartner}
+              onUpdate={(patch) => updateSurface(surface.id, patch)}
+              onRemove={() => removeSurface(surface.id)}
+              onCalculate={() => calculateSurfaceById(surface.id)}
+            />
+          ))}
 
           <button
             onClick={addSurface}
-            className="w-full py-3 rounded-lg border-2 border-dashed border-brand-400 text-brand-700 hover:bg-brand-50 font-semibold transition-colors"
+            className="w-full py-4 rounded-xl border-2 border-brand-500 bg-white hover:bg-brand-500 text-brand-700 hover:text-white font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
           >
-            + Új felület hozzáadása
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Új felület hozzáadása</span>
           </button>
         </div>
 
@@ -695,13 +722,15 @@ interface SurfaceBlockProps {
   surface: Surface;
   index: number;
   totalSurfaces: number;
-  result: SurfaceResult | null;
   isPartner: boolean;
   onUpdate: (patch: Partial<Surface>) => void;
   onRemove: () => void;
+  onCalculate: () => void;
 }
 
-function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpdate, onRemove }: SurfaceBlockProps) {
+function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRemove, onCalculate }: SurfaceBlockProps) {
+  const result = surface.result;
+  const canCalculate = isSurfaceValid(surface);
   const areaNum = parseFloat(surface.area);
   const validArea = !isNaN(areaNum) && areaNum > 0;
   const reliefCoverage = Object.entries(surface.reliefs).reduce((sum, [, q]) => sum + q * RELIEF_M2_PER_BOX, 0);
@@ -744,7 +773,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
             onClick={() => onUpdate({ technology: 'felkemenyit', colorKey: '' })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.technology === 'felkemenyit'
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -754,7 +783,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
             onClick={() => onUpdate({ technology: 'pigment', colorKey: '' })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.technology === 'pigment'
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -788,7 +817,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
             onClick={() => onUpdate({ thickness: 10 })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.thickness === 10
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -798,7 +827,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
             onClick={() => onUpdate({ thickness: 15 })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.thickness === 15
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -850,7 +879,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
               onClick={() => onUpdate({ colorKey: c.key })}
               className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
                 surface.colorKey === c.key
-                  ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                  ? 'border-brand-500 shadow-md'
                   : 'border-gray-200 hover:border-gray-400'
               }`}
             >
@@ -870,14 +899,14 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
       <div>
         <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
           Leválasztó típus
-          <Tooltip text="Por leválasztó: Desmocem Powder, színt ad és leválaszt. Folyékony: Desmocem Liquid, színtelen + opcionális Relief." />
+          <Tooltip text={"Por: Desmocem Powder, másodlagos színt ad és leválasztja a bélyegzőt.\nFolyékony: Desmocem Liquid, színtelen + opcionális Relief."} />
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
             onClick={() => onUpdate({ separator: 'por', powderColorKey: '', reliefs: {} })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.separator === 'por'
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -887,7 +916,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
             onClick={() => onUpdate({ separator: 'folyekony', powderColorKey: '' })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.separator === 'folyekony'
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -907,7 +936,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
                 onClick={() => onUpdate({ powderColorKey: c.key })}
                 className={`flex flex-col items-center p-2 rounded-lg border-2 transition-all hover:scale-105 ${
                   surface.powderColorKey === c.key
-                    ? 'border-brand-500 ring-2 ring-brand-300 shadow-md'
+                    ? 'border-brand-500 shadow-md'
                     : 'border-gray-200 hover:border-gray-400'
                 }`}
               >
@@ -940,7 +969,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
                   key={c.key}
                   className={`flex flex-col items-center p-2 rounded border-2 ${
                     qty > 0
-                      ? 'border-brand-500 ring-1 ring-brand-300 shadow-sm'
+                      ? 'border-brand-500 shadow-sm'
                       : 'border-gray-200'
                   }`}
                 >
@@ -1000,7 +1029,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
             onClick={() => onUpdate({ lakkType: 'normal' })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.lakkType === 'normal'
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -1010,7 +1039,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
             onClick={() => onUpdate({ lakkType: 'antislip' })}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
               surface.lakkType === 'antislip'
-                ? 'border-brand-500 ring-2 ring-brand-300 bg-white text-gray-900 shadow-md'
+                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
             }`}
           >
@@ -1018,6 +1047,19 @@ function SurfaceBlock({ surface, index, totalSurfaces, result, isPartner, onUpda
           </button>
         </div>
       </div>
+
+      {/* Kalkuláció gomb */}
+      <button
+        onClick={onCalculate}
+        disabled={!canCalculate}
+        className={`w-full font-semibold py-3 rounded-lg transition-colors ${
+          canCalculate
+            ? 'bg-brand-500 hover:bg-brand-600 text-white'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        }`}
+      >
+        Kalkuláció készítése
+      </button>
 
       {/* Eredmény */}
       {result && (
