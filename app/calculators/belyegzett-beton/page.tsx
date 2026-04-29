@@ -22,6 +22,7 @@ import {
   POLISZAL,
   POLISZAL_KG_PER_M3,
 } from '@/lib/calculators/belyegzett-beton/products';
+import PriceBreakdown from '@/components/PriceBreakdown';
 
 type Technology = 'felkemenyit' | 'pigment';
 type Separator = 'por' | 'folyekony';
@@ -61,6 +62,10 @@ interface LineItem {
   totalPrice: number;
   partnerEligible: boolean; // -10% alkalmazható?
   inCart: boolean; // kosárba rakható-e
+  needed?: number;
+  got?: number;
+  unit?: string;
+  anyagszuksegletSubtotal?: number;
 }
 
 interface SurfaceResult {
@@ -71,9 +76,13 @@ interface SurfaceResult {
   reliefCoverageM2: number; // választott relief lefedettség
   concreteSubtotal: number;
   suppliesNet: number; // poliszal + stampLines nettó
+  anyagszuksegletSuppliesNet: number; // supplies anyagszükséglet alapján
   totalNet: number; // minden
   totalGross: number;
+  anyagszuksegletNet: number;
+  anyagszuksegletGross: number;
   totalPartner?: number;
+  anyagszuksegletPartner?: number;
 }
 
 const formatFt = (n: number) => `${Math.round(n).toLocaleString('hu-HU')} Ft`;
@@ -132,6 +141,16 @@ function createEmptySurface(id: number): Surface {
   };
 }
 
+function buildLineItem(base: Omit<LineItem, 'anyagszuksegletSubtotal'>): LineItem {
+  if (base.needed === undefined || base.got === undefined || base.got <= 0) {
+    return { ...base };
+  }
+  const leftover = base.got - base.needed;
+  if (leftover <= 0.01) return { ...base };
+  const unitPrice = base.totalPrice / base.got;
+  return { ...base, anyagszuksegletSubtotal: base.totalPrice - leftover * unitPrice };
+}
+
 function calculateSurface(s: Surface): SurfaceResult | null {
   const area = parseFloat(s.area);
   const concretePrice = parseFloat(s.concretePrice);
@@ -145,7 +164,7 @@ function calculateSurface(s: Surface): SurfaceResult | null {
   const roundedM3 = Math.ceil(rawM3 * 4) / 4;
   const concreteSubtotal = roundedM3 * concretePrice;
 
-  const concreteLine: LineItem = {
+  const concreteLine: LineItem = buildLineItem({
     name: 'Beton',
     sku: '',
     units: roundedM3,
@@ -154,12 +173,12 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     totalPrice: concreteSubtotal,
     partnerEligible: false,
     inCart: false,
-  };
+  });
 
-  // Poliszál
+  // Poliszál — kg-ban rendelhető, manuális mennyiség → nincs anyagszükséglet bontás
   const poliszalKgPerM3 = POLISZAL_KG_PER_M3[s.thickness] ?? 2;
   const poliszalKg = Math.ceil(roundedM3 * poliszalKgPerM3);
-  const poliszalLine: LineItem = {
+  const poliszalLine: LineItem = buildLineItem({
     name: POLISZAL.name,
     sku: POLISZAL.sku,
     units: poliszalKg,
@@ -168,7 +187,7 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     totalPrice: poliszalKg * POLISZAL.price,
     partnerEligible: true,
     inCart: true,
-  };
+  });
 
   // --- Bélyegzéshez ---
   const stampLines: LineItem[] = [];
@@ -178,7 +197,7 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     const color = STONECEM_FLOOR_COLORS.find(c => c.key === s.colorKey);
     if (!color) return null;
     const buckets = Math.ceil(area / color.m2PerBucket);
-    stampLines.push({
+    stampLines.push(buildLineItem({
       name: `Stonecem Floor ${color.name}`,
       sku: color.sku,
       units: buckets,
@@ -187,13 +206,16 @@ function calculateSurface(s: Surface): SurfaceResult | null {
       totalPrice: buckets * STONECEM_FLOOR_PRICE,
       partnerEligible: true,
       inCart: true,
-    });
+      needed: (area / color.m2PerBucket) * 25,
+      got: buckets * 25,
+      unit: 'kg',
+    }));
   } else {
     const color = ARCOCEM_FAST_COLORS.find(c => c.key === s.colorKey);
     if (!color) return null;
     const pigmentKg = roundedM3 * ARCOCEM_FAST_KG_PER_M3;
     const bags = Math.ceil(pigmentKg / ARCOCEM_FAST_KG_PER_BAG);
-    stampLines.push({
+    stampLines.push(buildLineItem({
       name: `Arcocem Fast ${color.name}`,
       sku: color.sku,
       units: bags,
@@ -202,7 +224,10 @@ function calculateSurface(s: Surface): SurfaceResult | null {
       totalPrice: bags * color.price,
       partnerEligible: true,
       inCart: true,
-    });
+      needed: pigmentKg,
+      got: bags * ARCOCEM_FAST_KG_PER_BAG,
+      unit: 'kg',
+    }));
   }
 
   // Leválasztó
@@ -210,7 +235,7 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     const color = DESMOCEM_POWDER_COLORS.find(c => c.key === s.powderColorKey);
     if (!color) return null;
     const buckets = Math.ceil(area / DESMOCEM_POWDER_M2_PER_BUCKET);
-    stampLines.push({
+    stampLines.push(buildLineItem({
       name: `Desmocem Powder ${color.name}`,
       sku: color.sku,
       units: buckets,
@@ -219,12 +244,17 @@ function calculateSurface(s: Surface): SurfaceResult | null {
       totalPrice: buckets * color.price,
       partnerEligible: true,
       inCart: true,
-    });
+      needed: (area / DESMOCEM_POWDER_M2_PER_BUCKET) * 10,
+      got: buckets * 10,
+      unit: 'kg',
+    }));
   } else {
     const litersNeeded = (area / DESMOCEM_LIQUID_M2_PER_5L) * 5;
     const { large18L, small5L } = optimize18LAnd5L(litersNeeded);
     if (large18L > 0) {
-      stampLines.push({
+      // optimize18LAnd5L néha felfelé kerekít egy plusz 18L-re (small5L=0 special case),
+      // ezért a needed lehet kisebb, mint a got — Math.min kezeli mindkét esetet
+      stampLines.push(buildLineItem({
         name: DESMOCEM_LIQUID_PRODUCTS.large.name,
         sku: DESMOCEM_LIQUID_PRODUCTS.large.sku,
         units: large18L,
@@ -233,10 +263,15 @@ function calculateSurface(s: Surface): SurfaceResult | null {
         totalPrice: large18L * DESMOCEM_LIQUID_PRODUCTS.large.price,
         partnerEligible: true,
         inCart: true,
-      });
+        needed: Math.min(litersNeeded, large18L * 18),
+        got: large18L * 18,
+        unit: 'L',
+      }));
     }
     if (small5L > 0) {
-      stampLines.push({
+      // 5L sor abszorbeálja a leftover részt
+      const remaining = Math.max(0, litersNeeded - large18L * 18);
+      stampLines.push(buildLineItem({
         name: DESMOCEM_LIQUID_PRODUCTS.small.name,
         sku: DESMOCEM_LIQUID_PRODUCTS.small.sku,
         units: small5L,
@@ -245,19 +280,24 @@ function calculateSurface(s: Surface): SurfaceResult | null {
         totalPrice: small5L * DESMOCEM_LIQUID_PRODUCTS.small.price,
         partnerEligible: true,
         inCart: true,
-      });
+        needed: remaining,
+        got: small5L * 5,
+        unit: 'L',
+      }));
     }
   }
 
-  // Relief (csak folyékony esetén)
+  // Relief (csak folyékony esetén) — needed: a felülethez köthető m²-fedettség,
+  // got: a megrendelt m²-fedettség. Ha túlrendelnek a felülethez képest, leftover keletkezik.
   let reliefCoverageM2 = 0;
   if (s.separator === 'folyekony') {
     for (const [key, qty] of Object.entries(s.reliefs)) {
       if (qty > 0) {
         const color = RELIEF_COLORS.find(c => c.key === key);
         if (!color) continue;
-        reliefCoverageM2 += qty * RELIEF_M2_PER_BOX;
-        stampLines.push({
+        const colorCoverage = qty * RELIEF_M2_PER_BOX;
+        reliefCoverageM2 += colorCoverage;
+        stampLines.push(buildLineItem({
           name: `Masters Relief Enhancer - ${color.name}`,
           sku: color.sku,
           units: qty,
@@ -266,7 +306,10 @@ function calculateSurface(s: Surface): SurfaceResult | null {
           totalPrice: qty * RELIEF_PRICE,
           partnerEligible: true,
           inCart: true,
-        });
+          needed: Math.min(colorCoverage, area),
+          got: colorCoverage,
+          unit: 'm²',
+        }));
       }
     }
   }
@@ -277,7 +320,7 @@ function calculateSurface(s: Surface): SurfaceResult | null {
   const lakkLiters = (area * lakkLayers * 18) / SEALCEM_M70_M2_PER_18L_SINGLE_LAYER;
   const lakk18L = Math.ceil(lakkLiters / 18);
   const lakkProduct = s.lakkType === 'normal' ? SEALCEM_M70_PRODUCTS.normal : SEALCEM_M70_PRODUCTS.antislip;
-  stampLines.push({
+  stampLines.push(buildLineItem({
     name: lakkProduct.name,
     sku: lakkProduct.sku,
     units: lakk18L,
@@ -286,13 +329,22 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     totalPrice: lakk18L * lakkProduct.price,
     partnerEligible: true,
     inCart: true,
-  });
+    needed: lakkLiters,
+    got: lakk18L * 18,
+    unit: 'L',
+  }));
 
   const suppliesNet = poliszalLine.totalPrice + stampLines.reduce((s, l) => s + l.totalPrice, 0);
+  const anyagszuksegletSuppliesNet =
+    (poliszalLine.anyagszuksegletSubtotal ?? poliszalLine.totalPrice) +
+    stampLines.reduce((s, l) => s + (l.anyagszuksegletSubtotal ?? l.totalPrice), 0);
   const totalNet = concreteSubtotal + suppliesNet;
+  const anyagszuksegletNet = concreteSubtotal + anyagszuksegletSuppliesNet;
   const totalGross = Math.round(totalNet * 1.27);
+  const anyagszuksegletGross = Math.round(anyagszuksegletNet * 1.27);
   // Partneri: a bélyegzési anyagok és poliszál -10% a BRUTTÓ-ból; beton változatlan
   const totalPartner = Math.round(concreteSubtotal * 1.27 + suppliesNet * 1.27 * 0.9);
+  const anyagszuksegletPartner = Math.round(concreteSubtotal * 1.27 + anyagszuksegletSuppliesNet * 1.27 * 0.9);
 
   return {
     surfaceId: s.id,
@@ -302,9 +354,13 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     reliefCoverageM2,
     concreteSubtotal,
     suppliesNet,
+    anyagszuksegletSuppliesNet,
     totalNet,
     totalGross,
+    anyagszuksegletNet,
+    anyagszuksegletGross,
     totalPartner,
+    anyagszuksegletPartner,
   };
 }
 
@@ -317,17 +373,25 @@ interface AggregatedLine {
   totalPrice: number;
   partnerEligible: boolean;
   inCart: boolean;
+  needed?: number;
+  got?: number;
+  unit?: string;
+  anyagszuksegletSubtotal?: number;
 }
 
 function aggregateResults(results: SurfaceResult[]): {
-  concreteTotal: number; // ár összesen
+  concreteTotal: number;
   concreteM3: number;
   poliszalTotal: AggregatedLine | null;
   stampAgg: AggregatedLine[];
   suppliesNet: number;
+  anyagszuksegletSuppliesNet: number;
   totalNet: number;
   totalGross: number;
+  anyagszuksegletNet: number;
+  anyagszuksegletGross: number;
   totalPartner: number;
+  anyagszuksegletPartner: number;
 } {
   let concreteTotal = 0;
   let concreteM3 = 0;
@@ -340,6 +404,8 @@ function aggregateResults(results: SurfaceResult[]): {
     if (existing) {
       existing.units += l.units;
       existing.totalPrice = existing.units * existing.pricePerUnit;
+      if (l.needed !== undefined) existing.needed = (existing.needed ?? 0) + l.needed;
+      if (l.got !== undefined) existing.got = (existing.got ?? 0) + l.got;
     } else {
       map.set(key, {
         sku: l.sku,
@@ -350,6 +416,9 @@ function aggregateResults(results: SurfaceResult[]): {
         totalPrice: l.units * l.pricePerUnit,
         partnerEligible: l.partnerEligible,
         inCart: l.inCart,
+        needed: l.needed,
+        got: l.got,
+        unit: l.unit,
       });
     }
   };
@@ -363,14 +432,32 @@ function aggregateResults(results: SurfaceResult[]): {
     r.stampLines.forEach(addLine);
   });
 
+  // Aggregált szinten újraszámoljuk az anyagszuksegletSubtotal-t
+  for (const agg of map.values()) {
+    if (agg.needed !== undefined && agg.got !== undefined && agg.got > 0) {
+      const leftover = agg.got - agg.needed;
+      if (leftover > 0.01) {
+        const unitPrice = agg.totalPrice / agg.got;
+        agg.anyagszuksegletSubtotal = agg.totalPrice - leftover * unitPrice;
+      }
+    }
+  }
+
   const allAgg = Array.from(map.values());
   const poliszalTotal = allAgg.find(a => a.sku === POLISZAL.sku) ?? null;
   const stampAgg = allAgg.filter(a => a.sku !== POLISZAL.sku);
 
   const suppliesNet = allAgg.reduce((s, l) => s + l.totalPrice, 0);
+  const anyagszuksegletSuppliesNet = allAgg.reduce(
+    (s, l) => s + (l.anyagszuksegletSubtotal ?? l.totalPrice),
+    0
+  );
   const totalNet = concreteTotal + suppliesNet;
+  const anyagszuksegletNet = concreteTotal + anyagszuksegletSuppliesNet;
   const totalGross = Math.round(totalNet * 1.27);
+  const anyagszuksegletGross = Math.round(anyagszuksegletNet * 1.27);
   const totalPartner = Math.round(concreteTotal * 1.27 + suppliesNet * 1.27 * 0.9);
+  const anyagszuksegletPartner = Math.round(concreteTotal * 1.27 + anyagszuksegletSuppliesNet * 1.27 * 0.9);
 
   return {
     concreteTotal,
@@ -378,9 +465,13 @@ function aggregateResults(results: SurfaceResult[]): {
     poliszalTotal,
     stampAgg,
     suppliesNet,
+    anyagszuksegletSuppliesNet,
     totalNet,
     totalGross,
+    anyagszuksegletNet,
+    anyagszuksegletGross,
     totalPartner,
+    anyagszuksegletPartner,
   };
 }
 
@@ -640,21 +731,36 @@ export default function BelyegzettBetonCalculatorPage() {
                   </ul>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-gray-200 space-y-1">
+                <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-700 font-medium">Nettó összesen:</span>
                     <span className="text-gray-900 font-semibold">{formatFt(aggregated.totalNet)}</span>
                   </div>
-                  <div className="flex justify-between text-base">
-                    <span className="text-gray-800 font-bold">Bruttó összesen:</span>
-                    <span className="text-gray-900 font-bold">{formatFt(aggregated.totalGross)}</span>
-                  </div>
-                  {isPartner && (
-                    <div className="flex justify-between text-xs text-green-600 font-semibold">
-                      <span>Partneri ár (-10% csak bélyegzési anyagokra):</span>
-                      <span>{formatFt(aggregated.totalPartner)}</span>
+                  {isPartner ? (
+                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                      <span className="text-base font-bold text-gray-800">Bruttó összesen:</span>
+                      <PriceBreakdown
+                        variant="total"
+                        kiszerelesPrice={aggregated.totalPartner}
+                        anyagszuksegletPrice={aggregated.anyagszuksegletPartner}
+                        partnerMode={true}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                      <span className="text-base font-bold text-gray-800">Bruttó összesen:</span>
+                      <PriceBreakdown
+                        variant="total"
+                        kiszerelesPrice={aggregated.totalGross}
+                        anyagszuksegletPrice={aggregated.anyagszuksegletGross}
+                      />
                     </div>
                   )}
+                  <p className="text-xs text-gray-500 mt-2">
+                    {isPartner
+                      ? 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
+                      : 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
+                  </p>
                 </div>
               </div>
             )}
@@ -704,17 +810,21 @@ export default function BelyegzettBetonCalculatorPage() {
 }
 
 function AggLineRow({ line }: { line: AggregatedLine }) {
+  const hasBreakdown = line.anyagszuksegletSubtotal !== undefined;
   return (
-    <li className="py-2 text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-      <span className="text-gray-800 font-medium break-words sm:flex-1">{line.name}</span>
-      <div className="flex items-center justify-between gap-3 mt-1 sm:mt-0 sm:contents">
+    <li className="py-3 text-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <span className="text-gray-800 font-medium break-words sm:flex-1">{line.name}</span>
         <span className="text-gray-500 sm:shrink-0 sm:w-36 sm:text-right">
           {line.units} × {line.unitSize}
         </span>
-        <span className="text-gray-900 font-semibold sm:shrink-0 sm:w-28 sm:text-right">
-          {formatFt(line.totalPrice)}
-        </span>
       </div>
+      <PriceBreakdown
+        variant="line"
+        kiszerelesPrice={line.totalPrice}
+        anyagszuksegletPrice={line.anyagszuksegletSubtotal ?? line.totalPrice}
+        showSinglePrice={!hasBreakdown}
+      />
     </li>
   );
 }
@@ -1103,21 +1213,36 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
           </div>
 
           {/* Felület összegzés */}
-          <div className="pt-3 border-t border-gray-200 space-y-1">
+          <div className="pt-3 border-t border-gray-200 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-700 font-medium">Nettó:</span>
               <span className="text-gray-900 font-semibold">{formatFt(result.totalNet)}</span>
             </div>
-            <div className="flex justify-between text-base">
-              <span className="text-gray-800 font-bold">Bruttó:</span>
-              <span className="text-gray-900 font-bold">{formatFt(result.totalGross)}</span>
-            </div>
-            {isPartner && result.totalPartner !== undefined && (
-              <div className="flex justify-between text-xs text-green-600 font-semibold">
-                <span>Partneri ár (-10% csak bélyegzési anyagokra):</span>
-                <span>{formatFt(result.totalPartner)}</span>
+            {isPartner && result.totalPartner !== undefined && result.anyagszuksegletPartner !== undefined ? (
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                <span className="text-base font-bold text-gray-800">Bruttó:</span>
+                <PriceBreakdown
+                  variant="total"
+                  kiszerelesPrice={result.totalPartner}
+                  anyagszuksegletPrice={result.anyagszuksegletPartner}
+                  partnerMode={true}
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                <span className="text-base font-bold text-gray-800">Bruttó:</span>
+                <PriceBreakdown
+                  variant="total"
+                  kiszerelesPrice={result.totalGross}
+                  anyagszuksegletPrice={result.anyagszuksegletGross}
+                />
               </div>
             )}
+            <p className="text-xs text-gray-500 mt-2">
+              {isPartner
+                ? 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
+                : 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
+            </p>
           </div>
         </div>
       )}
@@ -1126,17 +1251,21 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
 }
 
 function ResultLineRow({ line }: { line: LineItem }) {
+  const hasBreakdown = line.anyagszuksegletSubtotal !== undefined;
   return (
-    <li className="py-2 text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-      <span className="text-gray-800 font-medium break-words sm:flex-1">{line.name}</span>
-      <div className="flex items-center justify-between gap-3 mt-1 sm:mt-0 sm:contents">
+    <li className="py-3 text-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <span className="text-gray-800 font-medium break-words sm:flex-1">{line.name}</span>
         <span className="text-gray-500 sm:shrink-0 sm:w-32 sm:text-right">
           {line.units} × {line.unitSize}
         </span>
-        <span className="text-gray-900 font-semibold sm:shrink-0 sm:w-28 sm:text-right">
-          {formatFt(line.totalPrice)}
-        </span>
       </div>
+      <PriceBreakdown
+        variant="line"
+        kiszerelesPrice={line.totalPrice}
+        anyagszuksegletPrice={line.anyagszuksegletSubtotal ?? line.totalPrice}
+        showSinglePrice={!hasBreakdown}
+      />
     </li>
   );
 }
