@@ -19,8 +19,8 @@ export const OVERLAY_COLORS = [
 
 export type OverlayColorKey = typeof OVERLAY_COLORS[number]['key'];
 
-// Ár minden Overlay színnél azonos
-export const OVERLAY_PRICE_PER_BAG = 21252;
+// Ár minden Overlay színnél azonos (bruttó, ÁFA-val, Shoprenter-szinkron)
+export const OVERLAY_PRICE_PER_BAG = 26989;
 export const OVERLAY_KG_PER_BAG = 25;
 // Excel szerint: 1 db 25 kg-os Overlay zsák fedi 1.25 m²-t
 // Következmény: 1 m² → 20 kg Overlay (= 0.8 zsák)
@@ -30,28 +30,28 @@ export const OVERLAY_SUPPORTING_PRODUCTS = {
   primacem_plus: {
     name: 'Primacem Plus 5L',
     sku: 'TT03005',
-    price: 22079,
+    price: 28040,
     liters: 5,
     m2PerUnit: 50,
   },
   leszvalaszto_folyekony: {
     name: 'Desmocem Liquid 5L',
     sku: 'TT11300',
-    price: 23760,
+    price: 30174,
     liters: 5,
     m2PerUnit: 50,
   },
   lakk_normal: {
     name: 'Sealcem DSV M70 18L',
     sku: 'TT11001',
-    price: 85654,
+    price: 108780,
     liters: 18,
     m2PerUnit: 50,
   },
   lakk_ad: {
     name: 'Sealcem DSV M70 bidón AD 18L (csúszásgátló)',
     sku: 'TT11015',
-    price: 97260,
+    price: 126800,
     liters: 18,
     m2PerUnit: 50,
   },
@@ -60,17 +60,17 @@ export const OVERLAY_SUPPORTING_PRODUCTS = {
 export type OverlaySupportingProductKey = keyof typeof OVERLAY_SUPPORTING_PRODUCTS;
 
 export const DESMOCEM_POWDER_COLORS = [
-  { key: 'ANTRACITA', name: 'Antracita (sötétszürke)', sku: 'TT11303', hex: '#3d3d3d', price: 23835 },
-  { key: 'BLANCO', name: 'Blanco (fehér)', sku: 'TT11306', hex: '#f0ede6', price: 23835 },
-  { key: 'CREMA', name: 'Crema (krém)', sku: 'TT11307', hex: '#e7d5b0', price: 23835 },
-  { key: 'GRIS', name: 'Gris (szürke)', sku: 'TT11304', hex: '#808080', price: 23835 },
-  { key: 'GRIS_CLARO', name: 'Gris Claro (világosszürke)', sku: 'TT11305', hex: '#b8b8b8', price: 23835 },
-  { key: 'PIERRE', name: 'Pierre (bézses homokkő)', sku: 'TT11313', hex: '#c2b3a1', price: 23835 },
-  { key: 'ROJO', name: 'Rojo (vörös)', sku: 'TT11308', hex: '#a03020', price: 23835 },
-  { key: 'MARRON_CLARO', name: 'Marron Claro (világosbarna)', sku: 'TT11312', hex: '#a0825a', price: 30323 },
-  { key: 'NOGAL', name: 'Nogal (dióbarna)', sku: 'TT11309', hex: '#5c3a1e', price: 30323 },
-  { key: 'NOIR', name: 'Noir (fekete)', sku: 'TT11302', hex: '#1a1a1a', price: 30323 },
-  { key: 'TOSTADO', name: 'Tostado (sárgásbarna)', sku: 'TT11311', hex: '#c49a5c', price: 30323 },
+  { key: 'ANTRACITA', name: 'Antracita (sötétszürke)', sku: 'TT11303', hex: '#3d3d3d', price: 30270 },
+  { key: 'BLANCO', name: 'Blanco (fehér)', sku: 'TT11306', hex: '#f0ede6', price: 30270 },
+  { key: 'CREMA', name: 'Crema (krém)', sku: 'TT11307', hex: '#e7d5b0', price: 30270 },
+  { key: 'GRIS', name: 'Gris (szürke)', sku: 'TT11304', hex: '#808080', price: 30270 },
+  { key: 'GRIS_CLARO', name: 'Gris Claro (világosszürke)', sku: 'TT11305', hex: '#b8b8b8', price: 30270 },
+  { key: 'PIERRE', name: 'Pierre (bézses homokkő)', sku: 'TT11313', hex: '#c2b3a1', price: 30270 },
+  { key: 'ROJO', name: 'Rojo (vörös)', sku: 'TT11308', hex: '#a03020', price: 30270 },
+  { key: 'MARRON_CLARO', name: 'Marron Claro (világosbarna)', sku: 'TT11312', hex: '#a0825a', price: 38509 },
+  { key: 'NOGAL', name: 'Nogal (dióbarna)', sku: 'TT11309', hex: '#5c3a1e', price: 38509 },
+  { key: 'NOIR', name: 'Noir (fekete)', sku: 'TT11302', hex: '#1a1a1a', price: 38509 },
+  { key: 'TOSTADO', name: 'Tostado (sárgásbarna)', sku: 'TT11311', hex: '#c49a5c', price: 38509 },
 ] as const;
 
 export type DesmocemPowderColorKey = typeof DESMOCEM_POWDER_COLORS[number]['key'];
@@ -92,7 +92,7 @@ export const RELIEF_COLORS = [
 
 export type ReliefColorKey = typeof RELIEF_COLORS[number]['key'];
 
-// Minden Relief színnél azonos
-export const RELIEF_PRICE = 18717;
+// Minden Relief színnél azonos (bruttó, ÁFA-val, Shoprenter-szinkron)
+export const RELIEF_PRICE = 23770;
 export const RELIEF_ML = 150;
 export const RELIEF_M2_PER_UNIT = 30;

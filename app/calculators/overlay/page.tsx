@@ -37,10 +37,8 @@ interface OverlayResultLine {
 
 interface OverlayResult {
   lines: OverlayResultLine[];
-  net: number;
-  gross: number;
-  anyagszuksegletNet: number;
-  anyagszuksegletGross: number;
+  total: number;
+  anyagszuksegletTotal: number;
   partnerPrice?: number;
   anyagszuksegletPartnerPrice?: number;
 }
@@ -282,20 +280,16 @@ export default function OverlayCalculatorPage() {
       unit: 'L',
     }));
 
-    const net = lines.reduce((s, l) => s + l.subtotal, 0);
-    const gross = Math.round(net * 1.27);
-    const anyagszuksegletNet = lines.reduce((s, l) => s + l.anyagszuksegletSubtotal, 0);
-    const anyagszuksegletGross = Math.round(anyagszuksegletNet * 1.27);
+    const total = lines.reduce((s, l) => s + l.subtotal, 0);
+    const anyagszuksegletTotal = lines.reduce((s, l) => s + l.anyagszuksegletSubtotal, 0);
     const isPartner = profile?.role === 'partner';
-    const partnerPrice = isPartner ? Math.round(gross * 0.9) : undefined;
-    const anyagszuksegletPartnerPrice = isPartner ? Math.round(anyagszuksegletGross * 0.9) : undefined;
+    const partnerPrice = isPartner ? Math.round(total * 0.9) : undefined;
+    const anyagszuksegletPartnerPrice = isPartner ? Math.round(anyagszuksegletTotal * 0.9) : undefined;
 
     setResult({
       lines,
-      net,
-      gross,
-      anyagszuksegletNet,
-      anyagszuksegletGross,
+      total,
+      anyagszuksegletTotal,
       partnerPrice,
       anyagszuksegletPartnerPrice,
     });
@@ -674,15 +668,9 @@ export default function OverlayCalculatorPage() {
               })}
             </ul>
             <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-700 font-medium">Nettó összesen:</span>
-                <span className="text-gray-900 font-semibold">
-                  {formatFt(result.net)}
-                </span>
-              </div>
               {profile?.role === 'partner' ? (
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                  <span className="text-base font-bold text-gray-800">Bruttó összesen:</span>
+                  <span className="text-base font-bold text-gray-800">Összesen:</span>
                   <PriceBreakdown
                     variant="total"
                     kiszerelesPrice={result.partnerPrice ?? 0}
@@ -692,16 +680,16 @@ export default function OverlayCalculatorPage() {
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                  <span className="text-base font-bold text-gray-800">Bruttó összesen:</span>
+                  <span className="text-base font-bold text-gray-800">Összesen:</span>
                   <PriceBreakdown
                     variant="total"
-                    kiszerelesPrice={result.gross}
-                    anyagszuksegletPrice={result.anyagszuksegletGross}
+                    kiszerelesPrice={result.total}
+                    anyagszuksegletPrice={result.anyagszuksegletTotal}
                   />
                 </div>
               )}
               <p className="text-xs text-gray-500 mt-2">
-                Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.
+                Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.
               </p>
             </div>
           </div>
