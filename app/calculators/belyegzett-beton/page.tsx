@@ -70,17 +70,15 @@ interface LineItem {
 
 interface SurfaceResult {
   surfaceId: number;
-  concreteLine: LineItem | null; // beton, külön (nem partneri)
+  concreteLine: LineItem | null; // beton (manuális bruttó input)
   poliszalLine: LineItem | null; // partneri
   stampLines: LineItem[]; // hardener/pigment + separator + relief + lakk
   reliefCoverageM2: number; // választott relief lefedettség
   concreteSubtotal: number;
-  suppliesNet: number; // poliszal + stampLines nettó
-  anyagszuksegletSuppliesNet: number; // supplies anyagszükséglet alapján
-  totalNet: number; // minden
-  totalGross: number;
-  anyagszuksegletNet: number;
-  anyagszuksegletGross: number;
+  supplies: number; // poliszal + stampLines (bruttó, ÁFA-val)
+  anyagszuksegletSupplies: number; // supplies anyagszükséglet alapján
+  total: number; // minden bruttó
+  anyagszuksegletTotal: number;
   totalPartner?: number;
   anyagszuksegletPartner?: number;
 }
@@ -334,17 +332,17 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     unit: 'L',
   }));
 
-  const suppliesNet = poliszalLine.totalPrice + stampLines.reduce((s, l) => s + l.totalPrice, 0);
-  const anyagszuksegletSuppliesNet =
+  // Minden ár bruttó (ÁFA-val): a stamping anyagok és poliszál a products.ts-ből,
+  // a beton (concreteSubtotal) a felhasználói manuális bruttó input
+  const supplies = poliszalLine.totalPrice + stampLines.reduce((s, l) => s + l.totalPrice, 0);
+  const anyagszuksegletSupplies =
     (poliszalLine.anyagszuksegletSubtotal ?? poliszalLine.totalPrice) +
     stampLines.reduce((s, l) => s + (l.anyagszuksegletSubtotal ?? l.totalPrice), 0);
-  const totalNet = concreteSubtotal + suppliesNet;
-  const anyagszuksegletNet = concreteSubtotal + anyagszuksegletSuppliesNet;
-  const totalGross = Math.round(totalNet * 1.27);
-  const anyagszuksegletGross = Math.round(anyagszuksegletNet * 1.27);
-  // Partneri: a bélyegzési anyagok és poliszál -10% a BRUTTÓ-ból; beton változatlan
-  const totalPartner = Math.round(concreteSubtotal * 1.27 + suppliesNet * 1.27 * 0.9);
-  const anyagszuksegletPartner = Math.round(concreteSubtotal * 1.27 + anyagszuksegletSuppliesNet * 1.27 * 0.9);
+  const total = concreteSubtotal + supplies;
+  const anyagszuksegletTotal = concreteSubtotal + anyagszuksegletSupplies;
+  // Partneri: csak a supplies kap -10% kedvezményt; beton változatlan
+  const totalPartner = Math.round(concreteSubtotal + supplies * 0.9);
+  const anyagszuksegletPartner = Math.round(concreteSubtotal + anyagszuksegletSupplies * 0.9);
 
   return {
     surfaceId: s.id,
@@ -353,12 +351,10 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     stampLines,
     reliefCoverageM2,
     concreteSubtotal,
-    suppliesNet,
-    anyagszuksegletSuppliesNet,
-    totalNet,
-    totalGross,
-    anyagszuksegletNet,
-    anyagszuksegletGross,
+    supplies,
+    anyagszuksegletSupplies,
+    total,
+    anyagszuksegletTotal,
     totalPartner,
     anyagszuksegletPartner,
   };
@@ -384,12 +380,10 @@ function aggregateResults(results: SurfaceResult[]): {
   concreteM3: number;
   poliszalTotal: AggregatedLine | null;
   stampAgg: AggregatedLine[];
-  suppliesNet: number;
-  anyagszuksegletSuppliesNet: number;
-  totalNet: number;
-  totalGross: number;
-  anyagszuksegletNet: number;
-  anyagszuksegletGross: number;
+  supplies: number;
+  anyagszuksegletSupplies: number;
+  total: number;
+  anyagszuksegletTotal: number;
   totalPartner: number;
   anyagszuksegletPartner: number;
 } {
@@ -447,29 +441,27 @@ function aggregateResults(results: SurfaceResult[]): {
   const poliszalTotal = allAgg.find(a => a.sku === POLISZAL.sku) ?? null;
   const stampAgg = allAgg.filter(a => a.sku !== POLISZAL.sku);
 
-  const suppliesNet = allAgg.reduce((s, l) => s + l.totalPrice, 0);
-  const anyagszuksegletSuppliesNet = allAgg.reduce(
+  // Minden ár bruttó (ÁFA-val); a beton manuális bruttó input
+  const supplies = allAgg.reduce((s, l) => s + l.totalPrice, 0);
+  const anyagszuksegletSupplies = allAgg.reduce(
     (s, l) => s + (l.anyagszuksegletSubtotal ?? l.totalPrice),
     0
   );
-  const totalNet = concreteTotal + suppliesNet;
-  const anyagszuksegletNet = concreteTotal + anyagszuksegletSuppliesNet;
-  const totalGross = Math.round(totalNet * 1.27);
-  const anyagszuksegletGross = Math.round(anyagszuksegletNet * 1.27);
-  const totalPartner = Math.round(concreteTotal * 1.27 + suppliesNet * 1.27 * 0.9);
-  const anyagszuksegletPartner = Math.round(concreteTotal * 1.27 + anyagszuksegletSuppliesNet * 1.27 * 0.9);
+  const total = concreteTotal + supplies;
+  const anyagszuksegletTotal = concreteTotal + anyagszuksegletSupplies;
+  // Partneri: csak a supplies kap -10%; beton változatlan
+  const totalPartner = Math.round(concreteTotal + supplies * 0.9);
+  const anyagszuksegletPartner = Math.round(concreteTotal + anyagszuksegletSupplies * 0.9);
 
   return {
     concreteTotal,
     concreteM3,
     poliszalTotal,
     stampAgg,
-    suppliesNet,
-    anyagszuksegletSuppliesNet,
-    totalNet,
-    totalGross,
-    anyagszuksegletNet,
-    anyagszuksegletGross,
+    supplies,
+    anyagszuksegletSupplies,
+    total,
+    anyagszuksegletTotal,
     totalPartner,
     anyagszuksegletPartner,
   };
@@ -732,13 +724,9 @@ export default function BelyegzettBetonCalculatorPage() {
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-700 font-medium">Nettó összesen:</span>
-                    <span className="text-gray-900 font-semibold">{formatFt(aggregated.totalNet)}</span>
-                  </div>
                   {isPartner ? (
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                      <span className="text-base font-bold text-gray-800">Bruttó összesen:</span>
+                      <span className="text-base font-bold text-gray-800">Összesen:</span>
                       <PriceBreakdown
                         variant="total"
                         kiszerelesPrice={aggregated.totalPartner}
@@ -748,18 +736,18 @@ export default function BelyegzettBetonCalculatorPage() {
                     </div>
                   ) : (
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                      <span className="text-base font-bold text-gray-800">Bruttó összesen:</span>
+                      <span className="text-base font-bold text-gray-800">Összesen:</span>
                       <PriceBreakdown
                         variant="total"
-                        kiszerelesPrice={aggregated.totalGross}
-                        anyagszuksegletPrice={aggregated.anyagszuksegletGross}
+                        kiszerelesPrice={aggregated.total}
+                        anyagszuksegletPrice={aggregated.anyagszuksegletTotal}
                       />
                     </div>
                   )}
                   <p className="text-xs text-gray-500 mt-2">
                     {isPartner
-                      ? 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
-                      : 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
+                      ? 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
+                      : 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
                   </p>
                 </div>
               </div>
@@ -1214,13 +1202,9 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
 
           {/* Felület összegzés */}
           <div className="pt-3 border-t border-gray-200 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-700 font-medium">Nettó:</span>
-              <span className="text-gray-900 font-semibold">{formatFt(result.totalNet)}</span>
-            </div>
             {isPartner && result.totalPartner !== undefined && result.anyagszuksegletPartner !== undefined ? (
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                <span className="text-base font-bold text-gray-800">Bruttó:</span>
+                <span className="text-base font-bold text-gray-800">Összesen:</span>
                 <PriceBreakdown
                   variant="total"
                   kiszerelesPrice={result.totalPartner}
@@ -1230,18 +1214,18 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
               </div>
             ) : (
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                <span className="text-base font-bold text-gray-800">Bruttó:</span>
+                <span className="text-base font-bold text-gray-800">Összesen:</span>
                 <PriceBreakdown
                   variant="total"
-                  kiszerelesPrice={result.totalGross}
-                  anyagszuksegletPrice={result.anyagszuksegletGross}
+                  kiszerelesPrice={result.total}
+                  anyagszuksegletPrice={result.anyagszuksegletTotal}
                 />
               </div>
             )}
             <p className="text-xs text-gray-500 mt-2">
               {isPartner
-                ? 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
-                : 'Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
+                ? 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
+                : 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
             </p>
           </div>
         </div>
