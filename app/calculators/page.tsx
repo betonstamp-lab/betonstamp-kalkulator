@@ -102,11 +102,11 @@ export default function CalculatorsPage() {
         </p>
 
         {/* Cards grid */}
-        <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12 justify-items-center">
+        <div className="w-full max-w-7xl flex flex-wrap justify-center gap-6 mb-12">
           {/* Mikrocement - ACTIVE */}
           <Link
             href="/calculators/mikrocement"
-            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full max-w-sm"
+            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full sm:w-72"
           >
             <div className="h-32 md:h-40 flex items-center justify-center mb-4">
               <Image
@@ -117,7 +117,10 @@ export default function CalculatorsPage() {
                 className="max-h-24 md:max-h-32 w-auto object-contain"
               />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Mikrocement<br />Kalkulátor</h2>
+            <h2 className="text-base font-bold text-gray-800 mb-2">
+              <span className="block whitespace-nowrap">Mikrocement</span>
+              <span className="block">Kalkulátor</span>
+            </h2>
             <p className="text-sm text-gray-500 mb-4 flex-1">
               Topciment mikrocement rendszerek anyagszükséglet és ár kalkulátora.
             </p>
@@ -132,7 +135,7 @@ export default function CalculatorsPage() {
           {/* Pigment - ACTIVE */}
           <Link
             href="/calculators/pigment"
-            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full max-w-sm"
+            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full sm:w-72"
           >
             <div className="h-32 md:h-40 flex items-center justify-center mb-4">
               <Image
@@ -143,7 +146,10 @@ export default function CalculatorsPage() {
                 className="max-h-24 md:max-h-32 w-auto object-contain"
               />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Pigment<br />Kalkulátor</h2>
+            <h2 className="text-base font-bold text-gray-800 mb-2">
+              <span className="block whitespace-nowrap">Pigment</span>
+              <span className="block">Kalkulátor</span>
+            </h2>
             <p className="text-sm text-gray-500 mb-4 flex-1">
               Topciment mikrocement rendszerek pigment kalkulátora.
             </p>
@@ -156,7 +162,7 @@ export default function CalculatorsPage() {
           </Link>
 
           {/* Vakolat - COMING SOON */}
-          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale w-full max-w-sm">
+          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale w-full sm:w-72">
             <span className="absolute top-3 right-3 bg-brand-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">
               Hamarosan
             </span>
@@ -169,16 +175,19 @@ export default function CalculatorsPage() {
                 className="max-h-28 md:max-h-36 w-auto object-contain"
               />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Vakolat<br />Kalkulátor</h2>
+            <h2 className="text-base font-bold text-gray-800 mb-2">
+              <span className="block whitespace-nowrap">Vakolat</span>
+              <span className="block">Kalkulátor</span>
+            </h2>
             <p className="text-sm text-gray-500 mb-4 flex-1">
               Az Estecha tematizációs vakolat rendszerének anyagszükséglet és ár kalkulátora. (Hamarosan elérhető)
             </p>
           </div>
 
-          {/* Bélyegzett Beton - ACTIVE */}
+          {/* Bélyegzett Beton / Overlay - ACTIVE */}
           <Link
             href="/calculators/belyegzett-beton"
-            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full max-w-sm"
+            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full sm:w-72"
           >
             <div className="h-32 md:h-40 flex items-center justify-center mb-4">
               <Image
@@ -189,7 +198,10 @@ export default function CalculatorsPage() {
                 className="max-h-28 md:max-h-36 w-auto object-contain"
               />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Bélyegzett Beton / Overlay<br />Kalkulátor</h2>
+            <h2 className="text-base font-bold text-gray-800 mb-2">
+              <span className="block">Bélyegzett Beton /<br />Overlay</span>
+              <span className="block">Kalkulátor</span>
+            </h2>
             <p className="text-sm text-gray-500 mb-4 flex-1">
               Bélyegzett betonfelületek és overlay felületek anyag- és árkalkulátora — felületkeményítős, pigmentált vagy overlay technológiával.
             </p>
