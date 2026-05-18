@@ -91,3 +91,47 @@ export const POLISZAL_KG_PER_M3: Record<number, number> = {
   10: 2, // 10 cm betonnál 2 kg/m3
   15: 3, // 15 cm betonnál 3 kg/m3
 };
+
+// === OVERLAY-SPECIFIC PRODUCTS ===
+// Overlay zsák (16 szín, közös bruttó ár, 25 kg-os zsák, 1.25 m²/zsák lefedettség)
+export const OVERLAY_BAG_COLORS = [
+  { key: 'BLANCO',     name: 'Blanco (fehér)',             sku: 'TT12000', hex: '#efede8', price: 26989 },
+  { key: 'PEWTER',     name: 'Pewter (ónszürke)',          sku: 'TT12001', hex: '#9a9a9a', price: 26989 },
+  { key: 'NOIR',       name: 'Noir (fekete)',              sku: 'TT12002', hex: '#2b2b29', price: 26989 },
+  { key: 'PIZARRA',    name: 'Pizarra (középszürke)',      sku: 'TT12003', hex: '#6f6964', price: 26989 },
+  { key: 'CEMENTO',    name: 'Cemento (cementszürke)',     sku: 'TT12004', hex: '#c6c0ad', price: 26989 },
+  { key: 'ANTRACITA',  name: 'Antracita (sötétszürke)',    sku: 'TT12005', hex: '#4a4a4a', price: 26989 },
+  { key: 'ZINC',       name: 'Zinc (cinkszürke)',          sku: 'TT12006', hex: '#808080', price: 26989 },
+  { key: 'ACIER',      name: 'Acier (acélszürke)',         sku: 'TT12007', hex: '#8d8077', price: 26989 },
+  { key: 'NOGAL',      name: 'Nogal (dióbarna)',           sku: 'TT12009', hex: '#8f7460', price: 26989 },
+  { key: 'TABAC',      name: 'Tabac (dohánybarna)',        sku: 'TT12010', hex: '#a07a5a', price: 26989 },
+  { key: 'OLIVA',      name: 'Oliva (olívazöld)',          sku: 'TT12011', hex: '#808060', price: 26989 },
+  { key: 'TOSTADO',    name: 'Tostado (sárgásbarna)',      sku: 'TT12012', hex: '#c99866', price: 26989 },
+  { key: 'JAUNE',      name: 'Jaune (sárga)',              sku: 'TT12013', hex: '#e8c570', price: 26989 },
+  { key: 'CREMA',      name: 'Crema (krém)',               sku: 'TT12014', hex: '#e7d0ae', price: 26989 },
+  { key: 'PIERRE',     name: 'Pierre (drapp)',             sku: 'TT12015', hex: '#c2b3a1', price: 26989 },
+  { key: 'TON_PIERRE', name: 'Ton Pierre (világos bézs)',  sku: 'TT12016', hex: '#ddceb6', price: 26989 },
+] as const;
+
+export type OverlayBagColorKey = typeof OVERLAY_BAG_COLORS[number]['key'];
+
+export const OVERLAY_BAG_PRICE = 26989;        // bruttó (ÁFA-val, Shoprenter-szinkron)
+export const OVERLAY_BAG_KG = 25;
+export const OVERLAY_BAG_M2_PER_BAG = 1.25;    // 1 db 25kg zsák fedi 1.25 m²-t (1 m² → 20 kg = 0.8 zsák)
+
+// Primacem Plus 5L — Overlay alapozó (mindig kötelező Overlay felületnél)
+export const PRIMACEM_PLUS = {
+  name: 'Primacem Plus 5L',
+  sku: 'TT03005',
+  price: 28040,                                // bruttó (ÁFA-val, Shoprenter-szinkron)
+  liters: 5,
+  m2PerUnit: 50,
+} as const;
+
+// === EXPORT SUMMARY ===
+// Bélyegzett-only: STONECEM_FLOOR_*, ARCOCEM_FAST_*, POLISZAL, POLISZAL_KG_PER_M3
+// Overlay-only:    OVERLAY_BAG_COLORS, OVERLAY_BAG_PRICE/KG/M2_PER_BAG, PRIMACEM_PLUS
+// Közös:           DESMOCEM_POWDER_COLORS, DESMOCEM_POWDER_M2_PER_BUCKET/KG_PER_BUCKET,
+//                  DESMOCEM_LIQUID_PRODUCTS, DESMOCEM_LIQUID_M2_PER_5L,
+//                  SEALCEM_M70_PRODUCTS, SEALCEM_M70_M2_PER_18L_SINGLE_LAYER,
+//                  RELIEF_COLORS, RELIEF_PRICE, RELIEF_M2_PER_BOX, RELIEF_ML_PER_BOX

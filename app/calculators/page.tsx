@@ -189,35 +189,9 @@ export default function CalculatorsPage() {
                 className="max-h-28 md:max-h-36 w-auto object-contain"
               />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Bélyegzett Beton<br />Kalkulátor</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Bélyegzett Beton / Overlay<br />Kalkulátor</h2>
             <p className="text-sm text-gray-500 mb-4 flex-1">
-              A bélyegzett betonfelületek létrehozásához szükséges anyagrendszerek kalkulátora.
-            </p>
-            <span className="inline-flex items-center gap-1 bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-5 rounded-lg transition-colors text-sm">
-              Kalkulátor megnyitása
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 12l4-4-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-          </Link>
-
-          {/* Overlay - ACTIVE */}
-          <Link
-            href="/calculators/overlay"
-            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full max-w-sm"
-          >
-            <div className="h-32 md:h-40 flex items-center justify-center mb-4">
-              <Image
-                src="/images/betonstamp-logo.png"
-                alt="BetonStamp"
-                width={320}
-                height={160}
-                className="max-h-28 md:max-h-36 w-auto object-contain"
-              />
-            </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Overlay<br />Kalkulátor</h2>
-            <p className="text-sm text-gray-500 mb-4 flex-1">
-              Meglévő betonfelületekre alkalmazandó 1cm vastagságú anyag rendszerének kalkulátora.
+              Bélyegzett betonfelületek és overlay felületek anyag- és árkalkulátora — felületkeményítős, pigmentált vagy overlay technológiával.
             </p>
             <span className="inline-flex items-center gap-1 bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-5 rounded-lg transition-colors text-sm">
               Kalkulátor megnyitása

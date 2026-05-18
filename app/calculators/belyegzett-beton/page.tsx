@@ -21,7 +21,15 @@ import {
   SEALCEM_M70_M2_PER_18L_SINGLE_LAYER,
   POLISZAL,
   POLISZAL_KG_PER_M3,
+  OVERLAY_BAG_COLORS,
+  OVERLAY_BAG_PRICE,
+  OVERLAY_BAG_KG,
+  OVERLAY_BAG_M2_PER_BAG,
+  PRIMACEM_PLUS,
 } from '@/lib/calculators/belyegzett-beton/products';
+
+// Overlay-felületnél a lakk fix 2 réteg (nincs vastagság input, mint a Bélyegzettben)
+const OVERLAY_LAKK_LAYERS = 2;
 import PriceBreakdown from '@/components/PriceBreakdown';
 
 type Technology = 'felkemenyit' | 'pigment';
@@ -29,13 +37,12 @@ type Separator = 'por' | 'folyekony';
 type LakkType = 'normal' | 'antislip';
 type Thickness = 10 | 15;
 
-interface Surface {
+type SurfaceType = 'belyegzett' | 'overlay';
+
+interface BaseSurface {
   id: number;
-  technology: Technology;
+  type: SurfaceType;
   area: string; // input string
-  thickness: Thickness;
-  concretePrice: string; // input string
-  colorKey: string;
   separator: Separator;
   powderColorKey: string;
   reliefs: Record<string, number>;
@@ -43,13 +50,35 @@ interface Surface {
   result: SurfaceResult | null;
 }
 
+interface BelyegzettSurface extends BaseSurface {
+  type: 'belyegzett';
+  technology: Technology;
+  thickness: Thickness;
+  concretePrice: string; // input string
+  colorKey: string;       // Stonecem vagy Arcocem szín
+}
+
+interface OverlaySurface extends BaseSurface {
+  type: 'overlay';
+  overlayColorKey: string; // Overlay zsák szín (TT12000-TT12016)
+}
+
+type Surface = BelyegzettSurface | OverlaySurface;
+
+const isBelyegzett = (s: Surface): s is BelyegzettSurface => s.type === 'belyegzett';
+const isOverlay = (s: Surface): s is OverlaySurface => s.type === 'overlay';
+
 function isSurfaceValid(s: Surface): boolean {
   const area = parseFloat(s.area);
-  const concretePrice = parseFloat(s.concretePrice);
   if (isNaN(area) || area <= 0) return false;
-  if (isNaN(concretePrice) || concretePrice < 0) return false;
-  if (!s.colorKey) return false;
   if (s.separator === 'por' && !s.powderColorKey) return false;
+  if (isBelyegzett(s)) {
+    const concretePrice = parseFloat(s.concretePrice);
+    if (isNaN(concretePrice) || concretePrice < 0) return false;
+    if (!s.colorKey) return false;
+  } else {
+    if (!s.overlayColorKey) return false;
+  }
   return true;
 }
 
@@ -123,15 +152,30 @@ function optimize18LAnd5L(litersNeeded: number): { large18L: number; small5L: nu
   return { large18L, small5L };
 }
 
-function createEmptySurface(id: number): Surface {
+function createBelyegzettSurface(id: number): BelyegzettSurface {
   return {
     id,
+    type: 'belyegzett',
     technology: 'felkemenyit',
     area: '',
     thickness: 10,
     concretePrice: '',
     colorKey: '',
     separator: 'por',
+    powderColorKey: '',
+    reliefs: {},
+    lakkType: 'normal',
+    result: null,
+  };
+}
+
+function createOverlaySurface(id: number): OverlaySurface {
+  return {
+    id,
+    type: 'overlay',
+    area: '',
+    overlayColorKey: '',
+    separator: 'folyekony',
     powderColorKey: '',
     reliefs: {},
     lakkType: 'normal',
@@ -150,6 +194,10 @@ function buildLineItem(base: Omit<LineItem, 'anyagszuksegletSubtotal'>): LineIte
 }
 
 function calculateSurface(s: Surface): SurfaceResult | null {
+  if (isOverlay(s)) {
+    return calculateOverlaySurface(s);
+  }
+  // s most már BelyegzettSurface típusúra szűkített
   const area = parseFloat(s.area);
   const concretePrice = parseFloat(s.concretePrice);
   if (isNaN(area) || area <= 0) return null;
@@ -360,6 +408,173 @@ function calculateSurface(s: Surface): SurfaceResult | null {
   };
 }
 
+function calculateOverlaySurface(s: OverlaySurface): SurfaceResult | null {
+  const area = parseFloat(s.area);
+  if (isNaN(area) || area <= 0) return null;
+  if (!s.overlayColorKey) return null;
+  if (s.separator === 'por' && !s.powderColorKey) return null;
+
+  const stampLines: LineItem[] = [];
+
+  // 1) Primacem Plus 5L — alapozó, mindig kötelező
+  const primacemQty = Math.ceil(area / PRIMACEM_PLUS.m2PerUnit);
+  stampLines.push(buildLineItem({
+    name: PRIMACEM_PLUS.name,
+    sku: PRIMACEM_PLUS.sku,
+    units: primacemQty,
+    unitSize: '5 L',
+    pricePerUnit: PRIMACEM_PLUS.price,
+    totalPrice: primacemQty * PRIMACEM_PLUS.price,
+    partnerEligible: true,
+    inCart: true,
+    needed: area,
+    got: primacemQty * PRIMACEM_PLUS.m2PerUnit,
+    unit: 'm²',
+  }));
+
+  // 2) Overlay zsák (kiválasztott szín)
+  const overlayColor = OVERLAY_BAG_COLORS.find(c => c.key === s.overlayColorKey);
+  if (!overlayColor) return null;
+  const overlayQty = Math.ceil(area / OVERLAY_BAG_M2_PER_BAG);
+  stampLines.push(buildLineItem({
+    name: `Overlay ${overlayColor.name}`,
+    sku: overlayColor.sku,
+    units: overlayQty,
+    unitSize: `${OVERLAY_BAG_KG} kg zsák`,
+    pricePerUnit: OVERLAY_BAG_PRICE,
+    totalPrice: overlayQty * OVERLAY_BAG_PRICE,
+    partnerEligible: true,
+    inCart: true,
+    needed: area,
+    got: overlayQty * OVERLAY_BAG_M2_PER_BAG,
+    unit: 'm²',
+  }));
+
+  // 3) Leválasztó (Por VAGY Folyékony, Bélyegzett-konvencióval)
+  let reliefCoverageM2 = 0;
+  if (s.separator === 'por') {
+    const powderColor = DESMOCEM_POWDER_COLORS.find(c => c.key === s.powderColorKey);
+    if (!powderColor) return null;
+    const buckets = Math.ceil(area / DESMOCEM_POWDER_M2_PER_BUCKET);
+    stampLines.push(buildLineItem({
+      name: `Desmocem Powder ${powderColor.name}`,
+      sku: powderColor.sku,
+      units: buckets,
+      unitSize: '10 kg vödör',
+      pricePerUnit: powderColor.price,
+      totalPrice: buckets * powderColor.price,
+      partnerEligible: true,
+      inCart: true,
+      needed: area,
+      got: buckets * DESMOCEM_POWDER_M2_PER_BUCKET,
+      unit: 'm²',
+    }));
+  } else {
+    // Folyékony — 18L+5L combo, ugyanaz mint Bélyegzettben
+    const litersNeeded = (area / DESMOCEM_LIQUID_M2_PER_5L) * 5;
+    const { large18L, small5L } = optimize18LAnd5L(litersNeeded);
+    if (large18L > 0) {
+      stampLines.push(buildLineItem({
+        name: DESMOCEM_LIQUID_PRODUCTS.large.name,
+        sku: DESMOCEM_LIQUID_PRODUCTS.large.sku,
+        units: large18L,
+        unitSize: '18 L',
+        pricePerUnit: DESMOCEM_LIQUID_PRODUCTS.large.price,
+        totalPrice: large18L * DESMOCEM_LIQUID_PRODUCTS.large.price,
+        partnerEligible: true,
+        inCart: true,
+        needed: Math.min(litersNeeded, large18L * 18),
+        got: large18L * 18,
+        unit: 'L',
+      }));
+    }
+    if (small5L > 0) {
+      const remaining = Math.max(0, litersNeeded - large18L * 18);
+      stampLines.push(buildLineItem({
+        name: DESMOCEM_LIQUID_PRODUCTS.small.name,
+        sku: DESMOCEM_LIQUID_PRODUCTS.small.sku,
+        units: small5L,
+        unitSize: '5 L',
+        pricePerUnit: DESMOCEM_LIQUID_PRODUCTS.small.price,
+        totalPrice: small5L * DESMOCEM_LIQUID_PRODUCTS.small.price,
+        partnerEligible: true,
+        inCart: true,
+        needed: remaining,
+        got: small5L * 5,
+        unit: 'L',
+      }));
+    }
+
+    // 4) Relief Enhancer (csak folyékony esetén)
+    for (const [key, qty] of Object.entries(s.reliefs)) {
+      if (qty > 0) {
+        const reliefColor = RELIEF_COLORS.find(c => c.key === key);
+        if (!reliefColor) continue;
+        const colorCoverage = qty * RELIEF_M2_PER_BOX;
+        reliefCoverageM2 += colorCoverage;
+        stampLines.push(buildLineItem({
+          name: `Masters Relief Enhancer - ${reliefColor.name}`,
+          sku: reliefColor.sku,
+          units: qty,
+          unitSize: '150 ml',
+          pricePerUnit: RELIEF_PRICE,
+          totalPrice: qty * RELIEF_PRICE,
+          partnerEligible: true,
+          inCart: true,
+          needed: Math.min(colorCoverage, area),
+          got: colorCoverage,
+          unit: 'm²',
+        }));
+      }
+    }
+  }
+
+  // 5) Sealcem M70 lakk — Bélyegzett-konvenció (100 m²/18L 1 rétegre), Overlay-nél fix 2 réteg
+  const lakkProduct = s.lakkType === 'normal' ? SEALCEM_M70_PRODUCTS.normal : SEALCEM_M70_PRODUCTS.antislip;
+  const lakkLitersNeeded = (area * OVERLAY_LAKK_LAYERS * 18) / SEALCEM_M70_M2_PER_18L_SINGLE_LAYER;
+  const lakk18L = Math.ceil(lakkLitersNeeded / 18);
+  stampLines.push(buildLineItem({
+    name: lakkProduct.name,
+    sku: lakkProduct.sku,
+    units: lakk18L,
+    unitSize: '18 L',
+    pricePerUnit: lakkProduct.price,
+    totalPrice: lakk18L * lakkProduct.price,
+    partnerEligible: true,
+    inCart: true,
+    needed: lakkLitersNeeded,
+    got: lakk18L * 18,
+    unit: 'L',
+  }));
+
+  // === Összegzés (Overlay-nél NINCS concrete és poliszal) ===
+  const supplies = stampLines.reduce((sum, l) => sum + l.totalPrice, 0);
+  const anyagszuksegletSupplies = stampLines.reduce(
+    (sum, l) => sum + (l.anyagszuksegletSubtotal ?? l.totalPrice),
+    0
+  );
+  const total = supplies; // concreteSubtotal = 0
+  const anyagszuksegletTotal = anyagszuksegletSupplies;
+  // Partneri kedvezmény (-10%) az Overlay teljes tételsorra (nincs különbontás beton/supplies)
+  const totalPartner = Math.round(supplies * 0.9);
+  const anyagszuksegletPartner = Math.round(anyagszuksegletSupplies * 0.9);
+
+  return {
+    surfaceId: s.id,
+    concreteLine: null,
+    poliszalLine: null,
+    stampLines,
+    reliefCoverageM2,
+    concreteSubtotal: 0,
+    supplies,
+    anyagszuksegletSupplies,
+    total,
+    anyagszuksegletTotal,
+    totalPartner,
+    anyagszuksegletPartner,
+  };
+}
+
 interface AggregatedLine {
   sku: string;
   name: string;
@@ -473,7 +688,7 @@ export default function BelyegzettBetonCalculatorPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const router = useRouter();
 
-  const [surfaces, setSurfaces] = useState<Surface[]>([createEmptySurface(1)]);
+  const [surfaces, setSurfaces] = useState<Surface[]>([createBelyegzettSurface(1)]);
   const [cartLoading, setCartLoading] = useState(false);
   const [cartError, setCartError] = useState<string | null>(null);
 
@@ -512,13 +727,29 @@ export default function BelyegzettBetonCalculatorPage() {
       if (s.id !== id) return s;
       // Ha a `result` nincs a patch-ben, töröljük (mezőváltoztatás → eredmény elvész)
       const clearResult = !('result' in patch);
-      return { ...s, ...patch, ...(clearResult ? { result: null } : {}) };
+      // A spread kiszélesítené a discriminated union 'type' mezőjét; patch sosem
+      // változtatja a felület típusát (UI lock), így biztonságos a cast.
+      const merged = { ...s, ...patch, ...(clearResult ? { result: null } : {}) } as Surface;
+      return merged;
     }));
   };
 
-  const addSurface = () => {
+  const addBelyegzettSurface = () => {
     const newId = Math.max(...surfaces.map(s => s.id), 0) + 1;
-    setSurfaces([...surfaces, createEmptySurface(newId)]);
+    setSurfaces([...surfaces, createBelyegzettSurface(newId)]);
+  };
+
+  const addOverlaySurface = () => {
+    const newId = Math.max(...surfaces.map(s => s.id), 0) + 1;
+    setSurfaces([...surfaces, createOverlaySurface(newId)]);
+  };
+
+  const changeSurfaceType = (id: number, newType: SurfaceType) => {
+    setSurfaces(prev => prev.map(s => {
+      if (s.id !== id) return s;
+      // Az új felület tiszta state-tel jön létre — a típusváltás nem őriz meg semmit
+      return newType === 'belyegzett' ? createBelyegzettSurface(id) : createOverlaySurface(id);
+    }));
   };
 
   const removeSurface = (id: number) => {
@@ -537,6 +768,14 @@ export default function BelyegzettBetonCalculatorPage() {
   const validResults = surfaces.map(s => s.result).filter((r): r is SurfaceResult => r !== null);
   const aggregated = validResults.length > 0 ? aggregateResults(validResults) : null;
   const allCalculated = surfaces.every(s => s.result !== null);
+
+  // Multi-felület aggregátum címek és feltételes blokkok típus szerint
+  const hasBelyegzett = surfaces.some(s => s.type === 'belyegzett' && s.result !== null);
+  const hasOverlay = surfaces.some(s => s.type === 'overlay' && s.result !== null);
+  const aggHeader =
+    hasBelyegzett && hasOverlay ? 'Összesített anyagok' :
+    hasOverlay ? 'Overlay anyagok' :
+    'Bélyegzéshez szükséges anyagok';
 
   const handleAddToCart = async () => {
     if (!aggregated) return;
@@ -668,20 +907,32 @@ export default function BelyegzettBetonCalculatorPage() {
               totalSurfaces={surfaces.length}
               isPartner={isPartner}
               onUpdate={(patch) => updateSurface(surface.id, patch)}
+              onChangeType={(newType) => changeSurfaceType(surface.id, newType)}
               onRemove={() => removeSurface(surface.id)}
               onCalculate={() => calculateSurfaceById(surface.id)}
             />
           ))}
 
-          <button
-            onClick={addSurface}
-            className="w-full py-4 rounded-xl border-2 border-brand-500 bg-white hover:bg-brand-500 text-brand-700 hover:text-white font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>Új felület hozzáadása</span>
-          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              onClick={addBelyegzettSurface}
+              className="py-4 rounded-xl border-2 border-brand-500 bg-white hover:bg-brand-500 text-brand-700 hover:text-white font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Új Bélyegzett beton felület</span>
+            </button>
+            <button
+              onClick={addOverlaySurface}
+              className="py-4 rounded-xl border-2 border-brand-500 bg-white hover:bg-brand-500 text-brand-700 hover:text-white font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Új Overlay felület</span>
+            </button>
+          </div>
         </div>
 
         {/* Összesítés */}
@@ -693,26 +944,28 @@ export default function BelyegzettBetonCalculatorPage() {
                   Összesített anyagszükséglet
                 </h2>
 
-                {/* Beton */}
-                <div className="mb-4 pb-4 border-b border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Betonozási költség</h3>
-                  <div className="text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between sm:gap-3 py-1">
-                    <span className="text-gray-800 font-medium sm:flex-1">Beton</span>
-                    <div className="flex items-center justify-between gap-3 mt-1 sm:mt-0 sm:contents">
-                      <span className="text-gray-500 sm:shrink-0 sm:w-36 sm:text-right">
-                        {aggregated.concreteM3} m³
-                      </span>
-                      <span className="text-gray-900 font-semibold sm:shrink-0 sm:w-28 sm:text-right">
-                        {formatFt(aggregated.concreteTotal)}
-                      </span>
+                {/* Beton — csak ha van Bélyegzett-felület */}
+                {hasBelyegzett && (
+                  <div className="mb-4 pb-4 border-b border-gray-200">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Betonozási költség</h3>
+                    <div className="text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between sm:gap-3 py-1">
+                      <span className="text-gray-800 font-medium sm:flex-1">Beton</span>
+                      <div className="flex items-center justify-between gap-3 mt-1 sm:mt-0 sm:contents">
+                        <span className="text-gray-500 sm:shrink-0 sm:w-36 sm:text-right">
+                          {aggregated.concreteM3} m³
+                        </span>
+                        <span className="text-gray-900 font-semibold sm:shrink-0 sm:w-28 sm:text-right">
+                          {formatFt(aggregated.concreteTotal)}
+                        </span>
+                      </div>
                     </div>
+                    <p className="text-xs text-gray-500 mt-1">A betont a helyi betonüzemből rendeli, ezért az ár egyedi.</p>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">A betont a helyi betonüzemből rendeli, ezért az ár egyedi.</p>
-                </div>
+                )}
 
-                {/* Bélyegzéshez */}
+                {/* Tételek — cím típusfüggő */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Bélyegzéshez szükséges anyagok</h3>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">{aggHeader}</h3>
                   <ul className="divide-y divide-gray-100">
                     {aggregated.poliszalTotal && (
                       <AggLineRow line={aggregated.poliszalTotal} />
@@ -745,8 +998,8 @@ export default function BelyegzettBetonCalculatorPage() {
                     </div>
                   )}
                   <p className="text-xs text-gray-500 mt-2">
-                    {isPartner
-                      ? 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
+                    {isPartner && hasBelyegzett
+                      ? 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár nem vonatkozik a betonra.'
                       : 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
                   </p>
                 </div>
@@ -823,19 +1076,25 @@ interface SurfaceBlockProps {
   totalSurfaces: number;
   isPartner: boolean;
   onUpdate: (patch: Partial<Surface>) => void;
+  onChangeType: (newType: SurfaceType) => void;
   onRemove: () => void;
   onCalculate: () => void;
 }
 
-function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRemove, onCalculate }: SurfaceBlockProps) {
+function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onChangeType, onRemove, onCalculate }: SurfaceBlockProps) {
   const result = surface.result;
   const canCalculate = isSurfaceValid(surface);
   const areaNum = parseFloat(surface.area);
   const validArea = !isNaN(areaNum) && areaNum > 0;
   const reliefCoverage = Object.entries(surface.reliefs).reduce((sum, [, q]) => sum + q * RELIEF_M2_PER_BOX, 0);
 
-  const colors = surface.technology === 'felkemenyit' ? STONECEM_FLOOR_COLORS : ARCOCEM_FAST_COLORS;
-  const selectedColor = colors.find(c => c.key === surface.colorKey);
+  // Lock: ha a felület már szerkesztett, nem váltható a típus.
+  // Üresnek számít: nincs terület, és nincs típus-specifikus választás (Stonecem/Arcocem szín
+  // ill. Overlay zsák szín), és nincs beton ár (Bélyegzettnél).
+  const isEmpty = isBelyegzett(surface)
+    ? (surface.area === '' && surface.colorKey === '' && surface.concretePrice === '')
+    : (surface.area === '' && surface.overlayColorKey === '');
+  const canChangeType = isEmpty;
 
   const updateReliefQty = (key: string, delta: number) => {
     const current = surface.reliefs[key] ?? 0;
@@ -861,35 +1120,74 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
         )}
       </div>
 
-      {/* 1) Technológia */}
+      {/* 0) Felület típusa */}
       <div>
         <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-          Technológia
-          <Tooltip text={"Felületkeményítős: a friss beton tetejére Stonecem Floor port szórnak.\nPigmentált: a betont már eleve pigmentálva öntik."} />
+          Felület típusa
+          <Tooltip text={"Bélyegzett beton: új beton, Stonecem Floor / Arcocem Fast technológia.\nOverlay: meglévő betonfelületre 1 cm-es felújító réteg."} />
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
-            onClick={() => onUpdate({ technology: 'felkemenyit', colorKey: '' })}
+            onClick={() => canChangeType && onChangeType('belyegzett')}
+            disabled={!canChangeType}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-              surface.technology === 'felkemenyit'
+              surface.type === 'belyegzett'
                 ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-            }`}
+            } ${!canChangeType ? 'opacity-60 cursor-not-allowed hover:border-gray-300' : ''}`}
           >
-            Felületkeményítős
+            Bélyegzett beton
           </button>
           <button
-            onClick={() => onUpdate({ technology: 'pigment', colorKey: '' })}
+            onClick={() => canChangeType && onChangeType('overlay')}
+            disabled={!canChangeType}
             className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-              surface.technology === 'pigment'
+              surface.type === 'overlay'
                 ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                 : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-            }`}
+            } ${!canChangeType ? 'opacity-60 cursor-not-allowed hover:border-gray-300' : ''}`}
           >
-            Pigmentált beton
+            Overlay
           </button>
         </div>
+        {!canChangeType && (
+          <p className="text-xs text-gray-500 mt-2">
+            A felület típusa nem váltható szerkesztés után. Új felületet adj hozzá másik típushoz a lenti gombokkal.
+          </p>
+        )}
       </div>
+
+      {/* 1) Technológia — csak Bélyegzettnél */}
+      {isBelyegzett(surface) && (
+        <div>
+          <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+            Technológia
+            <Tooltip text={"Felületkeményítős: a friss beton tetejére Stonecem Floor port szórnak.\nPigmentált: a betont már eleve pigmentálva öntik."} />
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              onClick={() => onUpdate({ technology: 'felkemenyit', colorKey: '' })}
+              className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                surface.technology === 'felkemenyit'
+                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+              }`}
+            >
+              Felületkeményítős
+            </button>
+            <button
+              onClick={() => onUpdate({ technology: 'pigment', colorKey: '' })}
+              className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                surface.technology === 'pigment'
+                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+              }`}
+            >
+              Pigmentált beton
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 2) Terület */}
       <div>
@@ -905,94 +1203,153 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
         />
       </div>
 
-      {/* 3) Vastagság */}
-      <div>
-        <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-          Vastagság
-          <Tooltip text={"10 cm: járófelület (2 réteg lakk).\n15 cm: gépjárműforgalom (3 réteg lakk)."} />
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => onUpdate({ thickness: 10 })}
-            className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-              surface.thickness === 10
-                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-            }`}
-          >
-            10 cm (járófelület)
-          </button>
-          <button
-            onClick={() => onUpdate({ thickness: 15 })}
-            className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-              surface.thickness === 15
-                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-            }`}
-          >
-            15 cm (gépjárműforgalom)
-          </button>
-        </div>
-      </div>
-
-      {/* 4) Beton ár */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Beton ár (Ft/m³)</label>
-        <input
-          type="number"
-          step="1"
-          min="0"
-          value={surface.concretePrice}
-          onChange={(e) => onUpdate({ concretePrice: e.target.value })}
-          placeholder="Pl. 35000"
-          className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
-        />
-        <p className="text-xs text-gray-500 mt-1">A betont a helyi betonüzemből rendeli, ezért az ár egyedi.</p>
-      </div>
-
-      {/* 5) Szín */}
-      <div>
-        <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-          {surface.technology === 'felkemenyit' ? 'Stonecem Floor szín' : 'Arcocem Fast szín'}
-          <Tooltip text={"Felületkeményítős esetén 25 kg vödörben kapható.\nPigmentált beton esetén 5 kg zsákban."} />
-        </label>
-        {selectedColor && (
-          <div className="mb-2 flex items-center gap-2">
-            <div
-              className="w-6 h-6 rounded border border-gray-300"
-              style={{ backgroundColor: selectedColor.hex }}
-            />
-            <span className="text-sm font-medium text-gray-800">{selectedColor.name}</span>
+      {/* 3) Vastagság — csak Bélyegzettnél */}
+      {isBelyegzett(surface) && (
+        <div>
+          <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+            Vastagság
+            <Tooltip text={"10 cm: járófelület (2 réteg lakk).\n15 cm: gépjárműforgalom (3 réteg lakk)."} />
+          </label>
+          <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => onUpdate({ colorKey: '' })}
-              className="text-xs text-red-500 hover:text-red-700 ml-2"
-            >
-              ✕ Törlés
-            </button>
-          </div>
-        )}
-        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
-          {colors.map(c => (
-            <button
-              key={c.key}
-              onClick={() => onUpdate({ colorKey: c.key })}
-              className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
-                surface.colorKey === c.key
-                  ? 'border-brand-500 shadow-md'
-                  : 'border-gray-200 hover:border-gray-400'
+              onClick={() => onUpdate({ thickness: 10 })}
+              className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                surface.thickness === 10
+                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
               }`}
             >
-              <div
-                className="w-full aspect-square rounded-sm mb-1"
-                style={{ backgroundColor: c.hex }}
-              />
-              <span className="text-[9px] leading-tight text-center text-gray-600 break-words">
-                {c.name}
-              </span>
+              10 cm (járófelület)
             </button>
-          ))}
+            <button
+              onClick={() => onUpdate({ thickness: 15 })}
+              className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                surface.thickness === 15
+                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+              }`}
+            >
+              15 cm (gépjárműforgalom)
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* 4) Beton ár — csak Bélyegzettnél */}
+      {isBelyegzett(surface) && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Beton ár (Ft/m³)</label>
+          <input
+            type="number"
+            step="1"
+            min="0"
+            value={surface.concretePrice}
+            onChange={(e) => onUpdate({ concretePrice: e.target.value })}
+            placeholder="Pl. 35000"
+            className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
+          />
+          <p className="text-xs text-gray-500 mt-1">A betont a helyi betonüzemből rendeli, ezért az ár egyedi.</p>
+        </div>
+      )}
+
+      {/* 5) Szín — Bélyegzett: Stonecem/Arcocem */}
+      {isBelyegzett(surface) && (() => {
+        const colors = surface.technology === 'felkemenyit' ? STONECEM_FLOOR_COLORS : ARCOCEM_FAST_COLORS;
+        const selectedColor = colors.find(c => c.key === surface.colorKey);
+        return (
+          <div>
+            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+              {surface.technology === 'felkemenyit' ? 'Stonecem Floor szín' : 'Arcocem Fast szín'}
+              <Tooltip text={"Felületkeményítős esetén 25 kg vödörben kapható.\nPigmentált beton esetén 5 kg zsákban."} />
+            </label>
+            {selectedColor && (
+              <div className="mb-2 flex items-center gap-2">
+                <div
+                  className="w-6 h-6 rounded border border-gray-300"
+                  style={{ backgroundColor: selectedColor.hex }}
+                />
+                <span className="text-sm font-medium text-gray-800">{selectedColor.name}</span>
+                <button
+                  onClick={() => onUpdate({ colorKey: '' })}
+                  className="text-xs text-red-500 hover:text-red-700 ml-2"
+                >
+                  ✕ Törlés
+                </button>
+              </div>
+            )}
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+              {colors.map(c => (
+                <button
+                  key={c.key}
+                  onClick={() => onUpdate({ colorKey: c.key })}
+                  className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
+                    surface.colorKey === c.key
+                      ? 'border-brand-500 shadow-md'
+                      : 'border-gray-200 hover:border-gray-400'
+                  }`}
+                >
+                  <div
+                    className="w-full aspect-square rounded-sm mb-1"
+                    style={{ backgroundColor: c.hex }}
+                  />
+                  <span className="text-[9px] leading-tight text-center text-gray-600 break-words">
+                    {c.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* 5b) Overlay zsák szín — csak Overlay-nél */}
+      {isOverlay(surface) && (() => {
+        const selectedOverlayColor = OVERLAY_BAG_COLORS.find(c => c.key === surface.overlayColorKey);
+        return (
+          <div>
+            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+              Overlay zsák szín
+              <Tooltip text="16 színben elérhető, 25 kg zsákonként, 1 zsák ~1.25 m²-t fed." />
+            </label>
+            {selectedOverlayColor && (
+              <div className="mb-2 flex items-center gap-2">
+                <div
+                  className="w-6 h-6 rounded border border-gray-300"
+                  style={{ backgroundColor: selectedOverlayColor.hex }}
+                />
+                <span className="text-sm font-medium text-gray-800">{selectedOverlayColor.name}</span>
+                <button
+                  onClick={() => onUpdate({ overlayColorKey: '' } as Partial<Surface>)}
+                  className="text-xs text-red-500 hover:text-red-700 ml-2"
+                >
+                  ✕ Törlés
+                </button>
+              </div>
+            )}
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+              {OVERLAY_BAG_COLORS.map(c => (
+                <button
+                  key={c.key}
+                  onClick={() => onUpdate({ overlayColorKey: c.key } as Partial<Surface>)}
+                  className={`flex flex-col items-center p-1 rounded border-2 transition-all hover:scale-105 ${
+                    surface.overlayColorKey === c.key
+                      ? 'border-brand-500 shadow-md'
+                      : 'border-gray-200 hover:border-gray-400'
+                  }`}
+                >
+                  <div
+                    className="w-full aspect-square rounded-sm mb-1"
+                    style={{ backgroundColor: c.hex }}
+                  />
+                  <span className="text-[9px] leading-tight text-center text-gray-600 break-words">
+                    {c.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* 6) Leválasztó típus */}
       <div>
@@ -1165,28 +1522,32 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
         <div className="mt-2 p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-4">
           <h3 className="font-bold text-gray-800">Anyagszükséglet és árak</h3>
 
-          {/* Betonozási költség */}
-          <div>
-            <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Betonozási költség</h4>
-            <ul className="divide-y divide-gray-100">
-              {result.concreteLine && (
-                <ResultLineRow line={result.concreteLine} />
-              )}
-              {result.poliszalLine && (
-                <ResultLineRow line={result.poliszalLine} />
-              )}
-            </ul>
-            <div className="mt-2 text-right text-sm">
-              <span className="text-gray-600">Részösszeg: </span>
-              <span className="font-semibold text-gray-900">
-                {formatFt(result.concreteSubtotal + (result.poliszalLine?.totalPrice ?? 0))}
-              </span>
+          {/* Betonozási költség — csak Bélyegzettnél */}
+          {isBelyegzett(surface) && (
+            <div>
+              <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Betonozási költség</h4>
+              <ul className="divide-y divide-gray-100">
+                {result.concreteLine && (
+                  <ResultLineRow line={result.concreteLine} />
+                )}
+                {result.poliszalLine && (
+                  <ResultLineRow line={result.poliszalLine} />
+                )}
+              </ul>
+              <div className="mt-2 text-right text-sm">
+                <span className="text-gray-600">Részösszeg: </span>
+                <span className="font-semibold text-gray-900">
+                  {formatFt(result.concreteSubtotal + (result.poliszalLine?.totalPrice ?? 0))}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Bélyegzéshez szükséges */}
+          {/* Tételsorok — címke típusfüggő */}
           <div>
-            <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Bélyegzéshez szükséges anyagok</h4>
+            <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">
+              {isBelyegzett(surface) ? 'Bélyegzéshez szükséges anyagok' : 'Overlay anyagok'}
+            </h4>
             <ul className="divide-y divide-gray-100">
               {result.stampLines.map((l, i) => (
                 <ResultLineRow key={i} line={l} />
@@ -1223,8 +1584,8 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onRe
               </div>
             )}
             <p className="text-xs text-gray-500 mt-2">
-              {isPartner
-                ? 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár csak a bélyegzési anyagokra vonatkozik.'
+              {isPartner && isBelyegzett(surface)
+                ? 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt. A partneri ár nem vonatkozik a betonra.'
                 : 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
             </p>
           </div>
