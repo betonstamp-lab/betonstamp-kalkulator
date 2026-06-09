@@ -193,9 +193,9 @@ function buildLineItem(base: Omit<LineItem, 'anyagszuksegletSubtotal'>): LineIte
   return { ...base, anyagszuksegletSubtotal: base.totalPrice - leftover * unitPrice };
 }
 
-function calculateSurface(s: Surface): SurfaceResult | null {
+function calculateSurface(s: Surface, discountMultiplier: number): SurfaceResult | null {
   if (isOverlay(s)) {
-    return calculateOverlaySurface(s);
+    return calculateOverlaySurface(s, discountMultiplier);
   }
   // s most már BelyegzettSurface típusúra szűkített
   const area = parseFloat(s.area);
@@ -388,9 +388,9 @@ function calculateSurface(s: Surface): SurfaceResult | null {
     stampLines.reduce((s, l) => s + (l.anyagszuksegletSubtotal ?? l.totalPrice), 0);
   const total = concreteSubtotal + supplies;
   const anyagszuksegletTotal = concreteSubtotal + anyagszuksegletSupplies;
-  // Partneri: csak a supplies kap -10% kedvezményt; beton változatlan
-  const totalPartner = Math.round(concreteSubtotal + supplies * 0.9);
-  const anyagszuksegletPartner = Math.round(concreteSubtotal + anyagszuksegletSupplies * 0.9);
+  // Partneri: csak a supplies kap kedvezményt (profile.partner_discount alapján); beton változatlan
+  const totalPartner = Math.round(concreteSubtotal + supplies * discountMultiplier);
+  const anyagszuksegletPartner = Math.round(concreteSubtotal + anyagszuksegletSupplies * discountMultiplier);
 
   return {
     surfaceId: s.id,
@@ -408,7 +408,7 @@ function calculateSurface(s: Surface): SurfaceResult | null {
   };
 }
 
-function calculateOverlaySurface(s: OverlaySurface): SurfaceResult | null {
+function calculateOverlaySurface(s: OverlaySurface, discountMultiplier: number): SurfaceResult | null {
   const area = parseFloat(s.area);
   if (isNaN(area) || area <= 0) return null;
   if (!s.overlayColorKey) return null;
@@ -555,9 +555,9 @@ function calculateOverlaySurface(s: OverlaySurface): SurfaceResult | null {
   );
   const total = supplies; // concreteSubtotal = 0
   const anyagszuksegletTotal = anyagszuksegletSupplies;
-  // Partneri kedvezmény (-10%) az Overlay teljes tételsorra (nincs különbontás beton/supplies)
-  const totalPartner = Math.round(supplies * 0.9);
-  const anyagszuksegletPartner = Math.round(anyagszuksegletSupplies * 0.9);
+  // Partneri kedvezmény (profile.partner_discount) az Overlay teljes tételsorra (nincs külön beton/supplies)
+  const totalPartner = Math.round(supplies * discountMultiplier);
+  const anyagszuksegletPartner = Math.round(anyagszuksegletSupplies * discountMultiplier);
 
   return {
     surfaceId: s.id,
@@ -590,7 +590,7 @@ interface AggregatedLine {
   anyagszuksegletSubtotal?: number;
 }
 
-function aggregateResults(results: SurfaceResult[]): {
+function aggregateResults(results: SurfaceResult[], discountMultiplier: number): {
   concreteTotal: number;
   concreteM3: number;
   poliszalTotal: AggregatedLine | null;
@@ -664,9 +664,9 @@ function aggregateResults(results: SurfaceResult[]): {
   );
   const total = concreteTotal + supplies;
   const anyagszuksegletTotal = concreteTotal + anyagszuksegletSupplies;
-  // Partneri: csak a supplies kap -10%; beton változatlan
-  const totalPartner = Math.round(concreteTotal + supplies * 0.9);
-  const anyagszuksegletPartner = Math.round(concreteTotal + anyagszuksegletSupplies * 0.9);
+  // Partneri: csak a supplies kap kedvezményt (profile.partner_discount alapján); beton változatlan
+  const totalPartner = Math.round(concreteTotal + supplies * discountMultiplier);
+  const anyagszuksegletPartner = Math.round(concreteTotal + anyagszuksegletSupplies * discountMultiplier);
 
   return {
     concreteTotal,
@@ -693,6 +693,10 @@ export default function BelyegzettBetonCalculatorPage() {
   const [cartError, setCartError] = useState<string | null>(null);
 
   const isPartner = profile?.role === 'partner';
+  // Partneri kedvezmény: a profile.partner_discount mezőből (mikrocement-mintára).
+  // Nem-partnernél is biztonságos: discountMultiplier = 1 → nincs csökkentés.
+  const discountPercent = profile?.partner_discount || 0;
+  const discountMultiplier = 1 - discountPercent / 100;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -760,13 +764,13 @@ export default function BelyegzettBetonCalculatorPage() {
   const calculateSurfaceById = (id: number) => {
     setSurfaces(prev => prev.map(s => {
       if (s.id !== id) return s;
-      const result = calculateSurface(s);
+      const result = calculateSurface(s, discountMultiplier);
       return { ...s, result };
     }));
   };
 
   const validResults = surfaces.map(s => s.result).filter((r): r is SurfaceResult => r !== null);
-  const aggregated = validResults.length > 0 ? aggregateResults(validResults) : null;
+  const aggregated = validResults.length > 0 ? aggregateResults(validResults, discountMultiplier) : null;
   const allCalculated = surfaces.every(s => s.result !== null);
 
   // Multi-felület aggregátum címek és feltételes blokkok típus szerint

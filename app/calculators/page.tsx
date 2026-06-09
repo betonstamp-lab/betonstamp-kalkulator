@@ -161,11 +161,11 @@ export default function CalculatorsPage() {
             </span>
           </Link>
 
-          {/* Vakolat - COMING SOON */}
-          <div className="relative bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center opacity-60 grayscale w-full sm:w-72">
-            <span className="absolute top-3 right-3 bg-brand-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">
-              Hamarosan
-            </span>
+          {/* Vakolat - ACTIVE */}
+          <Link
+            href="/calculators/vakolat"
+            className="group bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center transition-all hover:shadow-xl hover:scale-[1.02] w-full sm:w-72"
+          >
             <div className="h-32 md:h-40 flex items-center justify-center mb-4">
               <Image
                 src="/images/estecha_logo_hungary.png"
@@ -180,9 +180,15 @@ export default function CalculatorsPage() {
               <span className="block">Kalkulátor</span>
             </h2>
             <p className="text-sm text-gray-500 mb-4 flex-1">
-              Az Estecha tematizációs vakolat rendszerének anyagszükséglet és ár kalkulátora. (Hamarosan elérhető)
+              ESTonetex System falazatok (függőleges falak) anyag- és árkalkulátora.
             </p>
-          </div>
+            <span className="inline-flex items-center gap-1 bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-5 rounded-lg transition-colors text-sm">
+              Kalkulátor megnyitása
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 12l4-4-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          </Link>
 
           {/* Bélyegzett Beton / Overlay - ACTIVE */}
           <Link
