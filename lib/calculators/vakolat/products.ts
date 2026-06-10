@@ -7,9 +7,9 @@
 // A partneri kedvezményt a közös logika (profiles.partner_discount) alkalmazza,
 // ugyanúgy mint a többi kalkulátornál — itt csak a bruttó alapárakat tároljuk.
 //
-// SKU-k: a Shoprenter export (2026-06-07) alapján. Néhány kiszerelés még nincs
-// a shopban (Gábor felveszi) — ezeket TODO- prefixszel jelöljük, a kalkulátor
-// működik, csak a kosárba helyezésnél "SKU pótlása folyamatban" üzenetet ad.
+// SKU-k: a Shoprenter export (2026-06-07) alapján; a korábbi 3 placeholder
+// (Silcopin 1L színtelen, EST-3 Plus 0.25L, 80gr háló 1m²) időközben felkerült
+// a shopra a valós cikkszámokkal, így minden tétel kosárba kerül.
 //
 // Hatókör: csak a FÜGGŐLEGES FALAK (falazatok). A medence / munkapult / felújítás /
 // témapark / díszkő munkatípusok KIMARADNAK ebből a fázisból.
@@ -22,7 +22,7 @@ export interface PackOption {
   label: string;   // pl. "25 kg", "5 L"
   price: number;   // bruttó Ft
   m2: number;      // hány m²-re elég EZ a kiszerelés
-  sku: string;     // Shoprenter cikkszám (TODO- prefix = pótlandó)
+  sku: string;     // Shoprenter cikkszám
 }
 
 // ---------------------------------------------------------------------------
@@ -119,12 +119,12 @@ export const FORTE_PREP = {
 //    a szükséges háló-mennyiség = felület m² × 1,1 (MESH_OVERLAP_FACTOR).
 //    Pl. 10 m² felület → 11 m² háló. Csak EZUTÁN jön a csomag-optimalizálás.
 //    Csomag-optimalizálás: 50 m²-es tekercs + 1 m²-es darab a legolcsóbb kombóra.
-//    1m² 82gr háló SKU még nincs a shopban (Gábor felveszi) — placeholder.
+//    Mindkét kiszerelés (50m² tekercs, 1m² darab) szerepel a Shoprenteren.
 // ---------------------------------------------------------------------------
 export const MESH_OVERLAP_FACTOR = 1.1; // átfedés/takarás az illesztéseknél
 export const MESH: PackOption[] = [
   { label: '50 m² tekercs', price: 22535, m2: 50, sku: 'UVEHA82' },
-  { label: '1 m²',          price: 460,   m2: 1,  sku: 'TODO-UVEHA82-1M' },
+  { label: '1 m²',          price: 460,   m2: 1,  sku: 'UVEHA82-1M' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -175,9 +175,9 @@ export function getDecorSku(color: DecorColor, pack: DecorPack): string {
 }
 
 // Kötőanyagok (színtelen gyanta) — ezekbe kerül a Mixol színező.
-// SILCOPIN 1L SKU még nincs a shopban (Gábor felveszi) — placeholder.
+// SILCOPIN: a színtelen kiszerelések (1L és 10L) a Shoprenteren.
 export const SILCOPIN: PackOption[] = [
-  { label: '1 L',  price: 5840,  m2: 5,  sku: 'TODO-SILCOPIN-TRANS-1L' },
+  { label: '1 L',  price: 5840,  m2: 5,  sku: 'EST26-TRANS1' },
   { label: '10 L', price: 44930, m2: 50, sku: 'EST26-TRANS10' },
 ];
 export const MONOCROM: PackOption[] = [
@@ -231,7 +231,7 @@ export const RELEASE_WARNING =
 //    NINCS lakk! Ezek lélegző vakolatok, tilos lakkozni — csak impregnálás a védelem.
 //    Három választás: "nincs" / "1:14 normál" / "1:6 vizes".
 //    Ugyanaz a termék, csak a hígítás (és így a fedés) más.
-//    0,25 L SKU még nincs a shopban (Gábor felveszi) — placeholder.
+//    Mindhárom kiszerelés (0,25 L / 1 L / 5 L) szerepel a Shoprenteren.
 //    Magyarázó szöveg segítse a választást (lásd lent).
 // ---------------------------------------------------------------------------
 export type ImpregnationMode = 'none' | 'normal_1_14' | 'wet_1_6';
@@ -241,7 +241,7 @@ export const IMPREGNATION = {
   normal_1_14: {
     id: 'normal_1_14' as const, label: 'Impregnálás — 1:14 hígítás (normál felület)',
     packs: [
-      { label: '0,25 L', price: 18360,  m2: 20,  sku: 'TODO-EST3PLUS-025L' },
+      { label: '0,25 L', price: 18360,  m2: 20,  sku: 'EST-3-PLUS2.5' },
       { label: '1 L',    price: 73440,  m2: 80,  sku: 'EST-3-PLUS1' },
       { label: '5 L',    price: 324580, m2: 400, sku: 'EST-3-PLUS5' },
     ] as PackOption[],
@@ -249,7 +249,7 @@ export const IMPREGNATION = {
   wet_1_6: {
     id: 'wet_1_6' as const, label: 'Impregnálás — 1:6 hígítás (vizes felület)',
     packs: [
-      { label: '0,25 L', price: 18360,  m2: 9,   sku: 'TODO-EST3PLUS-025L' },
+      { label: '0,25 L', price: 18360,  m2: 9,   sku: 'EST-3-PLUS2.5' },
       { label: '1 L',    price: 73440,  m2: 35,  sku: 'EST-3-PLUS1' },
       { label: '5 L',    price: 324580, m2: 175, sku: 'EST-3-PLUS5' },
     ] as PackOption[],
@@ -262,7 +262,9 @@ export const IMPREGNATION_HELP =
   'az erősebb 1:6 hígítást válaszd.';
 
 // ---------------------------------------------------------------------------
-// HELPER: TODO- prefixű SKU-k felismerése (a kosár-logika gracefully kezelje).
+// HELPER: TODO- prefixű placeholder SKU-k felismerése. Jelenleg egyik termékre
+// sem ad igazat (mindegyik valós Shoprenter cikkszámmal rendelkezik), de a
+// helper marad biztonsági hálóként, ha későbbi termék SKU-ja hiányozna.
 // ---------------------------------------------------------------------------
 export function isPlaceholderSku(sku: string): boolean {
   return sku.startsWith('TODO-');
