@@ -20,7 +20,14 @@ module.exports = {
           800: '#e65100',
           900: '#bf360c',
         }
-      }
+      },
+      // Globális betűtípus: Montserrat (CSS-változón át, app/layout.tsx-ből).
+      // A Tailwind preflight a html elemre 'theme(fontFamily.sans)'-t alkalmaz, így
+      // minden oldal és komponens ezt örökli automatikusan.
+      fontFamily: {
+        sans: ['var(--font-montserrat)', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'ui-monospace', 'SFMono-Regular', '"Roboto Mono"', 'monospace'],
+      },
     },
   },
   plugins: [],

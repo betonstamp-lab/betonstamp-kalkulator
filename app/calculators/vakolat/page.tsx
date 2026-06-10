@@ -99,6 +99,16 @@ const Tooltip = ({ text }: { text: string }) => {
   );
 };
 
+// Számozott szekció-fejléc: sárga (brand-500) badge a sorszámmal + sötétkék (#053d57) cím
+const SectionHeader = ({ num, title }: { num: number; title: string }) => (
+  <div className="flex items-center gap-3 mb-4">
+    <span className="w-8 h-8 rounded-full bg-brand-500 text-[#053d57] font-bold text-base flex items-center justify-center shrink-0">
+      {num}
+    </span>
+    <h3 className="text-lg font-bold text-[#053d57]">{title}</h3>
+  </div>
+);
+
 export default function VakolatCalculatorPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -180,7 +190,7 @@ export default function VakolatCalculatorPage() {
 
   const validResults = surfaces.map(s => s.result).filter((r): r is VakolatResult => r !== null);
   const aggregated = validResults.length > 0 ? aggregateVakolat(validResults, discountMultiplier) : null;
-  const showAggregate = surfaces.length > 1 && aggregated !== null;
+  const showAggregate = surfaces.length > 1 && aggregated !== null; // multi-felület összesítő blokk csak 2+ felületnél
 
   const handleAddToCart = async () => {
     if (!aggregated) return;
@@ -297,43 +307,47 @@ export default function VakolatCalculatorPage() {
           </button>
         </div>
 
-        {/* Összesítés (csak ha több felület van és van valid eredmény) */}
-        {showAggregate && aggregated && (
+        {/* Eredmény-blokk: 1+ kalkulált felület esetén (a multi-felület összesítő csak 2+ felületnél) */}
+        {aggregated && (
           <div className="w-full max-w-3xl mt-8 space-y-6">
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">Összesített anyagok</h2>
-              <ul className="divide-y divide-gray-100">
-                {aggregated.lines.map((l, i) => (
-                  <AggLineRow key={`${l.sku}-${i}`} line={l} />
-                ))}
-              </ul>
-              <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
-                {isPartner && aggregated.totalPartner !== undefined ? (
-                  <div className="flex justify-between text-base">
-                    <span className="font-bold text-gray-800">Összesen (partner −{discountPercent}%):</span>
-                    <span className="font-bold text-green-600">{formatFt(aggregated.totalPartner)}</span>
-                  </div>
-                ) : (
-                  <div className="flex justify-between text-base">
-                    <span className="font-bold text-gray-800">Összesen:</span>
-                    <span className="font-bold text-brand-600">{formatFt(aggregated.totalBrutto)}</span>
-                  </div>
-                )}
-                <p className="text-xs text-gray-500 mt-2">Az árak tartalmazzák az ÁFÁ-t. A pigmentálás opcionális, effekt jellegű.</p>
+            {showAggregate && (
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">Összesített anyagok</h2>
+                <ul className="divide-y divide-gray-100">
+                  {aggregated.lines.map((l, i) => (
+                    <AggLineRow key={`${l.sku}-${i}`} line={l} />
+                  ))}
+                </ul>
+                <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                  {isPartner && aggregated.totalPartner !== undefined ? (
+                    <div className="flex justify-between text-base">
+                      <span className="font-bold text-gray-800">Összesen (partner −{discountPercent}%):</span>
+                      <span className="font-bold text-green-600">{formatFt(aggregated.totalPartner)}</span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between text-base">
+                      <span className="font-bold text-gray-800">Összesen:</span>
+                      <span className="font-bold text-brand-600">{formatFt(aggregated.totalBrutto)}</span>
+                    </div>
+                  )}
+                  <p className="text-xs text-gray-500 mt-2">Az árak tartalmazzák az ÁFÁ-t. A pigmentálás opcionális, effekt jellegű.</p>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Kosárba teszem */}
+            {/* Kosárba teszem — 1 vagy több felület esetén egyaránt megjelenik (Bélyegzett-mintára) */}
             <div className="bg-white p-5 rounded-xl border-2 border-brand-200">
               <button
                 onClick={handleAddToCart}
                 disabled={cartLoading}
-                className="w-full bg-gradient-to-r from-brand-500 to-brand-500 hover:from-brand-600 hover:to-brand-600 disabled:from-gray-400 disabled:to-gray-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:scale-100 disabled:cursor-not-allowed"
+                className="w-full bg-[#053d57] hover:bg-[#042a3d] disabled:bg-gray-400 text-white text-lg font-semibold py-3 px-6 rounded-lg shadow-md transition-colors disabled:cursor-not-allowed"
               >
                 {cartLoading ? 'Kosár feltöltése...' : 'Kosárba teszem'}
               </button>
               {cartError && (
-                <p className="text-sm text-red-600 mt-2">{cartError}</p>
+                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-700">{cartError}</p>
+                </div>
               )}
               {cartInfo && (
                 <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-2">{cartInfo}</p>
@@ -385,10 +399,14 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
     onUpdate({ pigmentLines: surface.pigmentLines.filter((_, i) => i !== idx) });
   };
 
+  // Egységes kártya-stílus a számozott szekciókhoz
+  const cardClass = "bg-white rounded-2xl shadow-lg border border-gray-200 p-6";
+
   return (
-    <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 space-y-6">
+    <div className="space-y-6">
+      {/* Felület-fejléc (a kártyákon kívül) */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg md:text-xl font-bold text-gray-800">
+        <h2 className="text-lg md:text-xl font-bold text-[#053d57]">
           {totalSurfaces > 1 ? `${index + 1}. felület` : 'Felület'}
         </h2>
         {totalSurfaces > 1 && (
@@ -396,264 +414,280 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
         )}
       </div>
 
-      {/* 1) Terület */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Felület nagysága (m²)</label>
-        <input
-          type="number" step="0.1" min="0"
-          value={surface.area}
-          onChange={(e) => onUpdate({ area: e.target.value })}
-          placeholder="Pl. 25"
-          className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
-        />
-      </div>
-
-      {/* 2) Rétegvastagság */}
-      <div>
-        <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-          Rétegvastagság (kialakító réteg)
-          <Tooltip text={"1,5 cm: 1 zsák / m².\n2,2 cm: 1,5 zsák / m².\n3 cm: 2 zsák / m²."} />
-        </label>
-        <div className="grid grid-cols-3 gap-3">
-          {(['1.5', '2.2', '3'] as Thickness[]).map(t => (
-            <button
-              key={t}
-              onClick={() => onUpdate({ thickness: t })}
-              className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-                surface.thickness === t
-                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-              }`}
-            >
-              {t === '3' ? '3 cm' : `${t.replace('.', ',')} cm`}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 3) Alapfelület */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Alapfelület</label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {SURFACES.map(s => (
-            <button
-              key={s.id}
-              onClick={() => onUpdate({ surfaceId: s.id })}
-              className={`p-3 rounded-lg border-2 text-sm font-semibold text-left transition-all ${
-                surface.surfaceId === s.id
-                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-              }`}
-            >
-              {s.name}
-            </button>
-          ))}
-        </div>
-        {selectedSurface && (
-          <p className="text-xs text-gray-600 mt-2 bg-gray-50 border border-gray-200 rounded p-2">{selectedSurface.info}</p>
-        )}
-      </div>
-
-      {/* 4) Kialakító vakolat + szín */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Kialakító vakolat</label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-          {FINISHING.map(f => (
-            <button
-              key={f.id}
-              onClick={() => onUpdate({ finishingId: f.id, finishingColorKey: '' })}
-              className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
-                surface.finishingId === f.id
-                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-              }`}
-            >
-              {f.name}
-            </button>
-          ))}
-        </div>
-        {selectedFinishing && (
+      {/* ============ 1. Felület ============ */}
+      <div className={cardClass}>
+        <SectionHeader num={1} title="Felület" />
+        <div className="space-y-6">
+          {/* Felület mérete */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Szín</label>
-            <div className="grid grid-cols-3 gap-2">
-              {selectedFinishing.colors.map(c => (
+            <label className="block text-sm font-medium text-gray-700 mb-2">Felület mérete (m²)</label>
+            <input
+              type="number" step="0.1" min="0"
+              value={surface.area}
+              onChange={(e) => onUpdate({ area: e.target.value })}
+              placeholder="Pl. 25"
+              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
+            />
+          </div>
+
+          {/* Rétegvastagság */}
+          <div>
+            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+              Rétegvastagság (kialakító réteg)
+              <Tooltip text={"1,5 cm: 1 zsák / m².\n2,2 cm: 1,5 zsák / m².\n3 cm: 2 zsák / m²."} />
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {(['1.5', '2.2', '3'] as Thickness[]).map(t => (
                 <button
-                  key={c.key}
-                  onClick={() => onUpdate({ finishingColorKey: c.key })}
-                  className={`p-2 rounded-lg border-2 text-sm font-medium transition-all ${
-                    surface.finishingColorKey === c.key
+                  key={t}
+                  onClick={() => onUpdate({ thickness: t })}
+                  className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                    surface.thickness === t
                       ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                       : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                   }`}
                 >
-                  {c.name}
+                  {t === '3' ? '3 cm' : `${t.replace('.', ',')} cm`}
                 </button>
               ))}
             </div>
           </div>
-        )}
-      </div>
 
-      {/* 5) Pigmentálás (opcionális) */}
-      <PigmentSection
-        pigmentLines={surface.pigmentLines}
-        onAdd={addPigmentLine}
-        onRemove={removePigmentLine}
-        mixolBinderMissing={mixolBinderMissing}
-      />
-
-      {/* 6) Leválasztó */}
-      <div>
-        <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-          Leválasztó (opcionális)
-          <Tooltip text={RELEASE_WARNING} />
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => onUpdate({ releaseOn: false })}
-            className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
-              !surface.releaseOn
-                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-            }`}
-          >
-            Nem kérek
-          </button>
-          <button
-            onClick={() => onUpdate({ releaseOn: true })}
-            className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
-              surface.releaseOn
-                ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-            }`}
-          >
-            EST-Release
-          </button>
+          {/* Alapfelület */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Alapfelület</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {SURFACES.map(s => (
+                <button
+                  key={s.id}
+                  onClick={() => onUpdate({ surfaceId: s.id })}
+                  className={`p-3 rounded-lg border-2 text-sm font-semibold text-left transition-all ${
+                    surface.surfaceId === s.id
+                      ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                  }`}
+                >
+                  {s.name}
+                </button>
+              ))}
+            </div>
+            {selectedSurface && (
+              <p className="text-xs text-gray-600 mt-2 bg-gray-50 border border-gray-200 rounded p-2">{selectedSurface.info}</p>
+            )}
+          </div>
         </div>
-        {surface.releaseOn && (
-          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-2">{RELEASE_WARNING}</p>
-        )}
       </div>
 
-      {/* 7) Impregnálás */}
-      <div>
-        <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-          Impregnálás
-          <Tooltip text={IMPREGNATION_HELP} />
-        </label>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {(['none', 'normal_1_14', 'wet_1_6'] as ImpregnationMode[]).map(mode => (
-            <button
-              key={mode}
-              onClick={() => onUpdate({ impregnationMode: mode })}
-              className={`p-3 rounded-lg border-2 text-xs sm:text-sm font-semibold transition-all ${
-                surface.impregnationMode === mode
-                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-              }`}
-            >
-              {IMPREGNATION[mode].label}
-            </button>
-          ))}
-        </div>
-        <p className="text-xs text-gray-500 mt-2">{IMPREGNATION_HELP}</p>
-      </div>
-
-      {/* Kalkuláció gomb */}
-      <button
-        onClick={onCalculate}
-        disabled={!canCalculate}
-        className={`w-full font-semibold py-3 rounded-lg transition-colors ${
-          canCalculate
-            ? 'bg-brand-500 hover:bg-brand-600 text-white'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-        }`}
-      >
-        Kalkuláció készítése
-      </button>
-      {mixolBinderMissing && (
-        <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded p-2">
-          ⚠ Mixol színezőhöz kötelező kötőanyag (Silcopin VAGY Monocrom). Adj hozzá egyet a kalkuláció előtt.
-        </p>
-      )}
-
-      {/* Eredmény */}
-      {result && (
-        <div className="mt-2 p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-4">
-          <h3 className="font-bold text-gray-800">Anyagszükséglet és árak</h3>
-
-          {/* Előkészítő + háló */}
-          {result.prepLines.length > 0 && (
+      {/* ============ 2. Kialakító vakolat ============ */}
+      <div className={cardClass}>
+        <SectionHeader num={2} title="Kialakító vakolat" />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Vakolat típus</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            {FINISHING.map(f => (
+              <button
+                key={f.id}
+                onClick={() => onUpdate({ finishingId: f.id, finishingColorKey: '' })}
+                className={`p-4 rounded-lg border-2 text-sm font-semibold transition-all ${
+                  surface.finishingId === f.id
+                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                }`}
+              >
+                {f.name}
+              </button>
+            ))}
+          </div>
+          {selectedFinishing && (
             <div>
-              <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Előkészítés</h4>
-              <ul className="divide-y divide-gray-100">
-                {result.prepLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
-              </ul>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Szín</label>
+              <div className="grid grid-cols-3 gap-2">
+                {selectedFinishing.colors.map(c => (
+                  <button
+                    key={c.key}
+                    onClick={() => onUpdate({ finishingColorKey: c.key })}
+                    className={`p-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                      surface.finishingColorKey === c.key
+                        ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                    }`}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
+        </div>
+      </div>
 
-          {/* Kialakító */}
+      {/* ============ 3. Pigmentálás (opcionális) ============ */}
+      <div className={cardClass}>
+        <SectionHeader num={3} title="Pigmentálás (opcionális)" />
+        <PigmentSection
+          pigmentLines={surface.pigmentLines}
+          onAdd={addPigmentLine}
+          onRemove={removePigmentLine}
+          mixolBinderMissing={mixolBinderMissing}
+        />
+      </div>
+
+      {/* ============ 4. Felületvédelem ============ */}
+      <div className={cardClass}>
+        <SectionHeader num={4} title="Felületvédelem" />
+        <div className="space-y-6">
+          {/* Leválasztó alszekció */}
           <div>
-            <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Kialakító réteg</h4>
-            <ul className="divide-y divide-gray-100">
-              <ResultLineRow line={result.finishingLine} />
-            </ul>
+            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+              Leválasztó (opcionális)
+              <Tooltip text={RELEASE_WARNING} />
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => onUpdate({ releaseOn: false })}
+                className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                  !surface.releaseOn
+                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                }`}
+              >
+                Nem kérek
+              </button>
+              <button
+                onClick={() => onUpdate({ releaseOn: true })}
+                className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                  surface.releaseOn
+                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                }`}
+              >
+                EST-Release
+              </button>
+            </div>
+            {surface.releaseOn && (
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-2">{RELEASE_WARNING}</p>
+            )}
           </div>
 
-          {/* Pigment */}
-          {result.pigmentLines.length > 0 && (
-            <div>
-              <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Pigmentálás (effekt)</h4>
-              <ul className="divide-y divide-gray-100">
-                {result.pigmentLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
-              </ul>
+          {/* Impregnálás alszekció */}
+          <div>
+            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+              Impregnálás
+              <Tooltip text={IMPREGNATION_HELP} />
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {(['none', 'normal_1_14', 'wet_1_6'] as ImpregnationMode[]).map(mode => (
+                <button
+                  key={mode}
+                  onClick={() => onUpdate({ impregnationMode: mode })}
+                  className={`p-3 rounded-lg border-2 text-xs sm:text-sm font-semibold transition-all ${
+                    surface.impregnationMode === mode
+                      ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+                  }`}
+                >
+                  {IMPREGNATION[mode].label}
+                </button>
+              ))}
             </div>
-          )}
+            <p className="text-xs text-gray-500 mt-2">{IMPREGNATION_HELP}</p>
+          </div>
+        </div>
+      </div>
 
-          {/* Leválasztó */}
-          {result.releaseLines.length > 0 && (
-            <div>
-              <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Leválasztó</h4>
-              <ul className="divide-y divide-gray-100">
-                {result.releaseLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
-              </ul>
-            </div>
-          )}
+      {/* ============ 5. Eredmény és kosár ============ */}
+      <div className={cardClass}>
+        <SectionHeader num={5} title="Eredmény és kosár" />
 
-          {/* Impregnálás */}
-          {result.impregnationLines.length > 0 && (
-            <div>
-              <h4 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Impregnálás</h4>
-              <ul className="divide-y divide-gray-100">
-                {result.impregnationLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
-              </ul>
-            </div>
-          )}
+        {/* Kalkuláció gomb (brand-500 sárga elsődleges CTA) */}
+        <button
+          onClick={onCalculate}
+          disabled={!canCalculate}
+          className={`w-full font-semibold py-3 rounded-lg transition-colors ${
+            canCalculate
+              ? 'bg-brand-500 hover:bg-brand-600 text-white'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          Kalkuláció készítése
+        </button>
+        {mixolBinderMissing && (
+          <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded p-2 mt-3">
+            ⚠ Mixol színezőhöz kötelező kötőanyag (Silcopin VAGY Monocrom). Adj hozzá egyet a kalkuláció előtt.
+          </p>
+        )}
 
-          {/* Háló-info */}
-          {parseFloat(surface.area) > 0 && (
-            <p className="text-xs text-gray-500">
-              Háló-mennyiség: {(parseFloat(surface.area) * MESH_OVERLAP_FACTOR).toFixed(1)} m² ({Math.round(MESH_OVERLAP_FACTOR * 100 - 100)}% átfedési ráhagyás).
-            </p>
-          )}
+        {/* Eredmény panel */}
+        {result && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-4">
+            <h4 className="font-bold text-gray-800">Anyagszükséglet és árak</h4>
 
-          {/* Felület-összesítés */}
-          <div className="pt-3 border-t border-gray-200 space-y-2">
-            {isPartner && result.totalPartner !== undefined ? (
-              <div className="flex justify-between text-base">
-                <span className="font-bold text-gray-800">Összesen (partner −10%):</span>
-                <span className="font-bold text-green-600">{formatFt(result.totalPartner)}</span>
-              </div>
-            ) : (
-              <div className="flex justify-between text-base">
-                <span className="font-bold text-gray-800">Összesen:</span>
-                <span className="font-bold text-brand-600">{formatFt(result.totalBrutto)}</span>
+            {result.prepLines.length > 0 && (
+              <div>
+                <h5 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Előkészítés</h5>
+                <ul className="divide-y divide-gray-100">
+                  {result.prepLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
+                </ul>
               </div>
             )}
-            <p className="text-xs text-gray-500 mt-2">Az árak tartalmazzák az ÁFÁ-t. Munkadíj nem szerepel a kalkulációban.</p>
+
+            <div>
+              <h5 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Kialakító réteg</h5>
+              <ul className="divide-y divide-gray-100">
+                <ResultLineRow line={result.finishingLine} />
+              </ul>
+            </div>
+
+            {result.pigmentLines.length > 0 && (
+              <div>
+                <h5 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Pigmentálás (effekt)</h5>
+                <ul className="divide-y divide-gray-100">
+                  {result.pigmentLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
+                </ul>
+              </div>
+            )}
+
+            {result.releaseLines.length > 0 && (
+              <div>
+                <h5 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Leválasztó</h5>
+                <ul className="divide-y divide-gray-100">
+                  {result.releaseLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
+                </ul>
+              </div>
+            )}
+
+            {result.impregnationLines.length > 0 && (
+              <div>
+                <h5 className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">Impregnálás</h5>
+                <ul className="divide-y divide-gray-100">
+                  {result.impregnationLines.map((l, i) => <ResultLineRow key={i} line={l} />)}
+                </ul>
+              </div>
+            )}
+
+            {parseFloat(surface.area) > 0 && (
+              <p className="text-xs text-gray-500">
+                Háló-mennyiség: {(parseFloat(surface.area) * MESH_OVERLAP_FACTOR).toFixed(1)} m² ({Math.round(MESH_OVERLAP_FACTOR * 100 - 100)}% átfedési ráhagyás).
+              </p>
+            )}
+
+            <div className="pt-3 border-t border-gray-200 space-y-2">
+              {isPartner && result.totalPartner !== undefined ? (
+                <div className="flex justify-between text-base">
+                  <span className="font-bold text-gray-800">Összesen (partner −{discountPercent}%):</span>
+                  <span className="font-bold text-green-600">{formatFt(result.totalPartner)}</span>
+                </div>
+              ) : (
+                <div className="flex justify-between text-base">
+                  <span className="font-bold text-gray-800">Összesen:</span>
+                  <span className="font-bold text-brand-600">{formatFt(result.totalBrutto)}</span>
+                </div>
+              )}
+              <p className="text-xs text-gray-500 mt-2">Az árak tartalmazzák az ÁFÁ-t. Munkadíj nem szerepel a kalkulációban.</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -690,9 +724,6 @@ function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: P
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        Pigmentálás (opcionális, effekt)
-      </label>
       <p className="text-xs text-gray-500 mb-3">
         EST-Decor a poralapú alapszín — önállóan felvihető a falra. A Mixol a folyékony kötőanyaghoz kevert színező, ezért Mixol esetén kötelező Silcopin VAGY Monocrom mellé.
       </p>
