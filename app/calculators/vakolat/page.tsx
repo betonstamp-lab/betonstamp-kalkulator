@@ -27,6 +27,7 @@ import {
   type LineItem,
   type VakolatResult,
 } from '@/lib/calculators/vakolat/calculate';
+import ColorSwatch from '@/components/ColorSwatch';
 
 interface Surface {
   id: number;
@@ -506,13 +507,14 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
                   <button
                     key={c.key}
                     onClick={() => onUpdate({ finishingColorKey: c.key })}
-                    className={`p-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                    className={`p-3 rounded-lg border-2 text-sm font-medium transition-all flex items-center gap-3 ${
                       surface.finishingColorKey === c.key
                         ? 'border-brand-500 bg-white text-gray-900 shadow-md'
                         : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
                     }`}
                   >
-                    {c.name}
+                    <ColorSwatch hex={c.hex} size={36} title={c.name} />
+                    <span>{c.name}</span>
                   </button>
                 ))}
               </div>
@@ -732,19 +734,32 @@ function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: P
       <div className="border border-gray-200 rounded-lg p-3 mb-3">
         <p className="text-xs font-semibold text-gray-700 mb-2">EST-Decor (alapszín, poralapú)</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
-          {EST_DECOR_COLORS.map(c => (
-            <button
-              key={c.key}
-              onClick={() => setDecorColorKey(c.key === decorColorKey ? '' : c.key)}
-              className={`p-2 rounded border text-xs font-medium text-left transition-all ${
-                decorColorKey === c.key
-                  ? 'border-brand-500 bg-brand-50 text-gray-900'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-400'
-              }`}
-            >
-              {c.name}
-            </button>
-          ))}
+          {EST_DECOR_COLORS.map(c => {
+            // "Arcilla (agyag)" → { main: "Arcilla", translation: "(agyag)" }
+            // "Terracotta" → { main: "Terracotta", translation: "" }
+            const parenStart = c.name.indexOf(' (');
+            const main = parenStart === -1 ? c.name : c.name.slice(0, parenStart);
+            const translation = parenStart === -1 ? '' : c.name.slice(parenStart + 1);
+            return (
+              <button
+                key={c.key}
+                onClick={() => setDecorColorKey(c.key === decorColorKey ? '' : c.key)}
+                className={`p-3 rounded border text-xs text-left transition-all flex items-center gap-3 min-h-[68px] ${
+                  decorColorKey === c.key
+                    ? 'border-brand-500 bg-brand-50 text-gray-900'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-brand-400'
+                }`}
+              >
+                <ColorSwatch hex={c.hex} size={36} title={c.name} />
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-semibold text-gray-900 leading-tight">{main}</div>
+                  {translation && (
+                    <div className="text-sm font-normal text-gray-700 leading-tight mt-0.5 break-words">{translation}</div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
         <div className="flex flex-wrap gap-2 items-center">
           {EST_DECOR_PACKS.map((p, i) => (
@@ -806,19 +821,38 @@ function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: P
         </div>
       </div>
 
-      {/* Mixol */}
+      {/* Mixol — swatch-rács (EST-Decor mintájára) */}
       <div className="border border-gray-200 rounded-lg p-3 mb-3">
         <p className="text-xs font-semibold text-gray-700 mb-2">Mixol színező (a kötőanyaghoz adagolva)</p>
-        <select
-          value={mixolIdx === null ? '' : mixolIdx}
-          onChange={(e) => { setMixolIdx(e.target.value === '' ? null : parseInt(e.target.value, 10)); setMixolPackIdx(null); }}
-          className="w-full p-2 border-2 border-gray-300 rounded text-sm mb-2 bg-white"
-        >
-          <option value="">— válassz Mixol színt —</option>
-          {MIXOL.map((m, i) => <option key={i} value={i}>{m.name}</option>)}
-        </select>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-2">
+          {MIXOL.map((m, i) => {
+            // "Mixol 31 — zöld oxid (elit)" → { code: "Mixol 31", colorName: "zöld oxid (elit)" }
+            const sepIdx = m.name.indexOf(' — ');
+            const code = sepIdx === -1 ? m.name : m.name.slice(0, sepIdx);
+            const colorName = sepIdx === -1 ? '' : m.name.slice(sepIdx + 3);
+            return (
+              <button
+                key={i}
+                onClick={() => { setMixolIdx(i === mixolIdx ? null : i); setMixolPackIdx(null); }}
+                className={`p-3 rounded border text-xs text-left transition-all flex items-center gap-3 min-h-[68px] ${
+                  mixolIdx === i
+                    ? 'border-brand-500 bg-brand-50 text-gray-900'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-brand-400'
+                }`}
+              >
+                <ColorSwatch hex={m.hex} gradient={m.gradient} size={36} title={m.name} />
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-semibold text-gray-900 leading-tight">{code}</div>
+                  {colorName && (
+                    <div className="text-sm font-normal text-gray-700 leading-tight mt-0.5 break-words">{colorName}</div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
         {mixolIdx !== null && (
-          <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex flex-wrap gap-2 items-center pt-2 border-t border-gray-100">
             {MIXOL[mixolIdx].packs.map((p, i) => (
               <button
                 key={i}

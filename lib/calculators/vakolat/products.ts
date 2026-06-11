@@ -68,6 +68,7 @@ export interface FinishingColor {
   key: 'homok' | 'szurke' | 'feher';
   name: string;   // megjelenítendő név
   sku: string;    // Shoprenter cikkszám
+  hex: string;    // ColorSwatch-hez (#RRGGBB)
 }
 
 export interface FinishingPlaster {
@@ -84,9 +85,9 @@ export const FINISHING: FinishingPlaster[] = [
   {
     id: 'est_txt', name: 'EST-TXT vakolat',
     colors: [
-      { key: 'homok',  name: 'homokkő', sku: 'MOR-EXP-AREN' },
-      { key: 'szurke', name: 'szürke',  sku: 'MOR-EXP-GRIS' },
-      { key: 'feher',  name: 'fehér',   sku: 'MOR-EXP-BLANCO' },
+      { key: 'homok',  name: 'homokkő', sku: 'MOR-EXP-AREN',    hex: '#D8C4A0' },
+      { key: 'szurke', name: 'szürke',  sku: 'MOR-EXP-GRIS',    hex: '#A6A6A4' },
+      { key: 'feher',  name: 'fehér',   sku: 'MOR-EXP-BLANCO',  hex: '#F1EFE9' },
     ],
     bagPrice: 10990, bagKg: 25,
     bagsPerM2: { '1.5': 1, '2.2': 1.5, '3': 2 },
@@ -95,9 +96,9 @@ export const FINISHING: FinishingPlaster[] = [
   {
     id: 'est_park', name: 'EST-Park vakolat',
     colors: [
-      { key: 'homok',  name: 'homokkő', sku: 'MORT-S-AREN' },
-      { key: 'szurke', name: 'szürke',  sku: 'MORT-S-GRIS' },
-      { key: 'feher',  name: 'fehér',   sku: 'MORT-S-BLANCO' },
+      { key: 'homok',  name: 'homokkő', sku: 'MORT-S-AREN',    hex: '#D8C4A0' },
+      { key: 'szurke', name: 'szürke',  sku: 'MORT-S-GRIS',    hex: '#A6A6A4' },
+      { key: 'feher',  name: 'fehér',   sku: 'MORT-S-BLANCO',  hex: '#F1EFE9' },
     ],
     bagPrice: 9490, bagKg: 25,
     bagsPerM2: { '1.5': 1, '2.2': 1.5, '3': 2 },
@@ -144,16 +145,17 @@ export const MESH: PackOption[] = [
 export interface DecorColor {
   key: string;   // SKU-suffix: ARC, BLAN, CENI, CUER, GRAFIT, MUS, OCRE, TERRA
   name: string;  // megjelenítendő név
+  hex: string;   // ColorSwatch-hez
 }
 export const EST_DECOR_COLORS: DecorColor[] = [
-  { key: 'ARC',    name: 'Arcilla (agyag)' },
-  { key: 'BLAN',   name: 'Blanco (fehér)' },
-  { key: 'CENI',   name: 'Ceniza (hamuszürke)' },
-  { key: 'CUER',   name: 'Cuero (bőr)' },
-  { key: 'GRAFIT', name: 'Grafito (grafitszürke)' },
-  { key: 'MUS',    name: 'Musgo (moha)' },
-  { key: 'OCRE',   name: 'Ocre (okker)' },
-  { key: 'TERRA',  name: 'Terracotta' },
+  { key: 'ARC',    name: 'Arcilla (agyag)',         hex: '#B77B6F' },
+  { key: 'BLAN',   name: 'Blanco (fehér)',          hex: '#F3F6FB' },
+  { key: 'CENI',   name: 'Ceniza (hamuszürke)',     hex: '#8F9095' },
+  { key: 'CUER',   name: 'Cuero (bőr)',             hex: '#A07651' },
+  { key: 'GRAFIT', name: 'Grafito (grafitszürke)',  hex: '#5F5E62' },
+  { key: 'MUS',    name: 'Musgo (moha)',            hex: '#95AE63' },
+  { key: 'OCRE',   name: 'Ocre (okker)',            hex: '#D6A05E' },
+  { key: 'TERRA',  name: 'Terracotta',              hex: '#8B524A' },
 ];
 
 export interface DecorPack {
@@ -186,28 +188,34 @@ export const MONOCROM: PackOption[] = [
 ];
 
 // Mixol színezők — 200/500 gr, fedés az Excelből (a kötőanyaghoz adagolva).
-export interface MixolColor { name: string; packs: PackOption[]; }
+// hex: a "rendes" 17 színhez; gradient: a 3 fémes (ME1/ME2/ME3) színhez CSS background-image-ként.
+export interface MixolColor {
+  name: string;
+  packs: PackOption[];
+  hex?: string;
+  gradient?: string;
+}
 export const MIXOL: MixolColor[] = [
-  { name: 'Mixol 2 — Umbra (árnyék)',     packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-2-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-2-500' }] },
-  { name: 'Mixol 3 — szarvasbarna',        packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-3-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-3-500' }] },
-  { name: 'Mixol 4 — vörös',               packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-4-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-4-500' }] },
-  { name: 'Mixol 5 — okkersárga',          packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-5-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-5-500' }] },
-  { name: 'Mixol 9 — kék',                 packs: [{ label: '200 gr', price: 17990, m2: 330, sku: 'TINT-MIX-9-200' },  { label: '500 gr', price: 38995,  m2: 825, sku: 'TINT-MIX-9-500' }] },
-  { name: 'Mixol 14 — zöld',               packs: [{ label: '200 gr', price: 18180, m2: 330, sku: 'TINT-MIX-14-200' }, { label: '500 gr', price: 38995,  m2: 825, sku: 'TINT-MIX-14-500' }] },
-  { name: 'Mixol 19 — tevebarna',          packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-19-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-19-500' }] },
-  { name: 'Mixol 20 — gesztenyebarna',     packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-20-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-20-500' }] },
-  { name: 'Mixol 21 — földbarna',          packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-21-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-21-500' }] },
-  { name: 'Mixol 22 — dohánybarna',        packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-22-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-22-500' }] },
-  { name: 'Mixol 23 — sötétbarna',         packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-23-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-23-500' }] },
-  { name: 'Mixol 24 — kőszürke',           packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-24-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-24-500' }] },
-  { name: 'Mixol 25 — fehér',              packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-25-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-25-500' }] },
-  { name: 'Mixol 29 — fekete',             packs: [{ label: '200 gr', price: 17990, m2: 330, sku: 'TINT-MIX-29-200' }, { label: '500 gr', price: 38995,  m2: 825, sku: 'TINT-MIX-29-500' }] },
-  { name: 'Mixol 30 — sárga oxid',         packs: [{ label: '200 gr', price: 61320, m2: 330, sku: 'TINT-MIX-30-200' }, { label: '500 gr', price: 148330, m2: 825, sku: 'TINT-MIX-30-500' }] },
-  { name: 'Mixol 31 — zöld oxid',          packs: [{ label: '200 gr', price: 61320, m2: 330, sku: 'TINT-MIX-31-200' }, { label: '500 gr', price: 148330, m2: 825, sku: 'TINT-MIX-31-500' }] },
-  { name: 'Mixol 32 — kék oxid',           packs: [{ label: '200 gr', price: 61320, m2: 330, sku: 'TINT-MIX-32-200' }, { label: '500 gr', price: 148330, m2: 825, sku: 'TINT-MIX-32-500' }] },
-  { name: 'Mixol ME1 — arany',             packs: [{ label: '200 gr', price: 37500, m2: 330, sku: 'TINT-MIX-ORO' }] },
-  { name: 'Mixol ME2 — ezüst',             packs: [{ label: '200 gr', price: 24400, m2: 330, sku: 'TINT-MIX-PLA' }] },
-  { name: 'Mixol ME3 — réz',               packs: [{ label: '200 gr', price: 20700, m2: 330, sku: 'TINT-MIX-BRO' }] },
+  { name: 'Mixol 2 — Umbra (árnyék)',      hex: '#756A4A', packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-2-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-2-500' }] },
+  { name: 'Mixol 3 — szarvasbarna',        hex: '#B3916C', packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-3-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-3-500' }] },
+  { name: 'Mixol 4 — vörös',               hex: '#BF6B69', packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-4-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-4-500' }] },
+  { name: 'Mixol 5 — okkersárga',          hex: '#E3AD55', packs: [{ label: '200 gr', price: 14465, m2: 330, sku: 'TINT-MIX-5-200' },  { label: '500 gr', price: 30040,  m2: 825, sku: 'TINT-MIX-5-500' }] },
+  { name: 'Mixol 9 — kék',                 hex: '#629CE5', packs: [{ label: '200 gr', price: 17990, m2: 330, sku: 'TINT-MIX-9-200' },  { label: '500 gr', price: 38995,  m2: 825, sku: 'TINT-MIX-9-500' }] },
+  { name: 'Mixol 14 — zöld',               hex: '#90B186', packs: [{ label: '200 gr', price: 18180, m2: 330, sku: 'TINT-MIX-14-200' }, { label: '500 gr', price: 38995,  m2: 825, sku: 'TINT-MIX-14-500' }] },
+  { name: 'Mixol 19 — tevebarna',          hex: '#E59B6A', packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-19-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-19-500' }] },
+  { name: 'Mixol 20 — gesztenyebarna',     hex: '#CA826A', packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-20-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-20-500' }] },
+  { name: 'Mixol 21 — földbarna',          hex: '#A8704F', packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-21-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-21-500' }] },
+  { name: 'Mixol 22 — dohánybarna',        hex: '#B29478', packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-22-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-22-500' }] },
+  { name: 'Mixol 23 — sötétbarna',         hex: '#745950', packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-23-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-23-500' }] },
+  { name: 'Mixol 24 — kőszürke',           hex: '#9A9180', packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-24-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-24-500' }] },
+  { name: 'Mixol 25 — fehér',              hex: '#E9E9E9', packs: [{ label: '200 gr', price: 15600, m2: 330, sku: 'TINT-MIX-25-200' }, { label: '500 gr', price: 31660,  m2: 825, sku: 'TINT-MIX-25-500' }] },
+  { name: 'Mixol 29 — fekete',             hex: '#524F5A', packs: [{ label: '200 gr', price: 17990, m2: 330, sku: 'TINT-MIX-29-200' }, { label: '500 gr', price: 38995,  m2: 825, sku: 'TINT-MIX-29-500' }] },
+  { name: 'Mixol 30 — sárga oxid (elit)',  hex: '#E9E804', packs: [{ label: '200 gr', price: 61320, m2: 330, sku: 'TINT-MIX-30-200' }, { label: '500 gr', price: 148330, m2: 825, sku: 'TINT-MIX-30-500' }] },
+  { name: 'Mixol 31 — zöld oxid (elit)',   hex: '#53B079', packs: [{ label: '200 gr', price: 61320, m2: 330, sku: 'TINT-MIX-31-200' }, { label: '500 gr', price: 148330, m2: 825, sku: 'TINT-MIX-31-500' }] },
+  { name: 'Mixol 32 — kék oxid (elit)',    hex: '#577DC6', packs: [{ label: '200 gr', price: 61320, m2: 330, sku: 'TINT-MIX-32-200' }, { label: '500 gr', price: 148330, m2: 825, sku: 'TINT-MIX-32-500' }] },
+  { name: 'Mixol ME1 — arany',             gradient: 'linear-gradient(135deg, #BD8D4B, #FCF7B2, #BF8F30)', packs: [{ label: '200 gr', price: 37500, m2: 330, sku: 'TINT-MIX-ORO' }] },
+  { name: 'Mixol ME2 — ezüst',             gradient: 'linear-gradient(135deg, #BCBCBC, #F7F7F7, #AEAEAE)', packs: [{ label: '200 gr', price: 24400, m2: 330, sku: 'TINT-MIX-PLA' }] },
+  { name: 'Mixol ME3 — réz',               gradient: 'linear-gradient(135deg, #B05D34, #F29363, #B05D34)', packs: [{ label: '200 gr', price: 20700, m2: 330, sku: 'TINT-MIX-BRO' }] },
 ];
 
 // ---------------------------------------------------------------------------
