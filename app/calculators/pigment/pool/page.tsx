@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Image from 'next/image';
 import { ATLANTTIC_PIGMENT_RECIPES } from '@/lib/calculators/mikrocement/pigments';
+import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
 
 const POOL_PRODUCTS = [
   { value: 'xl', label: 'Aquaciment XL' },
@@ -13,12 +14,42 @@ const POOL_PRODUCTS = [
 const POOL_COLORS = ['BLANCO'];
 const POOL_COLOR_HEX: Record<string, string> = { 'BLANCO': '#efede8' };
 
+// m² mód: Atlanttic-nál grain fix XL, szín fix BLANCO
+const ATLANTTIC_FIXED_GRAIN = 'xl' as const;
+const ATLANTTIC_FIXED_COLOR = 'BLANCO';
+
 interface PigmentResult {
   product: string;
   color: string;
   kg: number;
   pigments: { name: string; grams: number }[];
   totalGrams: number;
+}
+
+interface M2Surface {
+  id: number;
+  m2: string;
+  layers: string;
+}
+
+interface M2SurfaceResult {
+  n: number;
+  m2: number;
+  layers: number;
+  weightKg: number;
+  pigments: { name: string; grams: number }[];
+}
+
+interface M2Result {
+  surfaces: M2SurfaceResult[];
+  totalKg: number;
+  byColor: Array<{ color: string; pigments: { name: string; grams: number }[] }>;
+}
+
+const fmt2 = (n: number) => parseFloat(n.toFixed(2));
+
+function createEmptyM2Surface(id: number): M2Surface {
+  return { id, m2: '', layers: '3' };
 }
 
 export default function PoolCalculatorPage() {
@@ -31,6 +62,11 @@ export default function PoolCalculatorPage() {
   const [color, setColor] = useState('');
   const [kg, setKg] = useState('');
   const [result, setResult] = useState<PigmentResult | null>(null);
+
+  // m² mód state
+  const [inputMode, setInputMode] = useState<'kg' | 'm2'>('kg');
+  const [m2Surfaces, setM2Surfaces] = useState<M2Surface[]>([createEmptyM2Surface(1)]);
+  const [m2Result, setM2Result] = useState<M2Result | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -88,6 +124,70 @@ export default function PoolCalculatorPage() {
       pigments,
       totalGrams,
     });
+  };
+
+  // ---- m² mód handlers ----
+  const updateM2Surface = (id: number, patch: Partial<M2Surface>) => {
+    setM2Surfaces(prev => prev.map(s => s.id === id ? { ...s, ...patch } : s));
+    setM2Result(null);
+  };
+  const addM2Surface = () => {
+    const newId = Math.max(0, ...m2Surfaces.map(s => s.id)) + 1;
+    setM2Surfaces([...m2Surfaces, createEmptyM2Surface(newId)]);
+    setM2Result(null);
+  };
+  const removeM2Surface = (id: number) => {
+    if (m2Surfaces.length <= 1) return;
+    setM2Surfaces(m2Surfaces.filter(s => s.id !== id));
+    setM2Result(null);
+  };
+
+  const isM2SurfaceValid = (s: M2Surface) => {
+    const m2 = parseFloat(s.m2);
+    const layers = parseInt(s.layers, 10);
+    return !isNaN(m2) && m2 > 0 && !isNaN(layers) && layers >= 1;
+  };
+  const canCalculateM2 = m2Surfaces.every(isM2SurfaceValid);
+
+  const handleCalculateM2 = () => {
+    if (!canCalculateM2) return;
+    const results: M2SurfaceResult[] = [];
+    m2Surfaces.forEach((s, idx) => {
+      const m2 = parseFloat(s.m2);
+      const layers = parseInt(s.layers, 10);
+      const cov = MICROCEMENT_COVERAGE.atlantic[ATLANTTIC_FIXED_GRAIN];
+      const weightKg = m2 * cov * layers;
+      const recipe = ATLANTTIC_PIGMENT_RECIPES[ATLANTTIC_FIXED_GRAIN]?.[ATLANTTIC_FIXED_COLOR];
+      const pigments = recipe
+        ? recipe.map(p => ({ name: p.basePigment, grams: fmt2(p.gramsPerKg * weightKg) })).filter(p => p.grams > 0)
+        : [];
+      results.push({
+        n: idx + 1,
+        m2: fmt2(m2),
+        layers,
+        weightKg: fmt2(weightKg),
+        pigments,
+      });
+    });
+
+    const totalKg = fmt2(results.reduce((sum, r) => sum + r.weightKg, 0));
+
+    // Atlanttic-nál egyetlen szín (BLANCO), de a Natture-mintát követve csoportosítjuk
+    const colorMap = new Map<string, Map<string, number>>();
+    results.forEach(r => {
+      if (r.pigments.length === 0) return;
+      if (!colorMap.has(ATLANTTIC_FIXED_COLOR)) colorMap.set(ATLANTTIC_FIXED_COLOR, new Map());
+      const pigMap = colorMap.get(ATLANTTIC_FIXED_COLOR)!;
+      r.pigments.forEach(p => {
+        pigMap.set(p.name, (pigMap.get(p.name) || 0) + p.grams);
+      });
+    });
+    const byColor = Array.from(colorMap.entries()).map(([color, pigMap]) => ({
+      color,
+      pigments: Array.from(pigMap.entries()).map(([name, g]) => ({ name, grams: fmt2(g) })),
+    }));
+
+    setM2Result({ surfaces: results, totalKg, byColor });
   };
 
   if (loading) {
@@ -158,6 +258,32 @@ export default function PoolCalculatorPage() {
         </p>
 
         <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 md:p-8 space-y-4">
+          {/* Input mode toggle */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Számítás alapja</label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => { setInputMode('kg'); setM2Result(null); }}
+                className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                  inputMode === 'kg' ? 'border-brand-500 bg-white text-gray-900 shadow-md' : 'border-gray-300 bg-white text-gray-600 hover:border-brand-400'
+                }`}
+              >
+                Mennyiség (kg)
+              </button>
+              <button
+                onClick={() => { setInputMode('m2'); setResult(null); }}
+                className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                  inputMode === 'm2' ? 'border-brand-500 bg-white text-gray-900 shadow-md' : 'border-gray-300 bg-white text-gray-600 hover:border-brand-400'
+                }`}
+              >
+                Terület (m²)
+              </button>
+            </div>
+          </div>
+
+          {/* === KG MÓD === */}
+          {inputMode === 'kg' && (
+          <>
           {/* Product */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -243,6 +369,69 @@ export default function PoolCalculatorPage() {
           >
             Számítás
           </button>
+          </>
+          )}
+
+          {/* === M² MÓD === */}
+          {inputMode === 'm2' && (
+          <>
+          <div className="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded p-2">
+            <strong>Atlanttic XL — medence mikrocement.</strong> Szín fix: <span className="font-semibold">BLANCO (fehér)</span>. Csak felület és rétegszám kell.
+          </div>
+          {m2Surfaces.map((s, idx) => (
+            <div key={s.id} className="border-2 border-gray-200 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-gray-800">Felület {idx + 1}</h3>
+                {m2Surfaces.length > 1 && (
+                  <button onClick={() => removeM2Surface(s.id)} className="text-xs text-red-600 hover:text-red-800 border border-red-300 rounded px-2 py-1">✕ Törlés</button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Felület (m²)</label>
+                  <input
+                    type="number" step="0.1" min="0" value={s.m2}
+                    onChange={(e) => updateM2Surface(s.id, { m2: e.target.value })}
+                    placeholder="Pl. 20"
+                    className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Rétegszám</label>
+                  <input
+                    type="number" step="1" min="1" value={s.layers}
+                    onChange={(e) => updateM2Surface(s.id, { layers: e.target.value })}
+                    className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-700 pt-1">
+                <span className="text-gray-500">Szín:</span>
+                <div className="w-4 h-4 rounded border border-gray-300" style={{ backgroundColor: POOL_COLOR_HEX['BLANCO'] }} />
+                <span className="font-medium">BLANCO</span>
+                <span className="text-gray-400">·</span>
+                <span className="text-gray-500">Szemcse:</span>
+                <span className="font-medium">XL (1,5 kg/m²/réteg)</span>
+              </div>
+            </div>
+          ))}
+
+          <button
+            onClick={addM2Surface}
+            className="w-full py-2.5 rounded-lg border-2 border-dashed border-gray-300 hover:border-brand-500 text-sm font-medium text-gray-600 hover:text-brand-700 transition-colors"
+          >
+            + Felület hozzáadása
+          </button>
+
+          <button
+            onClick={handleCalculateM2}
+            disabled={!canCalculateM2}
+            className="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Számítás
+          </button>
+          </>
+          )}
         </div>
 
         {/* Result */}
@@ -268,6 +457,65 @@ export default function PoolCalculatorPage() {
                 <span className="text-gray-700">Összesen:</span>
                 <span className="text-gray-900">{result.totalGrams} g</span>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* m² mód eredmény */}
+        {m2Result && (
+          <div className="w-full max-w-2xl mt-8 bg-white rounded-2xl shadow-lg p-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">Anyagszükséglet (m² alapú)</h2>
+            <p className="text-sm text-gray-700 mb-4"><span className="font-medium">Termék:</span> Aquaciment XL · <span className="font-medium">Szín:</span> BLANCO</p>
+            <div className="space-y-3">
+              {m2Result.surfaces.map(r => (
+                <div key={r.n} className="border border-gray-200 rounded-lg p-3">
+                  <p className="text-sm font-bold text-gray-800 mb-1">
+                    Felület {r.n} — {r.m2} m², {r.layers} réteg
+                  </p>
+                  <div className="text-sm text-gray-700">
+                    <div className="flex justify-between"><span>Mikrocement:</span><span className="font-medium">{r.weightKg} kg</span></div>
+                  </div>
+                  {r.pigments.length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-gray-100">
+                      <p className="text-xs font-medium text-gray-600 mb-1">Pigmentek:</p>
+                      <ul className="space-y-0.5 text-xs">
+                        {r.pigments.map(p => (
+                          <li key={p.name} className="flex justify-between">
+                            <span className="text-gray-600">{p.name}</span>
+                            <span className="font-medium text-gray-800">{p.grams} g</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 pt-4 border-t border-gray-300">
+              <h3 className="text-base font-bold text-gray-800 mb-3">Összesen</h3>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between"><span className="text-gray-700">Mikrocement összesen:</span><span className="font-bold text-gray-900">{m2Result.totalKg} kg</span></div>
+              </div>
+              {m2Result.byColor.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Pigmentek színenként:</p>
+                  <div className="space-y-2">
+                    {m2Result.byColor.map(group => (
+                      <div key={group.color} className="bg-gray-50 rounded p-2">
+                        <p className="text-xs font-bold text-gray-800 mb-1">{group.color}</p>
+                        <ul className="space-y-0.5 text-xs">
+                          {group.pigments.map(p => (
+                            <li key={p.name} className="flex justify-between">
+                              <span className="text-gray-600">{p.name}</span>
+                              <span className="font-medium text-gray-800">{p.grams} g</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
