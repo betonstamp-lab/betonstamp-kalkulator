@@ -29,13 +29,11 @@ interface PigmentResult {
 interface M2Surface {
   id: number;
   m2: string;
-  layers: string;
 }
 
 interface M2SurfaceResult {
   n: number;
   m2: number;
-  layers: number;
   weightKg: number;
   pigments: { name: string; grams: number }[];
 }
@@ -48,8 +46,10 @@ interface M2Result {
 
 const fmt2 = (n: number) => parseFloat(n.toFixed(2));
 
+// A pigmentet rétegenként mérik ki, ezért az m² mód egy rétegre számol —
+// nincs rétegszám input, és a kg-súly szorzóban sincs layers.
 function createEmptyM2Surface(id: number): M2Surface {
-  return { id, m2: '', layers: '3' };
+  return { id, m2: '' };
 }
 
 export default function PoolCalculatorPage() {
@@ -144,8 +144,7 @@ export default function PoolCalculatorPage() {
 
   const isM2SurfaceValid = (s: M2Surface) => {
     const m2 = parseFloat(s.m2);
-    const layers = parseInt(s.layers, 10);
-    return !isNaN(m2) && m2 > 0 && !isNaN(layers) && layers >= 1;
+    return !isNaN(m2) && m2 > 0;
   };
   const canCalculateM2 = m2Surfaces.every(isM2SurfaceValid);
 
@@ -154,9 +153,8 @@ export default function PoolCalculatorPage() {
     const results: M2SurfaceResult[] = [];
     m2Surfaces.forEach((s, idx) => {
       const m2 = parseFloat(s.m2);
-      const layers = parseInt(s.layers, 10);
       const cov = MICROCEMENT_COVERAGE.atlantic[ATLANTTIC_FIXED_GRAIN];
-      const weightKg = m2 * cov * layers;
+      const weightKg = m2 * cov;
       const recipe = ATLANTTIC_PIGMENT_RECIPES[ATLANTTIC_FIXED_GRAIN]?.[ATLANTTIC_FIXED_COLOR];
       const pigments = recipe
         ? recipe.map(p => ({ name: p.basePigment, grams: fmt2(p.gramsPerKg * weightKg) })).filter(p => p.grams > 0)
@@ -164,7 +162,6 @@ export default function PoolCalculatorPage() {
       results.push({
         n: idx + 1,
         m2: fmt2(m2),
-        layers,
         weightKg: fmt2(weightKg),
         pigments,
       });
@@ -376,7 +373,7 @@ export default function PoolCalculatorPage() {
           {inputMode === 'm2' && (
           <>
           <div className="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded p-2">
-            <strong>Atlanttic XL — medence mikrocement.</strong> Szín fix: <span className="font-semibold">BLANCO (fehér)</span>. Csak felület és rétegszám kell.
+            <strong>Atlanttic XL — medence mikrocement.</strong> Szín fix: <span className="font-semibold">BLANCO (fehér)</span>. Csak felület kell.
           </div>
           {m2Surfaces.map((s, idx) => (
             <div key={s.id} className="border-2 border-gray-200 rounded-xl p-4 space-y-3">
@@ -386,24 +383,14 @@ export default function PoolCalculatorPage() {
                   <button onClick={() => removeM2Surface(s.id)} className="text-xs text-red-600 hover:text-red-800 border border-red-300 rounded px-2 py-1">✕ Törlés</button>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Felület (m²)</label>
-                  <input
-                    type="number" step="0.1" min="0" value={s.m2}
-                    onChange={(e) => updateM2Surface(s.id, { m2: e.target.value })}
-                    placeholder="Pl. 20"
-                    className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Rétegszám</label>
-                  <input
-                    type="number" step="1" min="1" value={s.layers}
-                    onChange={(e) => updateM2Surface(s.id, { layers: e.target.value })}
-                    className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Felület (m²)</label>
+                <input
+                  type="number" step="0.1" min="0" value={s.m2}
+                  onChange={(e) => updateM2Surface(s.id, { m2: e.target.value })}
+                  placeholder="Pl. 20"
+                  className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
+                />
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-700 pt-1">
                 <span className="text-gray-500">Szín:</span>
@@ -411,7 +398,7 @@ export default function PoolCalculatorPage() {
                 <span className="font-medium">BLANCO</span>
                 <span className="text-gray-400">·</span>
                 <span className="text-gray-500">Szemcse:</span>
-                <span className="font-medium">XL (1,5 kg/m²/réteg)</span>
+                <span className="font-medium">XL (1,5 kg/m²)</span>
               </div>
             </div>
           ))}
@@ -464,13 +451,14 @@ export default function PoolCalculatorPage() {
         {/* m² mód eredmény */}
         {m2Result && (
           <div className="w-full max-w-2xl mt-8 bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">Anyagszükséglet (m² alapú)</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Anyagszükséglet (m² alapú)</h2>
+            <p className="text-xs text-gray-500 mb-2">A mennyiségek egy rétegre vonatkoznak — a pigmentet rétegenként, ugyanezzel az aránnyal kell kimérni.</p>
             <p className="text-sm text-gray-700 mb-4"><span className="font-medium">Termék:</span> Aquaciment XL · <span className="font-medium">Szín:</span> BLANCO</p>
             <div className="space-y-3">
               {m2Result.surfaces.map(r => (
                 <div key={r.n} className="border border-gray-200 rounded-lg p-3">
                   <p className="text-sm font-bold text-gray-800 mb-1">
-                    Felület {r.n} — {r.m2} m², {r.layers} réteg
+                    Felület {r.n} — {r.m2} m²
                   </p>
                   <div className="text-sm text-gray-700">
                     <div className="flex justify-between"><span>Mikrocement:</span><span className="font-medium">{r.weightKg} kg</span></div>

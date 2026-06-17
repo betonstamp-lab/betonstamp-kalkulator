@@ -15,10 +15,12 @@ import {
   sortEfecttoColors,
 } from '@/lib/calculators/pigment/efectto_color_hex';
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
+import { EFECTTO_PIGMENT_UNDER_DEVELOPMENT } from '@/lib/calculators/pigment/featureFlags';
 
-// Ha true, a kalkulátor helyett "Fejlesztés alatt" üzenet jelenik meg (a meglévő
-// kód érintetlenül megmarad, a false-ra állítással egy lépésben visszakapcsolható).
-const UNDER_DEVELOPMENT = true;
+// Központi flag (lib/calculators/pigment/featureFlags.ts) vezérli, hogy a
+// kalkulátor megjelenjen-e vagy "Fejlesztés alatt" üzenet helyett. False-ra
+// állítva mindhárom Efectto érintett helyen egyszerre aktiválódik újra.
+const UNDER_DEVELOPMENT = EFECTTO_PIGMENT_UNDER_DEVELOPMENT;
 
 const SORTED_PU_COLORS = sortEfecttoColors(EFECTTO_PU_COLORS);
 
@@ -47,7 +49,6 @@ interface PigmentResult {
 interface M2Surface {
   id: number;
   m2: string;
-  layers: string;
   grain: GrainSize;
   color: string;
 }
@@ -55,7 +56,6 @@ interface M2Surface {
 interface M2SurfaceResult {
   n: number;
   m2: number;
-  layers: number;
   grainLabel: string;
   color: string;
   weightKg: number;
@@ -70,8 +70,10 @@ interface M2Result {
 
 const fmt2 = (n: number) => parseFloat(n.toFixed(2));
 
+// A pigmentet rétegenként mérik ki, ezért az m² mód egy rétegre számol —
+// nincs rétegszám input, és a kg-súly szorzóban sincs layers.
 function createEmptyM2Surface(id: number): M2Surface {
-  return { id, m2: '', layers: '3', grain: 'medium', color: '' };
+  return { id, m2: '', grain: 'medium', color: '' };
 }
 
 const Tooltip = ({ text }: { text: string }) => {
@@ -193,8 +195,7 @@ export default function EfecttoPUCalculatorPage() {
 
   const isM2SurfaceValid = (s: M2Surface) => {
     const m2 = parseFloat(s.m2);
-    const layers = parseInt(s.layers, 10);
-    return !isNaN(m2) && m2 > 0 && !isNaN(layers) && layers >= 1 && !!s.color;
+    return !isNaN(m2) && m2 > 0 && !!s.color;
   };
   const canCalculateM2 = m2Surfaces.every(isM2SurfaceValid);
 
@@ -203,9 +204,8 @@ export default function EfecttoPUCalculatorPage() {
     const results: M2SurfaceResult[] = [];
     m2Surfaces.forEach((s, idx) => {
       const m2 = parseFloat(s.m2);
-      const layers = parseInt(s.layers, 10);
       const cov = MICROCEMENT_COVERAGE.efecttoPU[s.grain];
-      const weightKg = m2 * cov * layers;
+      const weightKg = m2 * cov;
       const recipe = EFECTTO_PU_RECIPES[s.grain]?.[s.color as keyof typeof EFECTTO_PU_RECIPES['small']];
       const pigments = recipe
         ? (Object.keys(recipe) as (keyof EfecttoPigmentRecipe)[])
@@ -220,7 +220,6 @@ export default function EfecttoPUCalculatorPage() {
       results.push({
         n: idx + 1,
         m2: fmt2(m2),
-        layers,
         grainLabel,
         color: s.color,
         weightKg: fmt2(weightKg),
@@ -464,24 +463,14 @@ export default function EfecttoPUCalculatorPage() {
                   <button onClick={() => removeM2Surface(s.id)} className="text-xs text-red-600 hover:text-red-800 border border-red-300 rounded px-2 py-1">✕ Törlés</button>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Felület (m²)</label>
-                  <input
-                    type="number" step="0.1" min="0" value={s.m2}
-                    onChange={(e) => updateM2Surface(s.id, { m2: e.target.value })}
-                    placeholder="Pl. 20"
-                    className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Rétegszám</label>
-                  <input
-                    type="number" step="1" min="1" value={s.layers}
-                    onChange={(e) => updateM2Surface(s.id, { layers: e.target.value })}
-                    className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Felület (m²)</label>
+                <input
+                  type="number" step="0.1" min="0" value={s.m2}
+                  onChange={(e) => updateM2Surface(s.id, { m2: e.target.value })}
+                  placeholder="Pl. 20"
+                  className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
+                />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Szemcseméret</label>
@@ -591,12 +580,13 @@ export default function EfecttoPUCalculatorPage() {
         {/* m² mód eredmény */}
         {m2Result && (
           <div className="w-full max-w-2xl mt-8 bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">Pigment szükséglet (m² alapú)</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Pigment szükséglet (m² alapú)</h2>
+            <p className="text-xs text-gray-500 mb-4">A mennyiségek egy rétegre vonatkoznak — a pigmentet rétegenként, ugyanezzel az aránnyal kell kimérni.</p>
             <div className="space-y-3">
               {m2Result.surfaces.map(r => (
                 <div key={r.n} className="border border-gray-200 rounded-lg p-3">
                   <p className="text-sm font-bold text-gray-800 mb-1">
-                    Felület {r.n} — {r.m2} m², {r.layers} réteg, {r.grainLabel}, {r.color}
+                    Felület {r.n} — {r.m2} m², {r.grainLabel}, {r.color}
                   </p>
                   <div className="text-sm text-gray-700">
                     <div className="flex justify-between"><span>Mikrocement:</span><span className="font-medium">{r.weightKg} kg</span></div>
