@@ -412,7 +412,7 @@ export default function NattureCalculatorPage() {
           <>
           {/* Sealer (top-level) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sealer típus</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Lakk típus</label>
             <div className="grid grid-cols-2 gap-2">
               {(['WT', 'TOP100'] as NattureSealer[]).map(s => (
                 <button
@@ -551,7 +551,7 @@ export default function NattureCalculatorPage() {
         {m2Result && (
           <div className="w-full max-w-2xl mt-8 bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4">Pigment szükséglet (m² alapú)</h2>
-            <p className="text-sm text-gray-700 mb-4"><span className="font-medium">Sealer:</span> {m2Result.sealerLabel}</p>
+            <p className="text-sm text-gray-700 mb-4"><span className="font-medium">Lakk:</span> {m2Result.sealerLabel}</p>
 
             {/* Felületenkénti bontás */}
             <div className="space-y-3">
