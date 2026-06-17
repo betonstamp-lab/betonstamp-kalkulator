@@ -16,6 +16,10 @@ import {
 } from '@/lib/calculators/pigment/efectto_color_hex';
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
 
+// Ha true, a kalkulátor helyett "Fejlesztés alatt" üzenet jelenik meg (a meglévő
+// kód érintetlenül megmarad, a false-ra állítással egy lépésben visszakapcsolható).
+const UNDER_DEVELOPMENT = true;
+
 const SORTED_PU_COLORS = sortEfecttoColors(EFECTTO_PU_COLORS);
 
 const PU_PRODUCTS = [
@@ -301,7 +305,14 @@ export default function EfecttoPUCalculatorPage() {
       </header>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center p-4 pt-8 md:pt-12">
+      <div className={`flex-1 flex flex-col items-center p-4 ${UNDER_DEVELOPMENT ? 'justify-center' : 'pt-8 md:pt-12'}`}>
+        {UNDER_DEVELOPMENT ? (
+          <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">Fejlesztés alatt</h2>
+            <p className="text-sm text-gray-600">Ez a kalkulátor jelenleg felülvizsgálat alatt áll. Kérjük, később térj vissza.</p>
+          </div>
+        ) : (
+        <>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 text-center">
           Efectto PU Pigment Kalkulátor
         </h1>
@@ -633,6 +644,8 @@ export default function EfecttoPUCalculatorPage() {
               )}
             </div>
           </div>
+        )}
+        </>
         )}
       </div>
 

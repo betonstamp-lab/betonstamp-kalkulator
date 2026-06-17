@@ -6,11 +6,20 @@ import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const SYSTEMS = [
+type System = {
+  key: string;
+  label: string;
+  logo: string;
+  href: string;
+  active: boolean;
+  badge?: string; // ha nem active, akkor a kártyán megjelenő badge szövege
+};
+
+const SYSTEMS: System[] = [
   { key: 'natture', label: 'Natture', logo: '/images/natture.png', href: '/calculators/pigment/natture', active: true },
   { key: 'pool', label: 'Atlanttic', logo: '/images/Atlanttic_Topciment_Logo_200px.png', href: '/calculators/pigment/pool', active: true },
-  { key: 'efecttoQuartz', label: 'Efectto Quartz', logo: '/images/efectto_quartz.png', href: '/calculators/pigment/efectto-quartz', active: true },
-  { key: 'efecttoPU', label: 'Efectto PU', logo: '/images/Efectto_PU_logo_web.png', href: '/calculators/pigment/efectto-pu', active: true },
+  { key: 'efecttoQuartz', label: 'Efectto Quartz', logo: '/images/efectto_quartz.png', href: '/calculators/pigment/efectto-quartz', active: false, badge: 'Fejlesztés alatt' },
+  { key: 'efecttoPU', label: 'Efectto PU', logo: '/images/Efectto_PU_logo_web.png', href: '/calculators/pigment/efectto-pu', active: false, badge: 'Fejlesztés alatt' },
 ];
 
 export default function PigmentCalculatorPage() {
@@ -121,8 +130,8 @@ export default function PigmentCalculatorPage() {
             const cardInner = (
               <>
                 {!sys.active && (
-                  <span className="absolute top-2 right-2 bg-brand-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
-                    Hamarosan
+                  <span className="absolute top-2 right-2 bg-brand-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+                    {sys.badge ?? 'Hamarosan'}
                   </span>
                 )}
                 <div className="h-24 md:h-32 flex items-center justify-center">
