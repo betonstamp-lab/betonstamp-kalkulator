@@ -90,6 +90,9 @@ export const EFECTTO_PU_GRAIN_LABELS: Record<EFECTTO_PUGrainSize, string> = {
   big: 'Big Grain',
 };
 
+// Recept-értékek generálva a pigment-data-efectto-pu.json.json korrigált
+// forrásból (l. scripts/regen-pu-recipes.cjs). A JSON minden frissítésekor
+// futtatható újra a script.
 export const EFECTTO_PU_RECIPES: Record<EFECTTO_PUGrainSize, Record<EFECTTO_PUColorName, EfecttoPigmentRecipe>> = {
   small: {
     'BLANCO': { blanco: 80 },
@@ -109,7 +112,7 @@ export const EFECTTO_PU_RECIPES: Record<EFECTTO_PUGrainSize, Record<EFECTTO_PUCo
     'PAPYRUS': { amarillo: 0.47, negro: 0.5, rojoNaranja: 0.25, blanco: 10, azul: 1 },
     'CHAMPAGNE': { amarillo: 0.5, negro: 0.2, rojoNaranja: 0.08, blanco: 10.5 },
     'WASABI': { amarillo: 4, blanco: 46, verde: 3 },
-    'KHAKI': { amarillo: 1.6, negro: 0.35, rojoNaranja: 0.35, blanco: 16, verde: 2.1 },
+    'KHAKI': { amarillo: 1.6, negro: 0.35, rojoNaranja: 0.35, blanco: 16, azul: 2.1 },
     'SALMON': { amarillo: 4.2, negro: 0.1, rojoNaranja: 1.4, blanco: 40 },
     'CAFÉ': { amarillo: 1.8, negro: 0.6, rojoNaranja: 1.5, blanco: 10 },
     'SÁHARA': { amarillo: 1.5, negro: 0.37, rojoNaranja: 0.7, blanco: 37 },
@@ -117,14 +120,14 @@ export const EFECTTO_PU_RECIPES: Record<EFECTTO_PUGrainSize, Record<EFECTTO_PUCo
     'CEMENTO': { negro: 0.35, verde: 0.2 },
     'GINGER': { amarillo: 1.8, negro: 0.03, rojoNaranja: 0.1, blanco: 2 },
     'RAFFIA': { amarillo: 1, negro: 1, rojoNaranja: 0.4, blanco: 15 },
-    'CAIRO': { amarillo: 0.1, negro: 0.07, rojoNaranja: 0.05, blanco: 1.0 },
+    'CAIRO': { amarillo: 0.1, negro: 0.07, rojoNaranja: 0.05, blanco: 1 },
     'CLAY': { amarillo: 0.8, negro: 0.4, rojoNaranja: 0.8, blanco: 18.5 },
     'MARRÓN': { negro: 1.9, rojoNaranja: 0.9 },
     'COBRE': { amarillo: 1.5, negro: 1, rojoNaranja: 2.5 },
     'SAND': { amarillo: 1, negro: 0.6, rojoNaranja: 0.1, blanco: 6 },
     'CALABAZA': { amarillo: 14.5, negro: 0.05, rojoNaranja: 5, blanco: 4 },
     'PINK': { amarillo: 0.25, rojoIntenso: 0.12, blanco: 13, azul: 0.2 },
-    'EUCALYPTUS': { amarillo: 0.2, blanco: 14, azul: 2, amarilloVainilla: 9 },
+    'EUCALYPTUS': { amarillo: 0.2, blanco: 14, azul: 2, amarilloLimon: 9 },
     'HIMALAYA': { negro: 1.3, azul: 0.2 },
     'PEARL GREY': { amarillo: 0.15, negro: 0.4, rojoNaranja: 0.05, blanco: 5 },
     'PIZARRA': { negro: 3 },
@@ -143,7 +146,7 @@ export const EFECTTO_PU_RECIPES: Record<EFECTTO_PUGrainSize, Record<EFECTTO_PUCo
   },
   medium: {
     'BLANCO': { blanco: 80 },
-    'BLANCO ROTO': { amarillo: 0.1, rojoNaranja: 0.005 },
+    'BLANCO ROTO': { amarillo: 0.1, rojoNaranja: 0.005, blanco: 30 },
     'BONE': { amarillo: 0.33, blanco: 7 },
     'SHALE GREY': { negro: 1.7, blanco: 1.35, azul: 0.7 },
     'SPIKE': { amarillo: 0.15, negro: 0.09, rojoNaranja: 0.1, blanco: 7 },

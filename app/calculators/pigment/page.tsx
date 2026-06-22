@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation';
 import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
-import { EFECTTO_PIGMENT_UNDER_DEVELOPMENT } from '@/lib/calculators/pigment/featureFlags';
+import {
+  EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT,
+  EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT,
+} from '@/lib/calculators/pigment/featureFlags';
 
 type System = {
   key: string;
@@ -21,13 +24,13 @@ const SYSTEMS: System[] = [
   { key: 'pool', label: 'Atlanttic', logo: '/images/Atlanttic_Topciment_Logo_200px.png', href: '/calculators/pigment/pool', active: true },
   {
     key: 'efecttoQuartz', label: 'Efectto Quartz', logo: '/images/efectto_quartz.png', href: '/calculators/pigment/efectto-quartz',
-    active: !EFECTTO_PIGMENT_UNDER_DEVELOPMENT,
-    badge: EFECTTO_PIGMENT_UNDER_DEVELOPMENT ? 'Fejlesztés alatt' : undefined,
+    active: !EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT,
+    badge: EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT ? 'Fejlesztés alatt' : undefined,
   },
   {
     key: 'efecttoPU', label: 'Efectto PU', logo: '/images/Efectto_PU_logo_web.png', href: '/calculators/pigment/efectto-pu',
-    active: !EFECTTO_PIGMENT_UNDER_DEVELOPMENT,
-    badge: EFECTTO_PIGMENT_UNDER_DEVELOPMENT ? 'Fejlesztés alatt' : undefined,
+    active: !EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT,
+    badge: EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT ? 'Fejlesztés alatt' : undefined,
   },
 ];
 

@@ -15,12 +15,12 @@ import {
   sortEfecttoColors,
 } from '@/lib/calculators/pigment/efectto_color_hex';
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
-import { EFECTTO_PIGMENT_UNDER_DEVELOPMENT } from '@/lib/calculators/pigment/featureFlags';
+import { EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT } from '@/lib/calculators/pigment/featureFlags';
 
 // Központi flag (lib/calculators/pigment/featureFlags.ts) vezérli, hogy a
 // kalkulátor megjelenjen-e vagy "Fejlesztés alatt" üzenet helyett. False-ra
-// állítva mindhárom Efectto érintett helyen egyszerre aktiválódik újra.
-const UNDER_DEVELOPMENT = EFECTTO_PIGMENT_UNDER_DEVELOPMENT;
+// állítva az Efectto Quartz minden érintett helyen egyszerre aktiválódik újra.
+const UNDER_DEVELOPMENT = EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT;
 
 const SORTED_QUARTZ_COLORS = sortEfecttoColors(EFECTTO_QUARTZ_COLORS);
 

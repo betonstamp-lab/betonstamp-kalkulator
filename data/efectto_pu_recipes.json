@@ -1,0 +1,767 @@
+{
+  "small": {
+    "BLANCO": {
+      "Blanco": 80.0
+    },
+    "BLANCO ROTO": {
+      "Amarillo": 0.18,
+      "Rojo Naranja": 0.005,
+      "Blanco": 30.0
+    },
+    "BONE": {
+      "Amarillo": 0.1,
+      "Negro": 0.09,
+      "Blanco": 3.0
+    },
+    "SHALE GREY": {
+      "Negro": 2.0,
+      "Azul": 0.4
+    },
+    "SPIKE": {
+      "Amarillo": 0.07,
+      "Negro": 0.15,
+      "Rojo Naranja": 0.05,
+      "Blanco": 3.0
+    },
+    "LIQUEN": {
+      "Amarillo": 0.3,
+      "Negro": 0.3,
+      "Blanco": 20.4,
+      "Verde": 0.5
+    },
+    "MOJAVE": {
+      "Amarillo": 0.5,
+      "Negro": 0.2,
+      "Rojo Naranja": 0.07,
+      "Blanco": 2.9
+    },
+    "PORCELAIN": {
+      "Blanco": 18.0,
+      "Amarillo Vainilla": 0.2,
+      "Amarillo Limon": 0.2
+    },
+    "UNIVERSE": {
+      "Negro": 0.3,
+      "Blanco": 1.3
+    },
+    "MOSS": {
+      "Amarillo": 1.0,
+      "Blanco": 45.0,
+      "Azul": 1.5
+    },
+    "BREEZE": {
+      "Amarillo": 0.4,
+      "Blanco": 10.0,
+      "Azul": 2.5
+    },
+    "INDIA": {
+      "Amarillo": 3.0,
+      "Negro": 0.35,
+      "Blanco": 30.0
+    },
+    "BLUSH": {
+      "Amarillo": 0.3,
+      "Rojo Intenso": 0.05,
+      "Blanco": 15.0,
+      "Azul": 0.15
+    },
+    "CORAL": {
+      "Rojo Naranja": 1.2
+    },
+    "PAPYRUS": {
+      "Amarillo": 0.47,
+      "Negro": 0.5,
+      "Rojo Naranja": 0.25,
+      "Blanco": 10.0,
+      "Azul": 1.0
+    },
+    "CHAMPAGNE": {
+      "Amarillo": 0.5,
+      "Negro": 0.2,
+      "Rojo Naranja": 0.08,
+      "Blanco": 10.5
+    },
+    "WASABI": {
+      "Amarillo": 4.0,
+      "Blanco": 46.0,
+      "Verde": 3.0
+    },
+    "KHAKI": {
+      "Amarillo": 1.6,
+      "Negro": 0.35,
+      "Rojo Naranja": 0.35,
+      "Blanco": 16.0,
+      "Azul": 2.1
+    },
+    "SALMON": {
+      "Amarillo": 4.2,
+      "Negro": 0.1,
+      "Rojo Naranja": 1.4,
+      "Blanco": 40.0
+    },
+    "CAFÉ": {
+      "Amarillo": 1.8,
+      "Negro": 0.6,
+      "Rojo Naranja": 1.5,
+      "Blanco": 10.0
+    },
+    "SÁHARA": {
+      "Amarillo": 1.5,
+      "Negro": 0.37,
+      "Rojo Naranja": 0.7,
+      "Blanco": 37.0
+    },
+    "JADE": {
+      "Blanco": 12.0,
+      "Azul": 6.0,
+      "Amarillo Vainilla": 11.3
+    },
+    "CEMENTO": {
+      "Negro": 0.35,
+      "Verde": 0.2
+    },
+    "GINGER": {
+      "Amarillo": 1.8,
+      "Negro": 0.03,
+      "Rojo Naranja": 0.1,
+      "Blanco": 2.0
+    },
+    "RAFFIA": {
+      "Amarillo": 1.0,
+      "Negro": 1.0,
+      "Rojo Naranja": 0.4,
+      "Blanco": 15.0
+    },
+    "CAIRO": {
+      "Amarillo": 0.1,
+      "Negro": 0.07,
+      "Rojo Naranja": 0.05,
+      "Blanco": 1.0
+    },
+    "CLAY": {
+      "Amarillo": 0.8,
+      "Negro": 0.4,
+      "Rojo Naranja": 0.8,
+      "Blanco": 18.5
+    },
+    "MARRÓN": {
+      "Negro": 1.9,
+      "Rojo Naranja": 0.9
+    },
+    "COBRE": {
+      "Amarillo": 1.5,
+      "Negro": 1.0,
+      "Rojo Naranja": 2.5
+    },
+    "SAND": {
+      "Amarillo": 1.0,
+      "Negro": 0.6,
+      "Rojo Naranja": 0.1,
+      "Blanco": 6.0
+    },
+    "CALABAZA": {
+      "Amarillo": 14.5,
+      "Negro": 0.05,
+      "Rojo Naranja": 5.0,
+      "Blanco": 4.0
+    },
+    "PINK": {
+      "Amarillo": 0.25,
+      "Rojo Intenso": 0.12,
+      "Blanco": 13.0,
+      "Azul": 0.2
+    },
+    "EUCALYPTUS": {
+      "Amarillo": 0.2,
+      "Blanco": 14.0,
+      "Azul": 2.0,
+      "Amarillo Limon": 9.0
+    },
+    "HIMALAYA": {
+      "Negro": 1.3,
+      "Azul": 0.2
+    },
+    "PEARL GREY": {
+      "Amarillo": 0.15,
+      "Negro": 0.4,
+      "Rojo Naranja": 0.05,
+      "Blanco": 5.0
+    },
+    "PIZARRA": {
+      "Negro": 3.0
+    },
+    "PURE BLACK": {
+      "Negro Humo": 2.0
+    },
+    "MOON": {
+      "Amarillo": 0.8,
+      "Negro": 4.0,
+      "Blanco": 38.0
+    },
+    "ACERO": {
+      "Amarillo": 0.05,
+      "Negro": 0.8,
+      "Rojo Naranja": 0.05,
+      "Blanco": 5.0
+    },
+    "AZUL PROFUNDO": {
+      "Negro": 0.4,
+      "Blanco": 3.0,
+      "Azul": 5.0,
+      "Verde": 0.5
+    },
+    "ADRA": {
+      "Amarillo": 0.5,
+      "Negro": 0.6,
+      "Rojo Naranja": 0.1
+    },
+    "SAMOS": {
+      "Amarillo": 0.5,
+      "Negro": 0.8,
+      "Rojo Naranja": 0.5,
+      "Blanco": 2.5
+    },
+    "PLOMO": {
+      "Amarillo": 0.8,
+      "Negro": 4.0,
+      "Rojo Naranja": 1.2,
+      "Blanco": 5.0
+    },
+    "KALAHARI": {
+      "Amarillo": 1.1,
+      "Negro": 0.2,
+      "Rojo Naranja": 0.32,
+      "Blanco": 0.5
+    },
+    "DESERT TAN": {
+      "Amarillo": 1.9,
+      "Negro": 0.55,
+      "Rojo Naranja": 0.3,
+      "Blanco": 5.6
+    },
+    "COTTON": {
+      "Amarillo": 0.4,
+      "Negro": 0.1,
+      "Rojo Naranja": 0.08,
+      "Blanco": 20.0
+    },
+    "NÉBULA": {
+      "Amarillo": 0.2,
+      "Blanco": 23.0
+    },
+    "PERLA": {
+      "Blanco": 7.0,
+      "Azul": 0.15
+    }
+  },
+  "medium": {
+    "BLANCO": {
+      "Blanco": 80.0
+    },
+    "BLANCO ROTO": {
+      "Amarillo": 0.1,
+      "Rojo Naranja": 0.005,
+      "Blanco": 30.0
+    },
+    "BONE": {
+      "Amarillo": 0.33,
+      "Blanco": 7.0
+    },
+    "SHALE GREY": {
+      "Negro": 1.7,
+      "Blanco": 1.35,
+      "Azul": 0.7
+    },
+    "SPIKE": {
+      "Amarillo": 0.15,
+      "Negro": 0.09,
+      "Rojo Naranja": 0.1,
+      "Blanco": 7.0
+    },
+    "LIQUEN": {
+      "Amarillo": 0.3,
+      "Negro": 0.25,
+      "Blanco": 21.6,
+      "Verde": 0.5
+    },
+    "MOJAVE": {
+      "Amarillo": 1.5,
+      "Negro": 0.05,
+      "Rojo Naranja": 0.15,
+      "Blanco": 9.0
+    },
+    "PORCELAIN": {
+      "Amarillo": 0.4,
+      "Blanco": 21.6,
+      "Amarillo Limon": 0.15
+    },
+    "UNIVERSE": {
+      "Amarillo": 0.5,
+      "Negro": 0.7,
+      "Blanco": 17.1
+    },
+    "MOSS": {
+      "Amarillo": 1.0,
+      "Blanco": 45.0,
+      "Azul": 1.1
+    },
+    "BREEZE": {
+      "Amarillo": 0.25,
+      "Blanco": 16.2,
+      "Azul": 2.8
+    },
+    "INDIA": {
+      "Amarillo": 4.0,
+      "Negro": 0.2,
+      "Blanco": 25.2
+    },
+    "BLUSH": {
+      "Amarillo": 0.35,
+      "Rojo Intenso": 0.06,
+      "Blanco": 25.2,
+      "Azul": 0.1
+    },
+    "CORAL": {
+      "Rojo Naranja": 2.4,
+      "Blanco": 6.7,
+      "Amarillo Limon": 1.0
+    },
+    "PAPYRUS": {
+      "Amarillo": 0.6,
+      "Negro": 0.3,
+      "Rojo Naranja": 0.3,
+      "Blanco": 12.6,
+      "Verde": 1.0
+    },
+    "CHAMPAGNE": {
+      "Amarillo": 1.5,
+      "Negro": 0.1,
+      "Rojo Naranja": 0.08,
+      "Blanco": 18.0
+    },
+    "WASABI": {
+      "Amarillo": 4.0,
+      "Blanco": 45.0,
+      "Verde": 2.45
+    },
+    "KHAKI": {
+      "Amarillo": 2.0,
+      "Negro": 0.3,
+      "Rojo Naranja": 0.25,
+      "Blanco": 24.3,
+      "Verde": 2.0
+    },
+    "SALMON": {
+      "Amarillo": 7.0,
+      "Negro": 0.05,
+      "Rojo Naranja": 1.95,
+      "Blanco": 4.0
+    },
+    "CAFÉ": {
+      "Amarillo": 3.1,
+      "Negro": 0.5,
+      "Rojo Naranja": 2.0,
+      "Blanco": 13.5
+    },
+    "SÁHARA": {
+      "Amarillo": 2.5,
+      "Negro": 0.3,
+      "Rojo Naranja": 1.2,
+      "Blanco": 37.8
+    },
+    "JADE": {
+      "Blanco": 11.2,
+      "Azul": 5.5,
+      "Amarillo Vainilla": 14.0
+    },
+    "CEMENTO": {
+      "Negro": 0.35,
+      "Blanco": 6.0,
+      "Verde": 0.25
+    },
+    "GINGER": {
+      "Amarillo": 11.0,
+      "Rojo Naranja": 0.13,
+      "Blanco": 21.6
+    },
+    "RAFFIA": {
+      "Amarillo": 1.2,
+      "Negro": 0.8,
+      "Rojo Naranja": 0.5,
+      "Blanco": 15.3
+    },
+    "CAIRO": {
+      "Amarillo": 0.5,
+      "Negro": 0.05,
+      "Rojo Naranja": 0.1,
+      "Blanco": 7.5
+    },
+    "CLAY": {
+      "Amarillo": 0.7,
+      "Negro": 0.1,
+      "Rojo Naranja": 0.8,
+      "Blanco": 13.5
+    },
+    "MARRÓN": {
+      "Amarillo": 0.25,
+      "Negro": 1.16,
+      "Rojo Naranja": 0.94
+    },
+    "COBRE": {
+      "Amarillo": 2.8,
+      "Negro": 0.6,
+      "Rojo Naranja": 3.2
+    },
+    "SAND": {
+      "Amarillo": 1.2,
+      "Negro": 0.2,
+      "Rojo Naranja": 0.08,
+      "Blanco": 9.0
+    },
+    "CALABAZA": {
+      "Amarillo": 11.0,
+      "Rojo Naranja": 5.0,
+      "Blanco": 7.1
+    },
+    "PINK": {
+      "Amarillo": 0.25,
+      "Rojo Intenso": 0.15,
+      "Blanco": 18.0,
+      "Azul": 0.05
+    },
+    "EUCALYPTUS": {
+      "Blanco": 29.7,
+      "Azul": 1.8,
+      "Amarillo Vainilla": 10.0
+    },
+    "HIMALAYA": {
+      "Negro": 0.96,
+      "Blanco": 0.9,
+      "Azul": 0.04
+    },
+    "PEARL GREY": {
+      "Amarillo": 0.1,
+      "Negro": 0.2,
+      "Rojo Naranja": 0.03,
+      "Blanco": 9.0
+    },
+    "PIZARRA": {
+      "Negro": 2.5
+    },
+    "PURE BLACK": {
+      "Negro Humo": 2.0
+    },
+    "MOON": {
+      "Amarillo": 0.5,
+      "Negro": 4.0,
+      "Blanco": 31.5
+    },
+    "ACERO": {
+      "Amarillo": 0.1,
+      "Negro": 0.8,
+      "Rojo Naranja": 0.15,
+      "Blanco": 3.0
+    },
+    "AZUL PROFUNDO": {
+      "Blanco": 4.5,
+      "Azul": 4.0,
+      "Verde": 0.1
+    },
+    "ADRA": {
+      "Amarillo": 0.15,
+      "Negro": 0.25,
+      "Rojo Naranja": 0.05
+    },
+    "SAMOS": {
+      "Amarillo": 0.67,
+      "Negro": 0.45,
+      "Rojo Naranja": 0.33
+    },
+    "PLOMO": {
+      "Amarillo": 0.1,
+      "Negro": 1.2,
+      "Rojo Naranja": 0.3
+    },
+    "KALAHARI": {
+      "Amarillo": 2.0,
+      "Negro": 0.03,
+      "Rojo Naranja": 0.3,
+      "Blanco": 2.5
+    },
+    "DESERT TAN": {
+      "Amarillo": 2.3,
+      "Negro": 0.33,
+      "Rojo Naranja": 0.3,
+      "Blanco": 7.9
+    },
+    "COTTON": {
+      "Amarillo": 0.7,
+      "Negro": 0.1,
+      "Rojo Naranja": 0.05,
+      "Blanco": 45.0
+    },
+    "NÉBULA": {
+      "Amarillo": 0.22,
+      "Blanco": 43.2
+    },
+    "PERLA": {
+      "Blanco": 11.0,
+      "Azul": 0.13
+    }
+  },
+  "big": {
+    "BLANCO": {
+      "Blanco": 80.0
+    },
+    "BLANCO ROTO": {
+      "Amarillo": 0.1,
+      "Rojo Naranja": 0.005,
+      "Blanco": 30.0
+    },
+    "BONE": {
+      "Amarillo": 0.33,
+      "Blanco": 9.0
+    },
+    "SHALE GREY": {
+      "Negro": 1.7,
+      "Blanco": 1.5,
+      "Azul": 0.7
+    },
+    "SPIKE": {
+      "Amarillo": 0.15,
+      "Negro": 0.09,
+      "Rojo Naranja": 0.1,
+      "Blanco": 7.0
+    },
+    "LIQUEN": {
+      "Amarillo": 0.3,
+      "Negro": 0.25,
+      "Blanco": 30.0,
+      "Verde": 0.5
+    },
+    "MOJAVE": {
+      "Amarillo": 1.5,
+      "Negro": 0.05,
+      "Rojo Naranja": 0.15,
+      "Blanco": 10.0
+    },
+    "PORCELAIN": {
+      "Amarillo": 0.4,
+      "Blanco": 30.0,
+      "Amarillo Limon": 0.15
+    },
+    "UNIVERSE": {
+      "Amarillo": 0.5,
+      "Negro": 0.7,
+      "Blanco": 19.0
+    },
+    "MOSS": {
+      "Amarillo": 1.0,
+      "Blanco": 64.0,
+      "Azul": 1.1
+    },
+    "BREEZE": {
+      "Amarillo": 0.25,
+      "Blanco": 18.0,
+      "Azul": 2.8
+    },
+    "INDIA": {
+      "Amarillo": 4.0,
+      "Negro": 0.2,
+      "Blanco": 35.0
+    },
+    "BLUSH": {
+      "Amarillo": 0.35,
+      "Rojo Intenso": 0.06,
+      "Blanco": 35.0,
+      "Azul": 0.1
+    },
+    "CORAL": {
+      "Rojo Naranja": 2.4,
+      "Blanco": 6.7,
+      "Amarillo Limon": 1.0
+    },
+    "PAPYRUS": {
+      "Amarillo": 0.6,
+      "Negro": 0.3,
+      "Rojo Naranja": 0.3,
+      "Blanco": 14.0,
+      "Verde": 1.0
+    },
+    "CHAMPAGNE": {
+      "Amarillo": 1.5,
+      "Negro": 0.1,
+      "Rojo Naranja": 0.08,
+      "Blanco": 20.0
+    },
+    "WASABI": {
+      "Amarillo": 4.0,
+      "Blanco": 50.0,
+      "Verde": 2.45
+    },
+    "KHAKI": {
+      "Amarillo": 2.0,
+      "Negro": 0.3,
+      "Rojo Naranja": 0.25,
+      "Blanco": 27.0,
+      "Verde": 2.0
+    },
+    "SALMON": {
+      "Amarillo": 7.0,
+      "Negro": 0.05,
+      "Rojo Naranja": 1.95,
+      "Blanco": 4.0
+    },
+    "CAFÉ": {
+      "Amarillo": 3.1,
+      "Negro": 0.5,
+      "Rojo Naranja": 2.0,
+      "Blanco": 15.0
+    },
+    "SÁHARA": {
+      "Amarillo": 2.5,
+      "Negro": 0.3,
+      "Rojo Naranja": 1.2,
+      "Blanco": 42.0
+    },
+    "JADE": {
+      "Blanco": 12.4,
+      "Azul": 5.5,
+      "Amarillo Vainilla": 14.0
+    },
+    "CEMENTO": {
+      "Negro": 0.35,
+      "Blanco": 6.0,
+      "Verde": 0.25
+    },
+    "GINGER": {
+      "Amarillo": 11.0,
+      "Rojo Naranja": 0.13,
+      "Blanco": 24.0
+    },
+    "RAFFIA": {
+      "Amarillo": 1.2,
+      "Negro": 0.8,
+      "Rojo Naranja": 0.5,
+      "Blanco": 17.0
+    },
+    "CAIRO": {
+      "Amarillo": 0.5,
+      "Negro": 0.05,
+      "Rojo Naranja": 0.1,
+      "Blanco": 7.5
+    },
+    "CLAY": {
+      "Amarillo": 0.7,
+      "Negro": 0.1,
+      "Rojo Naranja": 0.8,
+      "Blanco": 15.0
+    },
+    "MARRÓN": {
+      "Amarillo": 0.25,
+      "Negro": 1.16,
+      "Rojo Naranja": 0.94
+    },
+    "COBRE": {
+      "Amarillo": 2.8,
+      "Negro": 0.6,
+      "Rojo Naranja": 3.2
+    },
+    "SAND": {
+      "Amarillo": 1.2,
+      "Negro": 0.2,
+      "Rojo Naranja": 0.08,
+      "Blanco": 10.0
+    },
+    "CALABAZA": {
+      "Amarillo": 11.0,
+      "Rojo Naranja": 5.0,
+      "Blanco": 7.1
+    },
+    "PINK": {
+      "Amarillo": 0.25,
+      "Rojo Intenso": 0.15,
+      "Blanco": 20.0,
+      "Azul": 0.05
+    },
+    "EUCALYPTUS": {
+      "Blanco": 33.0,
+      "Azul": 1.8,
+      "Amarillo Vainilla": 10.0
+    },
+    "HIMALAYA": {
+      "Negro": 0.96,
+      "Blanco": 0.9,
+      "Azul": 0.04
+    },
+    "PEARL GREY": {
+      "Amarillo": 0.1,
+      "Negro": 0.2,
+      "Rojo Naranja": 0.03,
+      "Blanco": 10.0
+    },
+    "PIZARRA": {
+      "Negro": 2.5
+    },
+    "PURE BLACK": {
+      "Negro Humo": 2.0
+    },
+    "MOON": {
+      "Amarillo": 0.5,
+      "Negro": 4.0,
+      "Blanco": 35.0
+    },
+    "ACERO": {
+      "Amarillo": 0.1,
+      "Negro": 0.8,
+      "Rojo Naranja": 0.15,
+      "Blanco": 3.0
+    },
+    "AZUL PROFUNDO": {
+      "Blanco": 4.5,
+      "Azul": 4.0,
+      "Verde": 0.1
+    },
+    "ADRA": {
+      "Amarillo": 0.15,
+      "Negro": 0.25,
+      "Rojo Naranja": 0.05
+    },
+    "SAMOS": {
+      "Amarillo": 0.67,
+      "Negro": 0.45,
+      "Rojo Naranja": 0.33
+    },
+    "PLOMO": {
+      "Amarillo": 0.1,
+      "Negro": 1.2,
+      "Rojo Naranja": 0.3
+    },
+    "KALAHARI": {
+      "Amarillo": 2.0,
+      "Negro": 0.03,
+      "Rojo Naranja": 0.3,
+      "Blanco": 2.5
+    },
+    "DESERT TAN": {
+      "Amarillo": 2.3,
+      "Negro": 0.33,
+      "Rojo Naranja": 0.3,
+      "Blanco": 8.8
+    },
+    "COTTON": {
+      "Amarillo": 0.7,
+      "Negro": 0.1,
+      "Rojo Naranja": 0.05,
+      "Blanco": 50.0
+    },
+    "NÉBULA": {
+      "Amarillo": 0.22,
+      "Blanco": 48.0
+    },
+    "PERLA": {
+      "Blanco": 14.0,
+      "Azul": 0.13
+    }
+  }
+}

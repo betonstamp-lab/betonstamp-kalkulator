@@ -9,7 +9,10 @@ import { NATTURE_COLORS, NATTURE_COLOR_HEX, SEALER_TO_PIGMENT_TYPE, NATTURE_PIGM
 import { EFECTTO_QUARTZ_RECIPES, EFECTTO_QUARTZ_COLORS, EfecttoPigmentRecipe } from '@/lib/calculators/pigment/efectto_quartz_pigments';
 import { EFECTTO_PU_RECIPES, EFECTTO_PU_COLORS } from '@/lib/calculators/pigment/efectto_pu_pigments';
 import { getEfecttoColorHex, sortEfecttoColors } from '@/lib/calculators/pigment/efectto_color_hex';
-import { EFECTTO_PIGMENT_UNDER_DEVELOPMENT } from '@/lib/calculators/pigment/featureFlags';
+import {
+  EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT,
+  EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT,
+} from '@/lib/calculators/pigment/featureFlags';
 import PriceBreakdown from '@/components/PriceBreakdown';
 
 const SORTED_EFECTTO_QUARTZ_COLORS = sortEfecttoColors(EFECTTO_QUARTZ_COLORS);
@@ -568,8 +571,8 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
       });
 
       // Pigment számítás: minden szemcseméretre amelynek van receptje (Super Grain-t kihagyja).
-      // Az Efectto pigment-tábla jelenleg felülvizsgálat alatt (l. featureFlags.ts) — flag true esetén kihagyjuk.
-      if (!EFECTTO_PIGMENT_UNDER_DEVELOPMENT && surface.selectedColor && SEALER_TO_PIGMENT_TYPE[lakk]) {
+      // Az Efectto Quartz pigment-tábla jelenleg felülvizsgálat alatt (l. featureFlags.ts) — flag true esetén kihagyjuk.
+      if (!EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT && surface.selectedColor && SEALER_TO_PIGMENT_TYPE[lakk]) {
         const pigmentTotals: Record<string, number> = {};
         const grainKgPairs: Array<[string, number]> = [
           [vastagabbGrain, vastagabbKg],
@@ -673,8 +676,8 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
       });
 
       // Pigment számítás
-      // Az Efectto PU pigment-tábla jelenleg felülvizsgálat alatt (l. featureFlags.ts) — flag true esetén kihagyjuk.
-      if (!EFECTTO_PIGMENT_UNDER_DEVELOPMENT && surface.selectedColor && SEALER_TO_PIGMENT_TYPE[lakk]) {
+      // Az Efectto PU pigment-tábla flag (l. featureFlags.ts) — true esetén kihagyjuk.
+      if (!EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT && surface.selectedColor && SEALER_TO_PIGMENT_TYPE[lakk]) {
         const pigmentTotals: Record<string, number> = {};
         (['big', 'medium', 'small'] as const).forEach(puType => {
           const kg = puKgByGrain[puType];
@@ -2198,7 +2201,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           </div>
                         )}
 
-                        {system === 'effectoQuartz' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && EFECTTO_PIGMENT_UNDER_DEVELOPMENT && (
+                        {system === 'effectoQuartz' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT && (
                           <div className="mt-3">
                             <label className="block text-xs font-medium text-gray-600 mb-2">
                               Szín választása (opcionális):
@@ -2209,7 +2212,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           </div>
                         )}
 
-                        {system === 'effectoQuartz' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && !EFECTTO_PIGMENT_UNDER_DEVELOPMENT && (
+                        {system === 'effectoQuartz' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && !EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT && (
                           <div className="mt-3">
                             <label className="block text-xs font-medium text-gray-600 mb-2">
                               Szín választása (opcionális):
@@ -2266,7 +2269,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           </div>
                         )}
 
-                        {system === 'effectoPU' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && EFECTTO_PIGMENT_UNDER_DEVELOPMENT && (
+                        {system === 'effectoPU' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT && (
                           <div className="mt-3">
                             <label className="block text-xs font-medium text-gray-600 mb-2">
                               Szín választása (opcionális):
@@ -2277,7 +2280,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           </div>
                         )}
 
-                        {system === 'effectoPU' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && !EFECTTO_PIGMENT_UNDER_DEVELOPMENT && (
+                        {system === 'effectoPU' && surface.lakk && SEALER_TO_PIGMENT_TYPE[surface.lakk] && !EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT && (
                           <div className="mt-3">
                             <label className="block text-xs font-medium text-gray-600 mb-2">
                               Szín választása (opcionális):
