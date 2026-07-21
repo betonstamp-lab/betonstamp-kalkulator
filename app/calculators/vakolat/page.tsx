@@ -708,6 +708,8 @@ interface PigmentSectionProps {
 function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: PigmentSectionProps) {
   const [decorColorKey, setDecorColorKey] = useState('');
   const [decorPackIdx, setDecorPackIdx] = useState<number | null>(null);
+  const [silcopinPackIdx, setSilcopinPackIdx] = useState<number | null>(null);
+  const [monocromPackIdx, setMonocromPackIdx] = useState<number | null>(null);
   const [mixolIdx, setMixolIdx] = useState<number | null>(null);
   const [mixolPackIdx, setMixolPackIdx] = useState<number | null>(null);
 
@@ -716,6 +718,16 @@ function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: P
     onAdd({ type: 'est_decor', colorKey: decorColorKey, packIndex: decorPackIdx });
     setDecorColorKey('');
     setDecorPackIdx(null);
+  };
+  const submitSilcopin = () => {
+    if (silcopinPackIdx === null) return;
+    onAdd({ type: 'silcopin', packIndex: silcopinPackIdx });
+    setSilcopinPackIdx(null);
+  };
+  const submitMonocrom = () => {
+    if (monocromPackIdx === null) return;
+    onAdd({ type: 'monocrom', packIndex: monocromPackIdx });
+    setMonocromPackIdx(null);
   };
   const submitMixol = () => {
     if (mixolIdx === null || mixolPackIdx === null) return;
@@ -792,32 +804,62 @@ function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: P
       {/* Silcopin */}
       <div className="border border-gray-200 rounded-lg p-3 mb-3">
         <p className="text-xs font-semibold text-gray-700 mb-2">Silcopin (színtelen kötőanyag, gyengébb)</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
           {SILCOPIN.map((p, i) => (
             <button
               key={i}
-              onClick={() => onAdd({ type: 'silcopin', packIndex: i })}
-              className="px-3 py-1.5 rounded border border-gray-300 bg-white text-xs font-medium text-gray-700 hover:border-brand-500 hover:bg-brand-50 transition-all"
+              onClick={() => setSilcopinPackIdx(i === silcopinPackIdx ? null : i)}
+              className={`px-3 py-1.5 rounded border text-xs font-medium transition-all ${
+                silcopinPackIdx === i
+                  ? 'border-brand-500 bg-brand-50 text-gray-900'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-400'
+              }`}
             >
-              + {p.label} ({p.price.toLocaleString('hu-HU')} Ft, ~{p.m2} m²) {isPlaceholderSku(p.sku) && <span className="text-amber-600">⚠</span>}
+              {p.label} ({p.price.toLocaleString('hu-HU')} Ft, ~{p.m2} m²) {isPlaceholderSku(p.sku) && <span className="text-amber-600">⚠</span>}
             </button>
           ))}
+          <button
+            onClick={submitSilcopin}
+            disabled={silcopinPackIdx === null}
+            className={`px-3 py-1.5 rounded text-xs font-semibold transition-all ${
+              silcopinPackIdx !== null
+                ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            + Hozzáad
+          </button>
         </div>
       </div>
 
       {/* Monocrom */}
       <div className="border border-gray-200 rounded-lg p-3 mb-3">
         <p className="text-xs font-semibold text-gray-700 mb-2">Monocrom (színtelen kötőanyag, erős)</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
           {MONOCROM.map((p, i) => (
             <button
               key={i}
-              onClick={() => onAdd({ type: 'monocrom', packIndex: i })}
-              className="px-3 py-1.5 rounded border border-gray-300 bg-white text-xs font-medium text-gray-700 hover:border-brand-500 hover:bg-brand-50 transition-all"
+              onClick={() => setMonocromPackIdx(i === monocromPackIdx ? null : i)}
+              className={`px-3 py-1.5 rounded border text-xs font-medium transition-all ${
+                monocromPackIdx === i
+                  ? 'border-brand-500 bg-brand-50 text-gray-900'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-400'
+              }`}
             >
-              + {p.label} ({p.price.toLocaleString('hu-HU')} Ft, ~{p.m2} m²)
+              {p.label} ({p.price.toLocaleString('hu-HU')} Ft, ~{p.m2} m²)
             </button>
           ))}
+          <button
+            onClick={submitMonocrom}
+            disabled={monocromPackIdx === null}
+            className={`px-3 py-1.5 rounded text-xs font-semibold transition-all ${
+              monocromPackIdx !== null
+                ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            + Hozzáad
+          </button>
         </div>
       </div>
 
