@@ -388,6 +388,7 @@ export default function NattureCalculatorPage() {
               min="0"
               value={kg}
               onChange={(e) => { setKg(e.target.value); setResult(null); }}
+              onWheel={(e) => e.currentTarget.blur()}
               placeholder="Pl. 10"
               className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
             />
@@ -434,6 +435,7 @@ export default function NattureCalculatorPage() {
                 <input
                   type="number" step="0.1" min="0" value={s.m2}
                   onChange={(e) => updateM2Surface(s.id, { m2: e.target.value })}
+                  onWheel={(e) => e.currentTarget.blur()}
                   placeholder="Pl. 20"
                   className="w-full p-2 border-2 border-gray-300 rounded focus:border-brand-500 focus:outline-none transition text-gray-900 bg-white text-sm"
                 />

@@ -1202,6 +1202,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onCh
           min="0"
           value={surface.area}
           onChange={(e) => onUpdate({ area: e.target.value })}
+          onWheel={(e) => e.currentTarget.blur()}
           placeholder="Pl. 50"
           className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
         />
@@ -1249,6 +1250,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, onUpdate, onCh
             min="0"
             value={surface.concretePrice}
             onChange={(e) => onUpdate({ concretePrice: e.target.value })}
+            onWheel={(e) => e.currentTarget.blur()}
             placeholder="Pl. 35000"
             className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
           />

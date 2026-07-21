@@ -1983,6 +1983,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                             max="10000"
                             value={surface.area}
                             onChange={(e) => updateSurface(surface.id, 'area', e.target.value)}
+                            onWheel={(e) => e.currentTarget.blur()}
                             className="flex-1 p-2 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-semibold bg-white"
                             placeholder="pl. 50"
                           />
@@ -2548,6 +2549,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                                             const newQty = Math.max(0, parseInt(e.target.value) || 0);
                                             setPartnerQtyOverrides(prev => ({ ...prev, [key]: newQty }));
                                           }}
+                                          onWheel={(e) => e.currentTarget.blur()}
                                           className="w-12 p-1 text-center border border-green-400 rounded bg-green-50 font-semibold text-green-800 focus:border-green-600 focus:outline-none"
                                         />
                                       ) : (

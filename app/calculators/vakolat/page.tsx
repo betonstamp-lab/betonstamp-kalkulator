@@ -426,6 +426,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
               type="number" step="0.1" min="0"
               value={surface.area}
               onChange={(e) => onUpdate({ area: e.target.value })}
+              onWheel={(e) => e.currentTarget.blur()}
               placeholder="Pl. 25"
               className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-brand-500 focus:outline-none transition text-gray-900 font-medium bg-white"
             />

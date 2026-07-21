@@ -175,6 +175,7 @@ export default function AdminPage() {
                               ...editingOption,
                               price: parseInt(e.target.value) || 0
                             })}
+                            onWheel={(e) => e.currentTarget.blur()}
                             className="w-32 p-2 border-2 border-blue-500 rounded-lg focus:outline-none text-gray-900 font-semibold"
                             autoFocus
                           />
