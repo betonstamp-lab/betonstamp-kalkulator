@@ -193,23 +193,31 @@ export async function generateCalculationPdf(data: PdfData): Promise<void> {
       const priceWidth = priceMain
         ? doc.getTextWidth(priceMain) + 6
         : 0;
-      const nameMaxW = CONTENT_W - priceWidth;
+      // A splitTextToSize üres tömböt tud visszaadni, ha a maxW extrém kicsi;
+      // védekezésképpen minimumot tartunk (a font-metrikák per-glyph pontatlansága
+      // ellen is véd — DejaVu Sans Condensed-nél volt reprodukálható eset).
+      const nameMaxW = Math.max(60, CONTENT_W - priceWidth);
       const nameLines = doc.splitTextToSize(item.name, nameMaxW);
-      doc.text(nameLines, MARGIN_X, y);
+      if (item.name) {
+        doc.text(nameLines, MARGIN_X, y);
+      }
       if (priceMain) {
         doc.text(priceMain, PAGE_W - MARGIN_X, y, { align: 'right' });
       }
-      // Ha a név több sorra tördelődött, a következő sor y-eltolása szerint haladunk
+      // Név-blokk MINIMUM egy sor magas — akkor is, ha nameLines.length === 0.
       const nameLineHeight = 12;
-      const nameHeight = Array.isArray(nameLines)
-        ? nameLines.length * nameLineHeight
-        : nameLineHeight;
+      const linesCount = Array.isArray(nameLines) ? nameLines.length : 1;
+      const nameHeight = Math.max(1, linesCount) * nameLineHeight;
       y += nameHeight;
 
-      // Mennyiség + secondary ár (anyag) sor
+      // Mennyiség + secondary ár (anyag) sor. Csak akkor rajzoljuk, ha VAN mit
+      // rajzolni — de az y-lépést mindig alkalmazzuk, hogy a tétel-blokk
+      // magassága konzisztens legyen.
       doc.setFontSize(9);
       doc.setTextColor(...TEXT_MUTED);
-      doc.text(item.quantity, MARGIN_X + 8, y);
+      if (item.quantity) {
+        doc.text(item.quantity, MARGIN_X + 8, y);
+      }
       if (item.prices?.anyag !== undefined) {
         doc.text(
           `Anyagszükséglet: ${formatFt(item.prices.anyag)}`,
