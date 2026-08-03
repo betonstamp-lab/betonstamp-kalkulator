@@ -18,6 +18,7 @@ import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
 import type { PdfData, PdfSection, PdfLineItem } from '@/lib/shared/pdfExport';
+import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 
 const SORTED_EFECTTO_QUARTZ_COLORS = sortEfecttoColors(EFECTTO_QUARTZ_COLORS);
 const SORTED_EFECTTO_PU_COLORS = sortEfecttoColors(EFECTTO_PU_COLORS);
@@ -2758,6 +2759,18 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                     hasResult={true}
                     buildData={() => {
                       const sections: PdfSection[] = [];
+                      // Felületek áttekintése — minden felület a saját m²-jével és selectedColor-jával.
+                      // Csak azokat listázzuk, amelyeknek van megadott m²-je (parseFloat > 0).
+                      let n = 1;
+                      for (const s of surfaces) {
+                        const area = parseFloat(s.area);
+                        if (!isFinite(area) || area <= 0) continue;
+                        sections.push({
+                          heading: formatSurfaceHeader({ index: n, area: s.area, color: s.selectedColor }),
+                          items: [],
+                        });
+                        n += 1;
+                      }
                       let grandTotal = 0;
                       result.items.forEach((item, idx) => {
                         const items: PdfLineItem[] = [];

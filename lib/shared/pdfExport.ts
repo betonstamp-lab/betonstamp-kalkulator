@@ -58,6 +58,28 @@ const RULE: [number, number, number] = [220, 220, 220];
 
 const formatFt = (n: number) => `${Math.round(n).toLocaleString('hu-HU')} Ft`;
 
+/** Egységes felület-fejléc a PDF-hez. Minden kalkulátor buildData()-ja ugyanezt
+ *  használja, hogy a formátum garantáltan egységes maradjon.
+ *  Kimenet: "Felület 1 — 40 m² — SAMOS"  vagy  "Felület 2 — 25 m²" (ha nincs szín). */
+export function formatSurfaceHeader({
+  index,
+  area,
+  color,
+}: {
+  index: number;
+  area: number | string | null | undefined;
+  color?: string | null;
+}): string {
+  const parts: string[] = [`Felület ${index}`];
+  if (area !== null && area !== undefined && String(area).trim() !== '') {
+    parts.push(`${area} m²`);
+  }
+  if (color && String(color).trim() !== '') {
+    parts.push(String(color).trim());
+  }
+  return parts.join(' — ');
+}
+
 function todayISO(): string {
   const d = new Date();
   const yyyy = d.getFullYear();

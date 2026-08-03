@@ -10,7 +10,8 @@ import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 import { usePricingMode } from '@/components/PricingModeContext';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
-import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
+import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
+import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 
 const POOL_PRODUCTS = [
   { value: 'xl', label: 'Aquaciment XL' },
@@ -546,11 +547,19 @@ export default function PoolCalculatorPage() {
                 profile={profile}
                 hasResult={true}
                 buildData={() => {
-                  const surfaceItems: PdfLineItem[] = m2Result.surfaces.map(r => ({
-                    name: `Felület ${r.n}`,
-                    quantity: `${r.m2} m² — ${r.weightKg} kg mikrocement`,
-                  }));
-                  const colorSections = m2Result.byColor.map(group => ({
+                  // Minden felület KÜLÖN szekció — heading: "Felület N — X m² — BLANCO"
+                  // (Atlanttic-nál a szín rendszerszinten fix BLANCO)
+                  const surfaceSections: PdfSection[] = m2Result.surfaces.map(r => {
+                    const items: PdfLineItem[] = [
+                      { name: 'Mikrocement', quantity: `${r.weightKg} kg` },
+                      ...r.pigments.map(p => ({ name: `Pigment — ${p.name}`, quantity: `${p.grams} g` })),
+                    ];
+                    return {
+                      heading: formatSurfaceHeader({ index: r.n, area: r.m2, color: 'BLANCO' }),
+                      items,
+                    };
+                  });
+                  const colorSections: PdfSection[] = m2Result.byColor.map(group => ({
                     heading: `Pigmentek — ${group.color}`,
                     items: group.pigments.map(p => ({ name: p.name, quantity: `${p.grams} g` })),
                   }));
@@ -558,7 +567,7 @@ export default function PoolCalculatorPage() {
                     title: 'Atlanttic Pigment Kalkulátor (m²) — Aquaciment XL, BLANCO',
                     pricingMode,
                     sections: [
-                      { heading: 'Felületek', items: surfaceItems },
+                      ...surfaceSections,
                       { heading: 'Összesen', items: [{ name: 'Mikrocement összesen', quantity: `${m2Result.totalKg} kg` }] },
                       ...colorSections,
                     ],

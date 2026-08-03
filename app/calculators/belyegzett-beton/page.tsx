@@ -31,7 +31,8 @@ import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
-import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
+import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
+import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 
 // Overlay-felületnél a lakk fix 2 réteg (nincs vastagság input, mint a Bélyegzettben)
 const OVERLAY_LAKK_LAYERS = 2;
@@ -1027,6 +1028,33 @@ export default function BelyegzettBetonCalculatorPage() {
                   hasResult={true}
                   buildData={() => {
                     const sections: PdfData['sections'] = [];
+                    // Felületek áttekintése — minden CALCULATED felület a saját színével és m²-rel.
+                    // A színt a colorKey → COLORS.name lekérdezésből kapjuk (Bélyegzett = Stonecem/Arcocem,
+                    // Overlay = Overlay Bag). Ha nincs szín (nem lehetne), üres marad — nincs "undefined".
+                    const surfaceSections: PdfSection[] = [];
+                    let n = 1;
+                    for (const s of surfaces) {
+                      if (!s.result) continue;
+                      let colorName: string | undefined;
+                      const items: PdfLineItem[] = [];
+                      if (isBelyegzett(s)) {
+                        const colorList = s.technology === 'felkemenyit' ? STONECEM_FLOOR_COLORS : ARCOCEM_FAST_COLORS;
+                        colorName = colorList.find(c => c.key === s.colorKey)?.name;
+                        items.push({ name: 'Technológia', quantity: s.technology === 'felkemenyit' ? 'Felületkeményítős' : 'Pigmentált' });
+                        items.push({ name: 'Vastagság', quantity: `${s.thickness} cm` });
+                      } else {
+                        colorName = OVERLAY_BAG_COLORS.find(c => c.key === s.overlayColorKey)?.name;
+                        items.push({ name: 'Típus', quantity: 'Overlay (1 cm)' });
+                      }
+                      surfaceSections.push({
+                        heading: formatSurfaceHeader({ index: n, area: s.area, color: colorName }),
+                        items,
+                      });
+                      n += 1;
+                    }
+                    if (surfaceSections.length > 0) {
+                      sections.push(...surfaceSections);
+                    }
                     // Betonozás — külön szekció (csak Bélyegzettnél kap concreteM3-at)
                     if (aggregated.concreteTotal > 0) {
                       sections.push({

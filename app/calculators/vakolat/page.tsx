@@ -24,7 +24,8 @@ import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
-import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
+import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
+import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 import {
   calculateVakolat,
   aggregateVakolat,
@@ -351,6 +352,25 @@ export default function VakolatCalculatorPage() {
                 profile={profile}
                 hasResult={true}
                 buildData={() => {
+                  // Felületek áttekintése — a kalkulált felületek finishing színe + m² a saját mezőikből.
+                  // Szín-lekérdezés: a választott FINISHING termék colors[] palettájából a finishingColorKey név-é.
+                  const surfaceSections: PdfSection[] = [];
+                  let n = 1;
+                  for (const s of surfaces) {
+                    if (!s.result) continue;
+                    const finishing = FINISHING.find(f => f.id === s.finishingId);
+                    const colorName = finishing?.colors.find(c => c.key === s.finishingColorKey)?.name;
+                    const surfDef = SURFACES.find(x => x.id === s.surfaceId);
+                    const surfaceItems: PdfLineItem[] = [];
+                    if (surfDef) surfaceItems.push({ name: 'Falazat típusa', quantity: surfDef.name });
+                    if (finishing) surfaceItems.push({ name: 'Vakolat', quantity: finishing.name });
+                    surfaceItems.push({ name: 'Vastagság', quantity: `${s.thickness} mm` });
+                    surfaceSections.push({
+                      heading: formatSurfaceHeader({ index: n, area: s.area, color: colorName }),
+                      items: surfaceItems,
+                    });
+                    n += 1;
+                  }
                   const items: PdfLineItem[] = aggregated.lines.map(l => {
                     // A discount arányos a totalBrutto → totalPartner viszonyból.
                     const price = isPartner && aggregated.totalPartner !== undefined
@@ -368,7 +388,10 @@ export default function VakolatCalculatorPage() {
                   const data: PdfData = {
                     title: 'Vakolat Kalkulátor (ESTonetex System)',
                     pricingMode,
-                    sections: [{ heading: 'Anyagok', items }],
+                    sections: [
+                      ...surfaceSections,
+                      { heading: 'Anyagok (összesített)', items },
+                    ],
                     totals: { single: totalSingle },
                     filenamePrefix: 'betonstamp-vakolat',
                   };

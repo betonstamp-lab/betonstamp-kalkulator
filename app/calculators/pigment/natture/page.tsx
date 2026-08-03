@@ -14,7 +14,8 @@ import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 import { usePricingMode } from '@/components/PricingModeContext';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
-import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
+import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
+import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 
 const NATTURE_PRODUCTS = [
   { value: 's_WT', label: 'Natture S WT' },
@@ -634,11 +635,20 @@ export default function NattureCalculatorPage() {
                 profile={profile}
                 hasResult={true}
                 buildData={() => {
-                  const surfaceItems: PdfLineItem[] = m2Result.surfaces.map(r => ({
-                    name: `Felület ${r.n}`,
-                    quantity: `${r.m2} m² · ${r.grainLabel} · ${r.color} — ${r.weightKg} kg mikrocement, ${r.resinL} L gyanta`,
-                  }));
-                  const colorSections = m2Result.byColor.map(group => ({
+                  // Minden felület KÜLÖN szekció — heading: "Felület N — X m² — SZÍN"
+                  const surfaceSections: PdfSection[] = m2Result.surfaces.map(r => {
+                    const items: PdfLineItem[] = [
+                      { name: 'Szemcseméret', quantity: r.grainLabel },
+                      { name: 'Mikrocement', quantity: `${r.weightKg} kg` },
+                      { name: 'Gyanta (Acricem)', quantity: `${r.resinL} L` },
+                      ...r.pigments.map(p => ({ name: `Pigment — ${p.name}`, quantity: `${p.grams} g` })),
+                    ];
+                    return {
+                      heading: formatSurfaceHeader({ index: r.n, area: r.m2, color: r.color }),
+                      items,
+                    };
+                  });
+                  const colorSections: PdfSection[] = m2Result.byColor.map(group => ({
                     heading: `Pigmentek — ${group.color}`,
                     items: group.pigments.map(p => ({ name: p.name, quantity: `${p.grams} g` })),
                   }));
@@ -646,7 +656,7 @@ export default function NattureCalculatorPage() {
                     title: `Natture Pigment Kalkulátor (m²) — Lakk: ${m2Result.sealerLabel}`,
                     pricingMode,
                     sections: [
-                      { heading: 'Felületek', items: surfaceItems },
+                      ...surfaceSections,
                       {
                         heading: 'Összesen',
                         items: [
