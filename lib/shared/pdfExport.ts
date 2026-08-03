@@ -66,14 +66,23 @@ function todayISO(): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-/** A jsPDF alap Helvetica fontkészlete csak latin-1 → az ékezetek NFC → NFD +
- *  diacritic-strip. A magyar szövegnek így nincs "?", csak ékezet nélkül. */
-function safeText(s: string): string {
-  return s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+// Beágyazott Unicode font (DejaVu Sans Condensed) — támogatja a teljes magyar
+// karakterkészletet (á é í ó ö ő ú ü ű + nagybetűk). Dinamikus import: csak a
+// PDF-generálás pillanatában tölti be a browser, hogy a fő bundle-t ne
+// terhelje meg a ~1.7 MB base64 tartalom.
+const FONT_FAMILY = 'DejaVuSans';
+async function registerUnicodeFont(doc: jsPDF): Promise<void> {
+  const { DEJAVU_SANS_REGULAR_B64, DEJAVU_SANS_BOLD_B64 } = await import('./fonts/dejavuSans');
+  doc.addFileToVFS('DejaVuSansCondensed.ttf', DEJAVU_SANS_REGULAR_B64);
+  doc.addFont('DejaVuSansCondensed.ttf', FONT_FAMILY, 'normal');
+  doc.addFileToVFS('DejaVuSansCondensed-Bold.ttf', DEJAVU_SANS_BOLD_B64);
+  doc.addFont('DejaVuSansCondensed-Bold.ttf', FONT_FAMILY, 'bold');
+  doc.setFont(FONT_FAMILY, 'normal');
 }
 
-export function generateCalculationPdf(data: PdfData): void {
+export async function generateCalculationPdf(data: PdfData): Promise<void> {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  await registerUnicodeFont(doc);
   const PAGE_W = doc.internal.pageSize.getWidth();
   const PAGE_H = doc.internal.pageSize.getHeight();
   const MARGIN_X = 40;
@@ -94,29 +103,29 @@ export function generateCalculationPdf(data: PdfData): void {
   doc.setFillColor(...BRAND);
   doc.rect(MARGIN_X, y, 4, 22, 'F'); // brand csík
   doc.setTextColor(...TEXT_DARK);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont(FONT_FAMILY, 'bold');
   doc.setFontSize(16);
-  doc.text(safeText('Betonstamp'), MARGIN_X + 12, y + 16);
+  doc.text('Betonstamp', MARGIN_X + 12, y + 16);
 
-  doc.setFont('helvetica', 'normal');
+  doc.setFont(FONT_FAMILY, 'normal');
   doc.setFontSize(10);
   doc.setTextColor(...TEXT_MUTED);
-  doc.text(safeText(todayISO()), PAGE_W - MARGIN_X, y + 16, { align: 'right' });
+  doc.text(todayISO(), PAGE_W - MARGIN_X, y + 16, { align: 'right' });
   y += 32;
 
   // Kalkulátor cím
   doc.setTextColor(...TEXT_DARK);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont(FONT_FAMILY, 'bold');
   doc.setFontSize(13);
-  doc.text(safeText(data.title), MARGIN_X, y);
+  doc.text(data.title, MARGIN_X, y);
   y += 18;
 
   // Ár-mód sor
-  doc.setFont('helvetica', 'bold');
+  doc.setFont(FONT_FAMILY, 'bold');
   doc.setFontSize(11);
   doc.setTextColor(...BRAND);
-  const modeLabel = data.pricingMode === 'partner' ? 'Ar: Partneri' : 'Ar: Altalanos';
-  doc.text(safeText(modeLabel), MARGIN_X, y);
+  const modeLabel = data.pricingMode === 'partner' ? 'Ár: Partneri' : 'Ár: Általános';
+  doc.text(modeLabel, MARGIN_X, y);
   y += 14;
 
   // Szeparátor
@@ -131,9 +140,9 @@ export function generateCalculationPdf(data: PdfData): void {
   for (const section of data.sections) {
     ensureRoom(30);
     if (section.heading) {
-      doc.setFont('helvetica', 'bold');
+      doc.setFont(FONT_FAMILY, 'bold');
       doc.setFontSize(11);
-      doc.text(safeText(section.heading), MARGIN_X, y);
+      doc.text(section.heading, MARGIN_X, y);
       y += 14;
     }
 
@@ -143,7 +152,7 @@ export function generateCalculationPdf(data: PdfData): void {
       // Második sor: mennyiség (bal, halványabb) + anyag ár (jobb, halványabb) — ha van
       ensureRoom(24);
 
-      doc.setFont('helvetica', 'normal');
+      doc.setFont(FONT_FAMILY, 'normal');
       doc.setFontSize(10);
       doc.setTextColor(...TEXT_DARK);
       // Szélesség-biztosítás: ha nagyon hosszú a név, a splitTextToSize több sorba tördel
@@ -154,13 +163,13 @@ export function generateCalculationPdf(data: PdfData): void {
             ? formatFt(item.prices.kiszereles)
             : '';
       const priceWidth = priceMain
-        ? doc.getTextWidth(safeText(priceMain)) + 6
+        ? doc.getTextWidth(priceMain) + 6
         : 0;
       const nameMaxW = CONTENT_W - priceWidth;
-      const nameLines = doc.splitTextToSize(safeText(item.name), nameMaxW);
+      const nameLines = doc.splitTextToSize(item.name, nameMaxW);
       doc.text(nameLines, MARGIN_X, y);
       if (priceMain) {
-        doc.text(safeText(priceMain), PAGE_W - MARGIN_X, y, { align: 'right' });
+        doc.text(priceMain, PAGE_W - MARGIN_X, y, { align: 'right' });
       }
       // Ha a név több sorra tördelődött, a következő sor y-eltolása szerint haladunk
       const nameLineHeight = 12;
@@ -172,10 +181,10 @@ export function generateCalculationPdf(data: PdfData): void {
       // Mennyiség + secondary ár (anyag) sor
       doc.setFontSize(9);
       doc.setTextColor(...TEXT_MUTED);
-      doc.text(safeText(item.quantity), MARGIN_X + 8, y);
+      doc.text(item.quantity, MARGIN_X + 8, y);
       if (item.prices?.anyag !== undefined) {
         doc.text(
-          safeText(`Anyagszukseglet: ${formatFt(item.prices.anyag)}`),
+          `Anyagszükséglet: ${formatFt(item.prices.anyag)}`,
           PAGE_W - MARGIN_X,
           y,
           { align: 'right' }
@@ -191,11 +200,11 @@ export function generateCalculationPdf(data: PdfData): void {
       doc.setDrawColor(...RULE);
       doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
       y += 12;
-      doc.setFont('helvetica', 'bold');
+      doc.setFont(FONT_FAMILY, 'bold');
       doc.setFontSize(10);
       doc.setTextColor(...TEXT_DARK);
-      doc.text(safeText(section.subtotalLabel ?? 'Reszosszeg'), MARGIN_X, y);
-      doc.text(safeText(formatFt(section.subtotal)), PAGE_W - MARGIN_X, y, { align: 'right' });
+      doc.text(section.subtotalLabel ?? 'Részösszeg', MARGIN_X, y);
+      doc.text(formatFt(section.subtotal), PAGE_W - MARGIN_X, y, { align: 'right' });
       y += 16;
     }
 
@@ -210,29 +219,29 @@ export function generateCalculationPdf(data: PdfData): void {
     doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
     y += 16;
 
-    doc.setFont('helvetica', 'bold');
+    doc.setFont(FONT_FAMILY, 'bold');
     doc.setFontSize(12);
     doc.setTextColor(...TEXT_DARK);
-    doc.text(safeText('Osszesen'), MARGIN_X, y);
+    doc.text('Összesen', MARGIN_X, y);
 
     if (data.totals.single !== undefined) {
-      doc.text(safeText(formatFt(data.totals.single)), PAGE_W - MARGIN_X, y, { align: 'right' });
+      doc.text(formatFt(data.totals.single), PAGE_W - MARGIN_X, y, { align: 'right' });
       y += 18;
     } else {
       y += 16;
       doc.setFontSize(10);
       if (data.totals.kiszereles !== undefined) {
         doc.setTextColor(...TEXT_MUTED);
-        doc.text(safeText('Kiszereles szerint'), MARGIN_X + 10, y);
+        doc.text('Kiszerelés szerint', MARGIN_X + 10, y);
         doc.setTextColor(...TEXT_DARK);
-        doc.text(safeText(formatFt(data.totals.kiszereles)), PAGE_W - MARGIN_X, y, { align: 'right' });
+        doc.text(formatFt(data.totals.kiszereles), PAGE_W - MARGIN_X, y, { align: 'right' });
         y += 14;
       }
       if (data.totals.anyag !== undefined) {
         doc.setTextColor(...TEXT_MUTED);
-        doc.text(safeText('Anyagszukseglet szerint'), MARGIN_X + 10, y);
+        doc.text('Anyagszükséglet szerint', MARGIN_X + 10, y);
         doc.setTextColor(...TEXT_DARK);
-        doc.text(safeText(formatFt(data.totals.anyag)), PAGE_W - MARGIN_X, y, { align: 'right' });
+        doc.text(formatFt(data.totals.anyag), PAGE_W - MARGIN_X, y, { align: 'right' });
         y += 14;
       }
     }
@@ -242,12 +251,13 @@ export function generateCalculationPdf(data: PdfData): void {
   const hasPrices =
     !!data.totals?.kiszereles || !!data.totals?.anyag || !!data.totals?.single;
   if (hasPrices) {
-    // A lábjegyzet mindig az utolsó oldal aljára
-    doc.setFont('helvetica', 'italic');
+    // A lábjegyzet mindig az utolsó oldal aljára. DejaVu Sans Condensed csak
+    // Regular + Bold — italic-ot nem regisztráltunk, ezért 'normal' marad.
+    doc.setFont(FONT_FAMILY, 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...TEXT_MUTED);
     doc.text(
-      safeText('Az arak tartalmazzak az AFA-t.'),
+      'Az árak tartalmazzák az ÁFÁ-t.',
       MARGIN_X,
       PAGE_H - 30
     );

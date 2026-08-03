@@ -29,11 +29,11 @@ export default function DownloadPdfButton({
 }: Props) {
   if (!canDownloadPdf(profile)) return null;
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!hasResult) return;
     try {
       const data = buildData();
-      generateCalculationPdf(data);
+      await generateCalculationPdf(data);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('PDF generálás hiba:', err);
