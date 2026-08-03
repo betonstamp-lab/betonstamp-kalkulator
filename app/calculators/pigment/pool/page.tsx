@@ -8,6 +8,9 @@ import { ATLANTTIC_PIGMENT_RECIPES } from '@/lib/calculators/mikrocement/pigment
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
+import { usePricingMode } from '@/components/PricingModeContext';
+import DownloadPdfButton from '@/components/DownloadPdfButton';
+import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
 
 const POOL_PRODUCTS = [
   { value: 'xl', label: 'Aquaciment XL' },
@@ -55,6 +58,7 @@ function createEmptyM2Surface(id: number): M2Surface {
 }
 
 export default function PoolCalculatorPage() {
+  const { pricingMode } = usePricingMode();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -450,6 +454,33 @@ export default function PoolCalculatorPage() {
                 <span className="text-gray-900">{result.totalGrams} g</span>
               </div>
             </div>
+            <div className="mt-4 flex justify-end">
+              <DownloadPdfButton
+                profile={profile}
+                hasResult={true}
+                buildData={() => {
+                  const pigmentItems: PdfLineItem[] = result.pigments.map(p => ({
+                    name: p.name,
+                    quantity: `${p.grams} g`,
+                  }));
+                  const data: PdfData = {
+                    title: 'Atlanttic Pigment Kalkulátor',
+                    pricingMode,
+                    sections: [
+                      { heading: 'Paraméterek', items: [
+                        { name: 'Termék', quantity: result.product },
+                        { name: 'Szín', quantity: result.color },
+                        { name: 'Mennyiség', quantity: `${result.kg} kg` },
+                      ]},
+                      { heading: 'Szükséges pigmentek', items: pigmentItems },
+                      { heading: 'Összesen', items: [{ name: 'Pigment összesen', quantity: `${result.totalGrams} g` }] },
+                    ],
+                    filenamePrefix: 'betonstamp-atlanttic-pigment-kg',
+                  };
+                  return data;
+                }}
+              />
+            </div>
           </div>
         )}
 
@@ -509,6 +540,33 @@ export default function PoolCalculatorPage() {
                   </div>
                 </div>
               )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <DownloadPdfButton
+                profile={profile}
+                hasResult={true}
+                buildData={() => {
+                  const surfaceItems: PdfLineItem[] = m2Result.surfaces.map(r => ({
+                    name: `Felület ${r.n}`,
+                    quantity: `${r.m2} m² — ${r.weightKg} kg mikrocement`,
+                  }));
+                  const colorSections = m2Result.byColor.map(group => ({
+                    heading: `Pigmentek — ${group.color}`,
+                    items: group.pigments.map(p => ({ name: p.name, quantity: `${p.grams} g` })),
+                  }));
+                  const data: PdfData = {
+                    title: 'Atlanttic Pigment Kalkulátor (m²) — Aquaciment XL, BLANCO',
+                    pricingMode,
+                    sections: [
+                      { heading: 'Felületek', items: surfaceItems },
+                      { heading: 'Összesen', items: [{ name: 'Mikrocement összesen', quantity: `${m2Result.totalKg} kg` }] },
+                      ...colorSections,
+                    ],
+                    filenamePrefix: 'betonstamp-atlanttic-pigment-m2',
+                  };
+                  return data;
+                }}
+              />
             </div>
           </div>
         )}

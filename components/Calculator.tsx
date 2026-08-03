@@ -16,6 +16,8 @@ import {
 import PriceBreakdown from '@/components/PriceBreakdown';
 import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
+import DownloadPdfButton from '@/components/DownloadPdfButton';
+import type { PdfData, PdfSection, PdfLineItem } from '@/lib/shared/pdfExport';
 
 const SORTED_EFECTTO_QUARTZ_COLORS = sortEfecttoColors(EFECTTO_QUARTZ_COLORS);
 const SORTED_EFECTTO_PU_COLORS = sortEfecttoColors(EFECTTO_PU_COLORS);
@@ -2748,6 +2750,53 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                     </div>
                   </div>
                 )}
+
+                {/* Kalkuláció letöltése — csak partner user látja */}
+                <div className="flex justify-end">
+                  <DownloadPdfButton
+                    profile={profile as any}
+                    hasResult={true}
+                    buildData={() => {
+                      const sections: PdfSection[] = [];
+                      let grandTotal = 0;
+                      result.items.forEach((item, idx) => {
+                        const items: PdfLineItem[] = [];
+                        let itemSubtotal = 0;
+                        item.pkgs.forEach((pkg: any, i: number) => {
+                          const key = `${idx}_${i}`;
+                          const effectiveQty = isPartner && partnerQtyOverrides[key] !== undefined
+                            ? partnerQtyOverrides[key]
+                            : (pkg.qty || 0);
+                          if (effectiveQty <= 0) return;
+                          const linePrice = pkg.price * effectiveQty * discountMultiplier;
+                          itemSubtotal += linePrice;
+                          items.push({
+                            name: pkg.name || item.cat,
+                            quantity: `${effectiveQty} × csomag`,
+                            prices: { single: linePrice },
+                          });
+                        });
+                        if (items.length > 0) {
+                          sections.push({
+                            heading: item.cat,
+                            items,
+                            subtotal: itemSubtotal,
+                            subtotalLabel: 'Részösszeg',
+                          });
+                          grandTotal += itemSubtotal;
+                        }
+                      });
+                      const data: PdfData = {
+                        title: 'Mikrocement Kalkulátor',
+                        pricingMode,
+                        sections,
+                        totals: { single: grandTotal },
+                        filenamePrefix: 'betonstamp-mikrocement',
+                      };
+                      return data;
+                    }}
+                  />
+                </div>
 
                 {/* Kosárba teszem gomb */}
                 <div className="bg-white p-5 rounded-xl border-2 border-brand-200">

@@ -30,6 +30,8 @@ import {
 import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
+import DownloadPdfButton from '@/components/DownloadPdfButton';
+import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
 
 // Overlay-felületnél a lakk fix 2 réteg (nincs vastagság input, mint a Bélyegzettben)
 const OVERLAY_LAKK_LAYERS = 2;
@@ -1014,6 +1016,68 @@ export default function BelyegzettBetonCalculatorPage() {
                       : 'Az árak tartalmazzák az ÁFÁ-t. Az anyagszükséglet szerinti ár a maradék anyag értékének levonásával számolt.'}
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* Kalkuláció letöltése — csak partner user látja */}
+            {aggregated && (
+              <div className="flex justify-end">
+                <DownloadPdfButton
+                  profile={profile}
+                  hasResult={true}
+                  buildData={() => {
+                    const sections: PdfData['sections'] = [];
+                    // Betonozás — külön szekció (csak Bélyegzettnél kap concreteM3-at)
+                    if (aggregated.concreteTotal > 0) {
+                      sections.push({
+                        heading: 'Betonozási költség',
+                        items: [{
+                          name: 'Beton',
+                          quantity: `${aggregated.concreteM3} m³`,
+                          prices: { single: aggregated.concreteTotal },
+                        }],
+                      });
+                    }
+                    // Poliszál + stamp/overlay tételek
+                    const stampItems: PdfLineItem[] = [];
+                    if (aggregated.poliszalTotal) {
+                      const l = aggregated.poliszalTotal;
+                      const kiszereles = isPartner ? l.totalPrice * discountMultiplier : l.totalPrice;
+                      const anyagBase = l.anyagszuksegletSubtotal ?? l.totalPrice;
+                      const anyag = isPartner ? anyagBase * discountMultiplier : anyagBase;
+                      stampItems.push({
+                        name: l.name,
+                        quantity: `${l.units} × ${l.unitSize}`,
+                        prices: { kiszereles, anyag },
+                      });
+                    }
+                    for (const l of aggregated.stampAgg) {
+                      const kiszereles = isPartner ? l.totalPrice * discountMultiplier : l.totalPrice;
+                      const anyagBase = l.anyagszuksegletSubtotal ?? l.totalPrice;
+                      const anyag = isPartner ? anyagBase * discountMultiplier : anyagBase;
+                      stampItems.push({
+                        name: l.name,
+                        quantity: `${l.units} × ${l.unitSize}`,
+                        prices: { kiszereles, anyag },
+                      });
+                    }
+                    if (stampItems.length > 0) {
+                      sections.push({
+                        heading: aggHeader,
+                        items: stampItems,
+                      });
+                    }
+                    const kiszerelesTotal = isPartner ? aggregated.totalPartner : aggregated.total;
+                    const anyagTotal = isPartner ? aggregated.anyagszuksegletPartner : aggregated.anyagszuksegletTotal;
+                    return {
+                      title: 'Bélyegzett Beton Kalkulátor',
+                      pricingMode: pricingMode,
+                      sections,
+                      totals: { kiszereles: kiszerelesTotal, anyag: anyagTotal },
+                      filenamePrefix: 'betonstamp-belyegzett-beton',
+                    };
+                  }}
+                />
               </div>
             )}
 

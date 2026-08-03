@@ -12,6 +12,9 @@ import {
 import { MICROCEMENT_COVERAGE, NATTURE_RESIN_L_PER_KG } from '@/lib/calculators/pigment/coverage';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
+import { usePricingMode } from '@/components/PricingModeContext';
+import DownloadPdfButton from '@/components/DownloadPdfButton';
+import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
 
 const NATTURE_PRODUCTS = [
   { value: 's_WT', label: 'Natture S WT' },
@@ -76,6 +79,7 @@ function createEmptyM2Surface(id: number): M2Surface {
 }
 
 export default function NattureCalculatorPage() {
+  const { pricingMode } = usePricingMode();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -531,6 +535,34 @@ export default function NattureCalculatorPage() {
                 <span className="text-gray-900">{result.totalGrams} g</span>
               </div>
             </div>
+            <div className="mt-4 flex justify-end">
+              <DownloadPdfButton
+                profile={profile}
+                hasResult={true}
+                buildData={() => {
+                  const items: PdfLineItem[] = [
+                    { name: 'Termék', quantity: result.product },
+                    { name: 'Szín', quantity: result.color },
+                    { name: 'Mennyiség', quantity: `${result.kg} kg` },
+                  ];
+                  const pigmentItems: PdfLineItem[] = result.pigments.map(p => ({
+                    name: p.name,
+                    quantity: `${p.grams} g`,
+                  }));
+                  const data: PdfData = {
+                    title: 'Natture Pigment Kalkulátor',
+                    pricingMode,
+                    sections: [
+                      { heading: 'Paraméterek', items },
+                      { heading: 'Szükséges pigmentek', items: pigmentItems },
+                      { heading: 'Összesen', items: [{ name: 'Pigment összesen', quantity: `${result.totalGrams} g` }] },
+                    ],
+                    filenamePrefix: 'betonstamp-natture-pigment-kg',
+                  };
+                  return data;
+                }}
+              />
+            </div>
           </div>
         )}
 
@@ -596,6 +628,39 @@ export default function NattureCalculatorPage() {
                   </div>
                 </div>
               )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <DownloadPdfButton
+                profile={profile}
+                hasResult={true}
+                buildData={() => {
+                  const surfaceItems: PdfLineItem[] = m2Result.surfaces.map(r => ({
+                    name: `Felület ${r.n}`,
+                    quantity: `${r.m2} m² · ${r.grainLabel} · ${r.color} — ${r.weightKg} kg mikrocement, ${r.resinL} L gyanta`,
+                  }));
+                  const colorSections = m2Result.byColor.map(group => ({
+                    heading: `Pigmentek — ${group.color}`,
+                    items: group.pigments.map(p => ({ name: p.name, quantity: `${p.grams} g` })),
+                  }));
+                  const data: PdfData = {
+                    title: `Natture Pigment Kalkulátor (m²) — Lakk: ${m2Result.sealerLabel}`,
+                    pricingMode,
+                    sections: [
+                      { heading: 'Felületek', items: surfaceItems },
+                      {
+                        heading: 'Összesen',
+                        items: [
+                          { name: 'Mikrocement összesen', quantity: `${m2Result.totalKg} kg` },
+                          { name: 'Gyanta összesen', quantity: `${m2Result.totalResinL} L` },
+                        ],
+                      },
+                      ...colorSections,
+                    ],
+                    filenamePrefix: 'betonstamp-natture-pigment-m2',
+                  };
+                  return data;
+                }}
+              />
             </div>
           </div>
         )}

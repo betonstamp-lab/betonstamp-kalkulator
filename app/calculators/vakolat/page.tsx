@@ -23,6 +23,8 @@ import {
 import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
 import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
+import DownloadPdfButton from '@/components/DownloadPdfButton';
+import type { PdfData, PdfLineItem } from '@/lib/shared/pdfExport';
 import {
   calculateVakolat,
   aggregateVakolat,
@@ -342,6 +344,38 @@ export default function VakolatCalculatorPage() {
                 </div>
               </div>
             )}
+
+            {/* Kalkuláció letöltése — csak partner user látja */}
+            <div className="flex justify-end">
+              <DownloadPdfButton
+                profile={profile}
+                hasResult={true}
+                buildData={() => {
+                  const items: PdfLineItem[] = aggregated.lines.map(l => {
+                    // A discount arányos a totalBrutto → totalPartner viszonyból.
+                    const price = isPartner && aggregated.totalPartner !== undefined
+                      ? l.totalPrice * (aggregated.totalPartner / aggregated.totalBrutto)
+                      : l.totalPrice;
+                    return {
+                      name: l.name,
+                      quantity: `${l.units} × ${l.unitSize}`,
+                      prices: { single: price },
+                    };
+                  });
+                  const totalSingle = isPartner && aggregated.totalPartner !== undefined
+                    ? aggregated.totalPartner
+                    : aggregated.totalBrutto;
+                  const data: PdfData = {
+                    title: 'Vakolat Kalkulátor (ESTonetex System)',
+                    pricingMode,
+                    sections: [{ heading: 'Anyagok', items }],
+                    totals: { single: totalSingle },
+                    filenamePrefix: 'betonstamp-vakolat',
+                  };
+                  return data;
+                }}
+              />
+            </div>
 
             {/* Kosárba teszem — 1 vagy több felület esetén egyaránt megjelenik (Bélyegzett-mintára) */}
             <div className="bg-white p-5 rounded-xl border-2 border-brand-200">
