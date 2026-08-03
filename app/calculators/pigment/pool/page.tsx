@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { ATLANTTIC_PIGMENT_RECIPES } from '@/lib/calculators/mikrocement/pigments';
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
+import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 
 const POOL_PRODUCTS = [
   { value: 'xl', label: 'Aquaciment XL' },
@@ -233,13 +234,13 @@ export default function PoolCalculatorPage() {
             <PricingModeToggle isPartner={profile?.role === 'partner'} />
             <button
               onClick={() => router.push('/calculators')}
-              className="text-sm text-gray-700 font-medium border-2 border-gray-300 rounded-lg px-3 py-2 hover:text-gray-900 transition-colors"
+              className={HEADER_BUTTON_NEUTRAL}
             >
               ← Vissza a főoldalra
             </button>
             <button
               onClick={handleSignOut}
-              className="text-sm text-gray-500 font-medium border-2 border-red-500 rounded-lg px-3 py-2 hover:text-red-500 transition-colors"
+              className={HEADER_BUTTON_DANGER}
             >
               Kijelentkezés
             </button>

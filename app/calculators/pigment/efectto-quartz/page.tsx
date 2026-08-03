@@ -17,6 +17,7 @@ import {
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
 import { EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT } from '@/lib/calculators/pigment/featureFlags';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
+import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 
 // Központi flag (lib/calculators/pigment/featureFlags.ts) vezérli, hogy a
 // kalkulátor megjelenjen-e vagy "Fejlesztés alatt" üzenet helyett. False-ra
@@ -291,13 +292,13 @@ export default function EfecttoQuartzCalculatorPage() {
             <PricingModeToggle isPartner={profile?.role === 'partner'} />
             <button
               onClick={() => router.push('/calculators')}
-              className="text-sm text-gray-700 font-medium border-2 border-gray-300 rounded-lg px-3 py-2 hover:text-gray-900 transition-colors"
+              className={HEADER_BUTTON_NEUTRAL}
             >
               ← Vissza a főoldalra
             </button>
             <button
               onClick={handleSignOut}
-              className="text-sm text-gray-500 font-medium border-2 border-red-500 rounded-lg px-3 py-2 hover:text-red-500 transition-colors"
+              className={HEADER_BUTTON_DANGER}
             >
               Kijelentkezés
             </button>

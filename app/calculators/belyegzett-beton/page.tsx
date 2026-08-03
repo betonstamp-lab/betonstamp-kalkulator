@@ -29,6 +29,7 @@ import {
 } from '@/lib/calculators/belyegzett-beton/products';
 import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
+import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 
 // Overlay-felületnél a lakk fix 2 réteg (nincs vastagság input, mint a Bélyegzettben)
 const OVERLAY_LAKK_LAYERS = 2;
@@ -877,7 +878,7 @@ export default function BelyegzettBetonCalculatorPage() {
               <button
                 onClick={() => router.push('/calculators')}
                 aria-label="Vissza a főoldalra"
-                className="text-sm text-gray-700 font-medium border-2 border-gray-300 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 hover:text-gray-900 transition-colors"
+                className={HEADER_BUTTON_NEUTRAL}
               >
                 <span className="sm:hidden">←</span>
                 <span className="hidden sm:inline">← Vissza a főoldalra</span>
@@ -885,7 +886,7 @@ export default function BelyegzettBetonCalculatorPage() {
               <button
                 onClick={handleSignOut}
                 aria-label="Kijelentkezés"
-                className="text-sm text-gray-500 font-medium border-2 border-red-500 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 hover:text-red-500 transition-colors"
+                className={HEADER_BUTTON_DANGER}
               >
                 <span className="sm:hidden inline-flex items-center" aria-hidden="true">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

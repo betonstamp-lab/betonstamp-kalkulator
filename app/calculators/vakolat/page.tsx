@@ -22,6 +22,7 @@ import {
 } from '@/lib/calculators/vakolat/products';
 import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
+import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 import {
   calculateVakolat,
   aggregateVakolat,
@@ -268,11 +269,11 @@ export default function VakolatCalculatorPage() {
           <div className="flex-1 min-w-0 flex justify-end">
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
               <PricingModeToggle isPartner={isPartnerAccount} />
-              <button onClick={() => router.push('/calculators')} className="text-sm text-gray-700 font-medium border-2 border-gray-300 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 hover:text-gray-900 transition-colors">
+              <button onClick={() => router.push('/calculators')} className={HEADER_BUTTON_NEUTRAL}>
                 <span className="sm:hidden">←</span>
                 <span className="hidden sm:inline">← Vissza a főoldalra</span>
               </button>
-              <button onClick={handleSignOut} className="text-sm text-gray-500 font-medium border-2 border-red-500 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 hover:text-red-500 transition-colors">
+              <button onClick={handleSignOut} className={HEADER_BUTTON_DANGER}>
                 <span className="hidden sm:inline">Kijelentkezés</span>
                 <span className="sm:hidden">Kilép</span>
               </button>

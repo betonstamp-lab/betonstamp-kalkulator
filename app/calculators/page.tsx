@@ -6,6 +6,7 @@ import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
+import { HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
 
 export default function CalculatorsPage() {
   const [loading, setLoading] = useState(true);
@@ -87,7 +88,7 @@ export default function CalculatorsPage() {
             <PricingModeToggle isPartner={profile?.role === 'partner'} />
             <button
               onClick={handleSignOut}
-              className="text-sm text-gray-500 font-medium border-2 border-red-500 rounded-lg px-3 py-2 hover:text-red-500 transition-colors shrink-0"
+              className={HEADER_BUTTON_DANGER}
             >
               Kijelentkezés
             </button>
