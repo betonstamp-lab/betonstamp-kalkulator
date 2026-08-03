@@ -10,6 +10,7 @@ import {
   NATTURE_COLOR_HEX,
 } from '@/lib/calculators/mikrocement/pigments';
 import { MICROCEMENT_COVERAGE, NATTURE_RESIN_L_PER_KG } from '@/lib/calculators/pigment/coverage';
+import { PricingModeToggle } from '@/components/PricingModeToggle';
 
 const NATTURE_PRODUCTS = [
   { value: 's_WT', label: 'Natture S WT' },
@@ -263,7 +264,8 @@ export default function NattureCalculatorPage() {
           </a>
 
           {/* Right - Buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap justify-end">
+            <PricingModeToggle isPartner={profile?.role === 'partner'} />
             <button
               onClick={() => router.push('/calculators')}
               className="text-sm text-gray-700 font-medium border-2 border-gray-300 rounded-lg px-3 py-2 hover:text-gray-900 transition-colors"

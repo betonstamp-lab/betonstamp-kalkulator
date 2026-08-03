@@ -27,6 +27,8 @@ import {
   OVERLAY_BAG_M2_PER_BAG,
   PRIMACEM_PLUS,
 } from '@/lib/calculators/belyegzett-beton/products';
+import { usePricingMode } from '@/components/PricingModeContext';
+import { PricingModeToggle } from '@/components/PricingModeToggle';
 
 // Overlay-felületnél a lakk fix 2 réteg (nincs vastagság input, mint a Bélyegzettben)
 const OVERLAY_LAKK_LAYERS = 2;
@@ -692,10 +694,13 @@ export default function BelyegzettBetonCalculatorPage() {
   const [cartLoading, setCartLoading] = useState(false);
   const [cartError, setCartError] = useState<string | null>(null);
 
-  const isPartner = profile?.role === 'partner';
-  // Partneri kedvezmény: a profile.partner_discount mezőből (mikrocement-mintára).
-  // Nem-partnernél is biztonságos: discountMultiplier = 1 → nincs csökkentés.
-  const discountPercent = profile?.partner_discount || 0;
+  // "isPartner" mostantól az EFFEKTÍV mód: partner fiók + partner ár-mód együtt.
+  // Ha a partner átvált 'general'-ra a fejléc-váltóval, discountMultiplier=1 lesz és
+  // a UI úgy viselkedik, mint egy nem-partner user.
+  const { pricingMode } = usePricingMode();
+  const isPartnerAccount = profile?.role === 'partner';
+  const isPartner = isPartnerAccount && pricingMode === 'partner';
+  const discountPercent = isPartner ? (profile?.partner_discount || 0) : 0;
   const discountMultiplier = 1 - discountPercent / 100;
 
   useEffect(() => {
@@ -867,7 +872,8 @@ export default function BelyegzettBetonCalculatorPage() {
           </a>
 
           <div className="flex-1 min-w-0 flex justify-end">
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+              <PricingModeToggle isPartner={isPartnerAccount} />
               <button
                 onClick={() => router.push('/calculators')}
                 aria-label="Vissza a főoldalra"

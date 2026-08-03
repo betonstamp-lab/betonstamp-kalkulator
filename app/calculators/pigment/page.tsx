@@ -9,6 +9,7 @@ import {
   EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT,
   EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT,
 } from '@/lib/calculators/pigment/featureFlags';
+import { PricingModeToggle } from '@/components/PricingModeToggle';
 
 type System = {
   key: string;
@@ -110,7 +111,8 @@ export default function PigmentCalculatorPage() {
           </a>
 
           {/* Right - Buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap justify-end">
+            <PricingModeToggle isPartner={profile?.role === 'partner'} />
             <button
               onClick={() => router.push('/calculators')}
               className="text-sm text-gray-700 font-medium border-2 border-gray-300 rounded-lg px-3 py-2 hover:text-gray-900 transition-colors"

@@ -14,6 +14,8 @@ import {
   EFECTTO_PU_PIGMENT_UNDER_DEVELOPMENT,
 } from '@/lib/calculators/pigment/featureFlags';
 import PriceBreakdown from '@/components/PriceBreakdown';
+import { usePricingMode } from '@/components/PricingModeContext';
+import { PricingModeToggle } from '@/components/PricingModeToggle';
 
 const SORTED_EFECTTO_QUARTZ_COLORS = sortEfecttoColors(EFECTTO_QUARTZ_COLORS);
 const SORTED_EFECTTO_PU_COLORS = sortEfecttoColors(EFECTTO_PU_COLORS);
@@ -152,8 +154,13 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
   const [errors, setErrors] = useState<string[]>([]);
   const [partnerQtyOverrides, setPartnerQtyOverrides] = useState<Record<string, number>>({});
 
-  const isPartner = profile?.role === 'partner';
-  const discountPercent = profile?.partner_discount || 0;
+  // "isPartner" mostantól az EFFEKTÍV mód: partner fiók + partner ár-mód együtt.
+  // Ha a partner átvált 'general'-ra a fejléc-váltóval, az egész UI (partner sáv,
+  // qty edit, kedvezmény) automatikusan úgy viselkedik, mint egy nem-partner user.
+  const { pricingMode } = usePricingMode();
+  const isPartnerAccount = profile?.role === 'partner';
+  const isPartner = isPartnerAccount && pricingMode === 'partner';
+  const discountPercent = isPartner ? (profile?.partner_discount || 0) : 0;
   const discountMultiplier = 1 - discountPercent / 100;
   const [cartLoading, setCartLoading] = useState(false);
   const [cartError, setCartError] = useState<string | null>(null);

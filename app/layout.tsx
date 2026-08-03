@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { PricingModeProvider } from "@/components/PricingModeContext";
 
 // Brand betűtípus: Montserrat. A latin-ext subset a magyar ékezetes karakterekhez (ő, ű, stb.) szükséges.
 const montserrat = Montserrat({
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <PricingModeProvider>
+          {children}
+        </PricingModeProvider>
       </body>
     </html>
   );

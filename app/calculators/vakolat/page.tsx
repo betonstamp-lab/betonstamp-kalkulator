@@ -20,6 +20,8 @@ import {
   type Thickness,
   type ImpregnationMode,
 } from '@/lib/calculators/vakolat/products';
+import { usePricingMode } from '@/components/PricingModeContext';
+import { PricingModeToggle } from '@/components/PricingModeToggle';
 import {
   calculateVakolat,
   aggregateVakolat,
@@ -121,10 +123,13 @@ export default function VakolatCalculatorPage() {
   const [cartError, setCartError] = useState<string | null>(null);
   const [cartInfo, setCartInfo] = useState<string | null>(null);
 
-  const isPartner = profile?.role === 'partner';
-  // Partneri kedvezmény: a profile.partner_discount mezőből (mikrocement-mintára).
-  // Nem-partnernél is biztonságos: discountMultiplier = 1 → nincs csökkentés.
-  const discountPercent = profile?.partner_discount || 0;
+  // "isPartner" mostantól az EFFEKTÍV mód: partner fiók + partner ár-mód együtt.
+  // Ha a partner átvált 'general'-ra a fejléc-váltóval, discountMultiplier=1 lesz és
+  // a UI úgy viselkedik, mint egy nem-partner user.
+  const { pricingMode } = usePricingMode();
+  const isPartnerAccount = profile?.role === 'partner';
+  const isPartner = isPartnerAccount && pricingMode === 'partner';
+  const discountPercent = isPartner ? (profile?.partner_discount || 0) : 0;
   const discountMultiplier = 1 - discountPercent / 100;
 
   useEffect(() => {
@@ -261,7 +266,8 @@ export default function VakolatCalculatorPage() {
             <Image src="/images/betonstamp-logo.png" alt="BetonStamp" width={280} height={112} className="h-10 sm:h-12 md:h-20 w-auto" />
           </a>
           <div className="flex-1 min-w-0 flex justify-end">
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+              <PricingModeToggle isPartner={isPartnerAccount} />
               <button onClick={() => router.push('/calculators')} className="text-sm text-gray-700 font-medium border-2 border-gray-300 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 hover:text-gray-900 transition-colors">
                 <span className="sm:hidden">←</span>
                 <span className="hidden sm:inline">← Vissza a főoldalra</span>

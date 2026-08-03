@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PricingModeToggle } from '@/components/PricingModeToggle';
 
 export default function CalculatorsPage() {
   const [loading, setLoading] = useState(true);
@@ -82,12 +83,15 @@ export default function CalculatorsPage() {
           </a>
 
           {/* Right - Sign out */}
-          <button
-            onClick={handleSignOut}
-            className="text-sm text-gray-500 font-medium border-2 border-red-500 rounded-lg px-3 py-2 hover:text-red-500 transition-colors shrink-0"
-          >
-            Kijelentkezés
-          </button>
+          <div className="flex items-center gap-3 flex-wrap justify-end shrink-0">
+            <PricingModeToggle isPartner={profile?.role === 'partner'} />
+            <button
+              onClick={handleSignOut}
+              className="text-sm text-gray-500 font-medium border-2 border-red-500 rounded-lg px-3 py-2 hover:text-red-500 transition-colors shrink-0"
+            >
+              Kijelentkezés
+            </button>
+          </div>
         </div>
       </header>
 
