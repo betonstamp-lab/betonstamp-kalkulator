@@ -2760,7 +2760,6 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                     buildData={() => {
                       const sections: PdfSection[] = [];
                       // Felületek áttekintése — minden felület a saját m²-jével és selectedColor-jával.
-                      // Csak azokat listázzuk, amelyeknek van megadott m²-je (parseFloat > 0).
                       let n = 1;
                       for (const s of surfaces) {
                         const area = parseFloat(s.area);
@@ -2771,39 +2770,93 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                         });
                         n += 1;
                       }
-                      let grandTotal = 0;
-                      result.items.forEach((item, idx) => {
+
+                      let grandKiszereles = 0;
+                      let grandAnyag = 0;
+
+                      result.items.forEach((item: any, idx: number) => {
+                        // Anyagszükséglet-szintű leftover — a képernyő szekció-szintű
+                        // PriceBreakdown-jét pontosan replikáljuk (Calculator.tsx:2496-2524).
+                        let leftoverValue = 0;
+                        if (result.surfaceResults) {
+                          const itemCatClean = item.cat.replace(' (1 réteg)', '').replace(' (2 réteg)', '').replace(' (összesített)', '');
+                          let totalNeeded = 0;
+                          result.surfaceResults.forEach((sr: any) => {
+                            sr.items.forEach((srItem: any) => {
+                              const srCatClean = srItem.cat.replace(' (1 réteg)', '').replace(' (2 réteg)', '');
+                              if (srCatClean === itemCatClean || itemCatClean.includes(srCatClean) || srCatClean.includes(itemCatClean)) {
+                                totalNeeded += srItem.needed;
+                              }
+                            });
+                          });
+                          let gotAmount = 0;
+                          if (item.pkgs && item.pkgs.length > 0) {
+                            item.pkgs.forEach((pkg: any) => {
+                              const pkgSize = pkg.liters || pkg.kg || pkg.m2 || 0;
+                              gotAmount += pkgSize * (pkg.qty || 0);
+                            });
+                          }
+                          const leftover = gotAmount - totalNeeded;
+                          if (leftover > 0.01 && item.pkgs.length > 0) {
+                            const pkg = item.pkgs[0];
+                            const pkgSize = pkg.liters || pkg.kg || pkg.m2 || 1;
+                            const unitPrice = pkg.price / pkgSize;
+                            leftoverValue = leftover * unitPrice;
+                          }
+                        }
+
+                        // Partner qty-override figyelembe véve a kiszerelés-ár összesítéshez
+                        let partnerItemPrice = 0;
+                        if (isPartner) {
+                          item.pkgs.forEach((pkg: any, i: number) => {
+                            const key = `${idx}_${i}`;
+                            const effectiveQty = partnerQtyOverrides[key] !== undefined ? partnerQtyOverrides[key] : (pkg.qty || 0);
+                            partnerItemPrice += pkg.price * effectiveQty;
+                          });
+                        }
+
+                        const nettoPrice = item.price - leftoverValue;
+                        // Szekció-szintű kettős részösszeg — 1:1 a képernyő PriceBreakdown-jével.
+                        const kiszerelesSubtotal = isPartner ? partnerItemPrice * discountMultiplier : item.price;
+                        const anyagSubtotal = isPartner ? nettoPrice * discountMultiplier : nettoPrice;
+
                         const items: PdfLineItem[] = [];
-                        let itemSubtotal = 0;
                         item.pkgs.forEach((pkg: any, i: number) => {
                           const key = `${idx}_${i}`;
                           const effectiveQty = isPartner && partnerQtyOverrides[key] !== undefined
                             ? partnerQtyOverrides[key]
                             : (pkg.qty || 0);
                           if (effectiveQty <= 0) return;
+                          // A soron megjelenő ár = a képernyő "{pkg.price * effectiveQty} Ft"-je,
+                          // partneri módban × discountMultiplier (a képernyőn is a PriceBreakdown
+                          // szekció-szinten jelzi a discount hatását, a soron listaár szerepel).
                           const linePrice = pkg.price * effectiveQty * discountMultiplier;
-                          itemSubtotal += linePrice;
                           items.push({
-                            name: pkg.name || item.cat,
-                            quantity: `${effectiveQty} × csomag`,
+                            // A képernyő minta: "6 × Natture XL 20kg" — teljes formula a fősorban.
+                            name: `${effectiveQty} × ${pkg.name}`,
+                            quantity: '',
                             prices: { single: linePrice },
                           });
                         });
+
                         if (items.length > 0) {
                           sections.push({
                             heading: item.cat,
                             items,
-                            subtotal: itemSubtotal,
+                            subtotalPrices: { kiszereles: kiszerelesSubtotal, anyag: anyagSubtotal },
                             subtotalLabel: 'Részösszeg',
                           });
-                          grandTotal += itemSubtotal;
+                          grandKiszereles += kiszerelesSubtotal;
+                          grandAnyag += anyagSubtotal;
                         }
                       });
+
                       const data: PdfData = {
                         title: 'Mikrocement Kalkulátor',
                         pricingMode,
                         sections,
-                        totals: { single: grandTotal },
+                        // Kettős végösszeg — a képernyő VÉGÖSSZEG blokkjával egyenértékű.
+                        totals: { kiszereles: grandKiszereles, anyag: grandAnyag },
                         filenamePrefix: 'betonstamp-mikrocement',
                       };
                       return data;

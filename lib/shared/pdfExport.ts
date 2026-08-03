@@ -28,10 +28,16 @@ export interface PdfSection {
   /** Szekció fejléc (pl. "Felület 1", "Beton", "Alapozó"). Elhagyható. */
   heading?: string;
   items: PdfLineItem[];
-  /** Szekció-részösszeg (Ft, bruttó). Elhagyható. */
+  /** Szekció-részösszeg (Ft, bruttó). Elhagyható. Egyáras esetén használandó. */
   subtotal?: number;
   /** Szekció-részösszeg címkéje (pl. "Részösszeg", "Felület 1 összesen"). */
   subtotalLabel?: string;
+  /** Kettős szekció-részösszeg (Kiszerelés szerint / Anyagszükséglet szerint).
+   *  Ha ez meg van adva, felülírja a `subtotal`-t: a generator két sorral renderel. */
+  subtotalPrices?: {
+    kiszereles?: number;
+    anyag?: number;
+  };
 }
 
 export interface PdfData {
@@ -217,7 +223,30 @@ export async function generateCalculationPdf(data: PdfData): Promise<void> {
       y += 4; // sor közötti szellős tér
     }
 
-    if (section.subtotal !== undefined) {
+    // Kettős szekció-részösszeg — ha subtotalPrices van, felülírja a subtotal-t.
+    if (section.subtotalPrices && (section.subtotalPrices.kiszereles !== undefined || section.subtotalPrices.anyag !== undefined)) {
+      ensureRoom(36);
+      doc.setDrawColor(...RULE);
+      doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
+      y += 12;
+      doc.setFont(FONT_FAMILY, 'bold');
+      doc.setFontSize(10);
+      const label = section.subtotalLabel ?? 'Részösszeg';
+      if (section.subtotalPrices.kiszereles !== undefined) {
+        doc.setTextColor(...TEXT_MUTED);
+        doc.text(`${label} — Kiszerelés szerint`, MARGIN_X, y);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text(formatFt(section.subtotalPrices.kiszereles), PAGE_W - MARGIN_X, y, { align: 'right' });
+        y += 14;
+      }
+      if (section.subtotalPrices.anyag !== undefined) {
+        doc.setTextColor(...TEXT_MUTED);
+        doc.text(`${label} — Anyagszükséglet szerint`, MARGIN_X, y);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text(formatFt(section.subtotalPrices.anyag), PAGE_W - MARGIN_X, y, { align: 'right' });
+        y += 14;
+      }
+    } else if (section.subtotal !== undefined) {
       ensureRoom(18);
       doc.setDrawColor(...RULE);
       doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
