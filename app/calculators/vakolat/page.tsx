@@ -256,12 +256,18 @@ export default function VakolatCalculatorPage() {
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center p-4 pt-6 md:pt-10">
-        {/* Vakolat-specifikus logó-blokk — Estecha is megjelenik az ESTonetex rendszerhez */}
-        <HeaderLogos showEstecha className="mb-4" />
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 text-center">Vakolat kalkulátor</h1>
-        <p className="text-sm md:text-base text-gray-500 mb-8 text-center max-w-2xl">
-          ESTonetex System — falazatok (függőleges falak) anyag- és árkalkulátora.
-        </p>
+        {/* Fehér kártya-fejléc — Mikrocement mintát követve: a logó + cím + leírás
+             egy blokkban, nem a szürke háttéren lógva. */}
+        <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-6 md:p-8 mb-6">
+          {/* Vakolat: BetonStamp + Estecha Hungary, Topciment NÉLKÜL (ESTonetex rendszer). */}
+          <HeaderLogos bordered showTopciment={false} showEstecha />
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mt-4 mb-2 text-center">
+            Vakolat kalkulátor
+          </h1>
+          <p className="text-sm md:text-base text-gray-500 text-center max-w-2xl mx-auto">
+            ESTonetex System — falazatok (függőleges falak) anyag- és árkalkulátora.
+          </p>
+        </div>
 
         <div className="w-full max-w-3xl space-y-6">
           {surfaces.map((surface, idx) => (
@@ -440,15 +446,16 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
 
   return (
     <div className="space-y-6">
-      {/* Felület-fejléc (a kártyákon kívül) */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg md:text-xl font-bold text-[#053d57]">
-          {totalSurfaces > 1 ? `${index + 1}. felület` : 'Felület'}
-        </h2>
-        {totalSurfaces > 1 && (
+      {/* Felület-fejléc (a kártyákon kívül) — csak több felület esetén,
+           mert egy felületnél a kártyán belüli SectionHeader már jelöli. */}
+      {totalSurfaces > 1 && (
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg md:text-xl font-bold text-[#053d57]">
+            {`${index + 1}. felület`}
+          </h2>
           <button onClick={onRemove} className="text-sm text-red-600 hover:text-red-800 font-medium border border-red-300 rounded-lg px-3 py-1.5">Törlés</button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* ============ 1. Felület ============ */}
       <div className={cardClass}>

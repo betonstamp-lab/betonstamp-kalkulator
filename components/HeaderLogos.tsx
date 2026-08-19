@@ -11,13 +11,22 @@ interface Props {
   bordered?: boolean;
   /** Extra Tailwind class-ok a wrapperre (pl. margók). */
   className?: string;
+  /** Topciment Hungary logó megjelenítése (default true).
+   *  A Vakolat kalkulátoron false — ott csak BetonStamp + Estecha van. */
+  showTopciment?: boolean;
   /** Ha true, harmadik logó: Estecha Hungary — CSAK a Vakolat kalkulátoron. */
   showEstecha?: boolean;
 }
 
-export default function HeaderLogos({ bordered = false, className = '', showEstecha = false }: Props) {
-  // Ha 3 logó jelenik meg, mobilon szűkebb gap kell, hogy elférjenek.
-  const gap = showEstecha ? 'gap-3 sm:gap-6 md:gap-10' : 'gap-6 sm:gap-10';
+export default function HeaderLogos({
+  bordered = false,
+  className = '',
+  showTopciment = true,
+  showEstecha = false,
+}: Props) {
+  // A gap mobilon szűkebb, hogy több logó is elférjen.
+  const logoCount = 1 + (showTopciment ? 1 : 0) + (showEstecha ? 1 : 0);
+  const gap = logoCount >= 3 ? 'gap-3 sm:gap-6 md:gap-10' : 'gap-6 sm:gap-10';
   const base = `flex justify-center items-center flex-wrap ${gap}`;
   const border = bordered ? 'mb-1 pb-1 border-b border-gray-200 -mt-4 py-0' : '';
   return (
@@ -28,12 +37,14 @@ export default function HeaderLogos({ bordered = false, className = '', showEste
         alt="BetonStamp"
         className="h-14 sm:h-16 md:h-20 object-contain"
       />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/images/topciment-logo.png"
-        alt="Topciment Hungary"
-        className="h-16 sm:h-20 md:h-28 object-contain"
-      />
+      {showTopciment && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src="/images/topciment-logo.png"
+          alt="Topciment Hungary"
+          className="h-16 sm:h-20 md:h-28 object-contain"
+        />
+      )}
       {showEstecha && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
