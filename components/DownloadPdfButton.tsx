@@ -18,6 +18,7 @@ import { canDownloadPdf } from '@/lib/shared/canDownloadPdf';
 import {
   generateCalculationPdf,
   preloadPdfFonts,
+  preloadPdfLogo,
   type PdfData,
 } from '@/lib/shared/pdfExport';
 
@@ -59,12 +60,17 @@ export default function DownloadPdfButton({
   buildData,
   className,
 }: Props) {
-  // Font-előtöltés a mount-nál — kritikus iOS Safari user-gesztus szigorához.
+  // Font + logó előtöltés a mount-nál — kritikus iOS Safari user-gesztus
+  // szigorához, hogy a tap-lánc ne szakadjon meg hálózati kéréssel.
   useEffect(() => {
     if (canDownloadPdf(profile)) {
       preloadPdfFonts().catch((err) => {
         // eslint-disable-next-line no-console
         console.warn('PDF font preload hiba (nem blokkoló):', err);
+      });
+      preloadPdfLogo().catch((err) => {
+        // eslint-disable-next-line no-console
+        console.warn('PDF logo preload hiba (nem blokkoló):', err);
       });
     }
   }, [profile]);

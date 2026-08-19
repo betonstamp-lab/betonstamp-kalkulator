@@ -119,6 +119,20 @@ export async function preloadPdfFonts(): Promise<void> {
   };
 }
 
+// Betonstamp logó — a PDF jobb felső sarkába kerül minden kalkulátor PDF-jén.
+// Ugyanaz a cache + preload minta mint a fontnál: a base64 modul-szintű
+// változóban él, a `DownloadPdfButton` a mount-nál betölti.
+let CACHED_LOGO: { dataUrl: string; width: number; height: number } | null = null;
+export async function preloadPdfLogo(): Promise<void> {
+  if (CACHED_LOGO) return;
+  const mod = await import('./images/betonstampLogoBase64');
+  CACHED_LOGO = {
+    dataUrl: mod.BETONSTAMP_LOGO_DATAURL,
+    width: mod.BETONSTAMP_LOGO_WIDTH,
+    height: mod.BETONSTAMP_LOGO_HEIGHT,
+  };
+}
+
 async function registerUnicodeFont(doc: jsPDF): Promise<void> {
   if (!CACHED_FONTS) {
     // Fallback: ha a gomb nem hívta a preload-ot vagy még nem futott le,
@@ -146,6 +160,10 @@ export interface GeneratedPdf {
 export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPdf> {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
   await registerUnicodeFont(doc);
+  // Logó előtöltés fallback (ha a hívó nem preload-olta a mount-nál).
+  if (!CACHED_LOGO) {
+    try { await preloadPdfLogo(); } catch { /* nélküle is generálható */ }
+  }
   const PAGE_W = doc.internal.pageSize.getWidth();
   const PAGE_H = doc.internal.pageSize.getHeight();
   const MARGIN_X = 40;
@@ -163,18 +181,33 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   };
 
   // --- Fejléc ---
+  // Bal: brand csík + "Betonstamp" szöveg (változatlan).
   doc.setFillColor(...BRAND);
-  doc.rect(MARGIN_X, y, 4, 22, 'F'); // brand csík
+  doc.rect(MARGIN_X, y, 4, 22, 'F');
   doc.setTextColor(...TEXT_DARK);
   doc.setFont(FONT_FAMILY, 'bold');
   doc.setFontSize(16);
   doc.text('Betonstamp', MARGIN_X + 12, y + 16);
 
+  // Jobb felső: Betonstamp logó, alatta a dátum. A logó képarányát megőrizzük.
+  let dateY = y + 16; // fallback ha nincs logó
+  if (CACHED_LOGO) {
+    const logoH = 32;
+    const logoW = logoH * (CACHED_LOGO.width / CACHED_LOGO.height);
+    const logoX = PAGE_W - MARGIN_X - logoW;
+    const logoY = y;
+    doc.addImage(CACHED_LOGO.dataUrl, 'PNG', logoX, logoY, logoW, logoH);
+    dateY = logoY + logoH + 10; // dátum a logó alatt, 10pt gap
+  }
   doc.setFont(FONT_FAMILY, 'normal');
   doc.setFontSize(10);
   doc.setTextColor(...TEXT_MUTED);
-  doc.text(todayISO(), PAGE_W - MARGIN_X, y + 16, { align: 'right' });
-  y += 32;
+  doc.text(todayISO(), PAGE_W - MARGIN_X, dateY, { align: 'right' });
+
+  // Fejléc-blokk y-lépése: a bal Betonstamp szöveg és a jobb logó+dátum
+  // közül a nagyobbat követjük, hogy a következő elem ne csússzon rá.
+  const headerBottom = Math.max(y + 32, dateY + 4);
+  y = headerBottom;
 
   // Kalkulátor cím
   doc.setTextColor(...TEXT_DARK);

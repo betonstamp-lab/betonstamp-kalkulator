@@ -22,6 +22,7 @@ import {
 } from '@/lib/calculators/vakolat/products';
 import { usePricingMode } from '@/components/PricingModeContext';
 import AppHeader from '@/components/AppHeader';
+import HeaderLogos from '@/components/HeaderLogos';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
 import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
 import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
@@ -254,7 +255,9 @@ export default function VakolatCalculatorPage() {
       <AppHeader profile={profile} userEmail={user?.email} />
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center p-4 pt-8 md:pt-12">
+      <div className="flex-1 flex flex-col items-center p-4 pt-6 md:pt-10">
+        {/* Vakolat-specifikus logó-blokk — Estecha is megjelenik az ESTonetex rendszerhez */}
+        <HeaderLogos showEstecha className="mb-4" />
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 text-center">Vakolat kalkulátor</h1>
         <p className="text-sm md:text-base text-gray-500 mb-8 text-center max-w-2xl">
           ESTonetex System — falazatok (függőleges falak) anyag- és árkalkulátora.
