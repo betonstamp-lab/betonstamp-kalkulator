@@ -35,7 +35,7 @@ export function PricingModeToggle({ isPartner }: Props) {
             : 'text-gray-500 hover:text-gray-800'
         }`}
       >
-        Partneri ár
+        Partner ár
       </button>
       <button
         type="button"

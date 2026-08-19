@@ -50,53 +50,59 @@ export default function AppHeader({
 
   return (
     <header className="w-full bg-white shadow-sm py-3 px-3 sm:px-4 md:px-8">
-      {/* Mobilon oszlopos elrendezés (elemek egymás alá), sm+ soros. */}
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-3">
-        {/* Bal — user-badge (mobilon és desktopon egyforma) */}
-        <div className="sm:flex-1 sm:min-w-0 sm:flex sm:justify-start">
-          <div className="inline-flex flex-col min-w-0 border-2 border-gray-300 rounded-lg px-3 py-2 self-start">
-            <p className="text-sm font-medium text-gray-800 truncate">{displayName}</p>
-            {isPartner ? (
-              <span className="inline-block text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full mt-0.5 self-start">
-                {profile?.partner_discount ? `Partner (${profile.partner_discount}% kedvezmény)` : 'Partner'}
-              </span>
-            ) : (
-              <span className="inline-block text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full mt-0.5 self-start">
-                Ügyfél
-              </span>
-            )}
+      {/* Mobilon: FELSŐ sor (badge + logó justify-between), ALSÓ sor (gombsáv).
+           sm+: 3 blokk vízszintesen (badge balra, logó közép, gombok jobbra).
+           Az `sm:contents` trükk: a belső wrapper mobilon `flex flex-row justify-between`
+           sor, sm+ eltűnik és a gyerekek közvetlenül a fő flex-row-ba kerülnek. */}
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center gap-3">
+        {/* Mobilon felső sor: badge + logó egymás mellett; sm+ kiürül (contents) */}
+        <div className="flex flex-row items-center justify-between gap-3 sm:contents">
+          {/* Bal — user-badge */}
+          <div className="sm:flex-1 sm:min-w-0 sm:flex sm:justify-start">
+            <div className="inline-flex flex-col min-w-0 border-2 border-gray-300 rounded-lg px-3 py-2 self-start">
+              <p className="text-sm font-medium text-gray-800 truncate">{displayName}</p>
+              {isPartner ? (
+                <span className="inline-block text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full mt-0.5 self-start">
+                  {profile?.partner_discount ? `Partner (${profile.partner_discount}% kedvezmény)` : 'Partner'}
+                </span>
+              ) : (
+                <span className="inline-block text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full mt-0.5 self-start">
+                  Ügyfél
+                </span>
+              )}
+            </div>
           </div>
+
+          {/* Logó — mobilon a badge mellett jobbra, sm+ középen */}
+          <a
+            href="https://www.betonstamp.hu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 sm:self-center transition-opacity"
+            aria-label="Betonstamp.hu — új ablakban megnyitva"
+          >
+            <Image
+              src="/images/betonstamp-logo.png"
+              alt="BetonStamp"
+              width={280}
+              height={112}
+              className="h-10 sm:h-12 md:h-20 w-auto"
+            />
+          </a>
         </div>
 
-        {/* Közép — logó (mobilon a badge alatt középen kicsiben) */}
-        <a
-          href="https://www.betonstamp.hu"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 self-center transition-opacity"
-          aria-label="Betonstamp.hu — új ablakban megnyitva"
-        >
-          <Image
-            src="/images/betonstamp-logo.png"
-            alt="BetonStamp"
-            width={280}
-            height={112}
-            className="h-10 sm:h-12 md:h-20 w-auto"
-          />
-        </a>
-
-        {/* Jobb — vezérlők (mobilon a logó alatt, wrap-el) */}
+        {/* Jobb — vezérlők (mobilon az alsó sor, sm+ jobbra) */}
         <div className="sm:flex-1 sm:min-w-0 sm:flex sm:justify-end">
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3">
             <PricingModeToggle isPartner={isPartner} />
             {showBack && (
+              // "Vissza a főoldalra" gomb — mobilon rejtve (a browser vissza-gomb megvan).
               <button
                 onClick={() => router.push(backHref)}
-                className={HEADER_BUTTON_NEUTRAL}
+                className={`${HEADER_BUTTON_NEUTRAL} hidden sm:inline-flex`}
                 aria-label="Vissza a főoldalra"
               >
-                <span className="sm:hidden">← Vissza</span>
-                <span className="hidden sm:inline">← Vissza a főoldalra</span>
+                ← Vissza a főoldalra
               </button>
             )}
             <button
