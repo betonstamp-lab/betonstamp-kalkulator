@@ -546,7 +546,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
           {selectedFinishing && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Szín</label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {selectedFinishing.colors.map(c => (
                   <button
                     key={c.key}
@@ -558,7 +558,7 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
                     }`}
                   >
                     <ColorSwatch hex={c.hex} size={36} title={c.name} />
-                    <span>{c.name}</span>
+                    <span className="flex-1 min-w-0 break-words text-left">{c.name}</span>
                   </button>
                 ))}
               </div>
@@ -789,7 +789,7 @@ function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: P
       {/* EST-Decor */}
       <div className="border border-gray-200 rounded-lg p-3 mb-3">
         <p className="text-xs font-semibold text-gray-700 mb-2">EST-Decor (alapszín, poralapú)</p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 mb-2">
           {EST_DECOR_COLORS.map(c => {
             // "Arcilla (agyag)" → { main: "Arcilla", translation: "(agyag)" }
             // "Terracotta" → { main: "Terracotta", translation: "" }
@@ -910,7 +910,7 @@ function PigmentSection({ pigmentLines, onAdd, onRemove, mixolBinderMissing }: P
       {/* Mixol — swatch-rács (EST-Decor mintájára) */}
       <div className="border border-gray-200 rounded-lg p-3 mb-3">
         <p className="text-xs font-semibold text-gray-700 mb-2">Mixol színező (a kötőanyaghoz adagolva)</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-2">
           {MIXOL.map((m, i) => {
             // "Mixol 31 — zöld oxid (elit)" → { code: "Mixol 31", colorName: "zöld oxid (elit)" }
             const sepIdx = m.name.indexOf(' — ');
