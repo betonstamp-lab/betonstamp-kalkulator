@@ -16,8 +16,7 @@ import {
 } from '@/lib/calculators/pigment/efectto_color_hex';
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
 import { EFECTTO_QUARTZ_PIGMENT_UNDER_DEVELOPMENT } from '@/lib/calculators/pigment/featureFlags';
-import { PricingModeToggle } from '@/components/PricingModeToggle';
-import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
+import AppHeader from '@/components/AppHeader';
 
 // Központi flag (lib/calculators/pigment/featureFlags.ts) vezérli, hogy a
 // kalkulátor megjelenjen-e vagy "Fejlesztés alatt" üzenet helyett. False-ra
@@ -257,54 +256,8 @@ export default function EfecttoQuartzCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-white shadow-sm py-3 px-4 md:px-8">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          {/* Left - User info */}
-          <div className="min-w-0 border-2 border-gray-300 rounded-lg px-3 py-2">
-            <p className="text-sm font-medium text-gray-800 truncate">
-              {profile?.name || user?.email}
-            </p>
-            {profile?.role === 'partner' ? (
-              <span className="inline-block text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full mt-0.5">
-                Partner
-              </span>
-            ) : (
-              <span className="inline-block text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full mt-0.5">
-                Ügyfél
-              </span>
-            )}
-          </div>
-
-          {/* Center - Logo */}
-          <a href="https://www.betonstamp.hu" target="_blank" rel="noopener noreferrer" className="transition-opacity">
-            <Image
-              src="/images/betonstamp-logo.png"
-              alt="BetonStamp"
-              width={280}
-              height={112}
-              className="h-12 md:h-20 w-auto"
-            />
-          </a>
-
-          {/* Right - Buttons */}
-          <div className="flex items-center gap-3 flex-wrap justify-end">
-            <PricingModeToggle isPartner={profile?.role === 'partner'} />
-            <button
-              onClick={() => router.push('/calculators')}
-              className={HEADER_BUTTON_NEUTRAL}
-            >
-              ← Vissza a főoldalra
-            </button>
-            <button
-              onClick={handleSignOut}
-              className={HEADER_BUTTON_DANGER}
-            >
-              Kijelentkezés
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Header — közös AppHeader */}
+      <AppHeader profile={profile} userEmail={user?.email} />
 
       {/* Content */}
       <div className={`flex-1 flex flex-col items-center p-4 ${UNDER_DEVELOPMENT ? 'justify-center' : 'pt-8 md:pt-12'}`}>

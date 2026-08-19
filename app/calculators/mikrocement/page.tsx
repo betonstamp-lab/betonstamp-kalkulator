@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, UserProfile } from '@/lib/shared/supabase';
 import Calculator from '@/components/Calculator';
-import { PricingModeToggle } from '@/components/PricingModeToggle';
-import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
+import AppHeader from '@/components/AppHeader';
 export default function CalculatorPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -61,10 +60,6 @@ export default function CalculatorPage() {
     });
     return () => subscription.unsubscribe();
   }, [router]);
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/');
-  };
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -74,43 +69,8 @@ export default function CalculatorPage() {
   }
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header felhasználói adatokkal */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-500 rounded-full flex items-center justify-center text-white font-semibold">
-              {profile?.name?.charAt(0).toUpperCase() || 'U'}
-            </div>
-            <div>
-              <p className="font-semibold text-gray-800">{profile?.name}</p>
-              <p className="text-sm text-gray-500">
-                {profile?.role === 'partner' ? (
-                  <span className="text-green-600 font-medium">
-                    Partner ({profile.partner_discount}% kedvezmény)
-                  </span>
-                ) : (
-                  'Ügyfél'
-                )}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 flex-wrap justify-end">
-            <PricingModeToggle isPartner={profile?.role === 'partner'} />
-            <button
-              onClick={() => router.push('/calculators')}
-              className={HEADER_BUTTON_NEUTRAL}
-            >
-              ← Vissza a főoldalra
-            </button>
-            <button
-              onClick={handleLogout}
-              className={HEADER_BUTTON_DANGER}
-            >
-              Kijelentkezés
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Header — közös AppHeader */}
+      <AppHeader profile={profile} userEmail={user?.email} />
 
       {/* Webshop fiók értesítés */}
       {shopSyncMessage && (

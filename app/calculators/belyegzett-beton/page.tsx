@@ -28,8 +28,7 @@ import {
   PRIMACEM_PLUS,
 } from '@/lib/calculators/belyegzett-beton/products';
 import { usePricingMode } from '@/components/PricingModeContext';
-import { PricingModeToggle } from '@/components/PricingModeToggle';
-import { HEADER_BUTTON_NEUTRAL, HEADER_BUTTON_DANGER } from '@/components/headerButtonClasses';
+import AppHeader from '@/components/AppHeader';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
 import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
 import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
@@ -845,63 +844,8 @@ export default function BelyegzettBetonCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-white shadow-sm py-3 px-3 sm:px-4 md:px-8">
-        <div className="max-w-5xl mx-auto flex items-center gap-2 sm:gap-3">
-          <div className="flex-1 min-w-0 flex justify-start">
-            <div className="min-w-0 border-2 border-gray-300 rounded-lg px-2 py-1.5 sm:px-3 sm:py-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-800 truncate">
-                {profile?.name || user?.email}
-              </p>
-              {profile?.role === 'partner' ? (
-                <span className="inline-block text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full mt-0.5">
-                  Partner
-                </span>
-              ) : (
-                <span className="inline-block text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full mt-0.5">
-                  Ügyfél
-                </span>
-              )}
-            </div>
-          </div>
-
-          <a href="https://www.betonstamp.hu" target="_blank" rel="noopener noreferrer" className="shrink-0 transition-opacity">
-            <Image
-              src="/images/betonstamp-logo.png"
-              alt="BetonStamp"
-              width={280}
-              height={112}
-              className="h-10 sm:h-12 md:h-20 w-auto"
-            />
-          </a>
-
-          <div className="flex-1 min-w-0 flex justify-end">
-            <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
-              <PricingModeToggle isPartner={isPartnerAccount} />
-              <button
-                onClick={() => router.push('/calculators')}
-                aria-label="Vissza a főoldalra"
-                className={HEADER_BUTTON_NEUTRAL}
-              >
-                <span className="sm:hidden">←</span>
-                <span className="hidden sm:inline">← Vissza a főoldalra</span>
-              </button>
-              <button
-                onClick={handleSignOut}
-                aria-label="Kijelentkezés"
-                className={HEADER_BUTTON_DANGER}
-              >
-                <span className="sm:hidden inline-flex items-center" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </span>
-                <span className="hidden sm:inline">Kijelentkezés</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header — közös AppHeader */}
+      <AppHeader profile={profile} userEmail={user?.email} />
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center p-4 pt-8 md:pt-12">
