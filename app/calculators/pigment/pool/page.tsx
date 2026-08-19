@@ -430,6 +430,7 @@ export default function PoolCalculatorPage() {
                       { heading: 'Összesen', items: [{ name: 'Pigment összesen', quantity: `${result.totalGrams} g` }] },
                     ],
                     filenamePrefix: 'betonstamp-atlanttic-pigment-kg',
+                    logoVariant: 'none',
                   };
                   return data;
                 }}
@@ -525,6 +526,7 @@ export default function PoolCalculatorPage() {
                       ...colorSections,
                     ],
                     filenamePrefix: 'betonstamp-atlanttic-pigment-m2',
+                    logoVariant: 'none',
                   };
                   return data;
                 }}

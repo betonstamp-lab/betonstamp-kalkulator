@@ -1047,6 +1047,7 @@ export default function BelyegzettBetonCalculatorPage() {
                       sections,
                       totals: { kiszereles: kiszerelesTotal, anyag: anyagTotal },
                       filenamePrefix: 'betonstamp-belyegzett-beton',
+                      logoVariant: 'topciment',
                     };
                   }}
                 />

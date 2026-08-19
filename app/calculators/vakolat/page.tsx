@@ -371,6 +371,7 @@ export default function VakolatCalculatorPage() {
                     ],
                     totals: { single: totalSingle },
                     filenamePrefix: 'betonstamp-vakolat',
+                    logoVariant: 'estecha',
                   };
                   return data;
                 }}

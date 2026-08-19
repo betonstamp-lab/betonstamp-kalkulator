@@ -512,6 +512,7 @@ export default function NattureCalculatorPage() {
                       { heading: 'Összesen', items: [{ name: 'Pigment összesen', quantity: `${result.totalGrams} g` }] },
                     ],
                     filenamePrefix: 'betonstamp-natture-pigment-kg',
+                    logoVariant: 'none',
                   };
                   return data;
                 }}
@@ -620,6 +621,7 @@ export default function NattureCalculatorPage() {
                       ...colorSections,
                     ],
                     filenamePrefix: 'betonstamp-natture-pigment-m2',
+                    logoVariant: 'none',
                   };
                   return data;
                 }}

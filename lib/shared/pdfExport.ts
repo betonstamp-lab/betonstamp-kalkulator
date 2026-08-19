@@ -40,6 +40,13 @@ export interface PdfSection {
   };
 }
 
+/** A Betonstamp mellé milyen második logó kerüljön a fejlécbe:
+ *  - 'topciment' — Mikrocement / Bélyegzett Beton / Overlay
+ *  - 'estecha'   — Vakolat (ESTonetex System)
+ *  - 'none'      — csak Betonstamp (pigment kalkulátorok)
+ */
+export type PdfLogoVariant = 'topciment' | 'estecha' | 'none';
+
 export interface PdfData {
   /** A kalkulátor neve, pl. "Bélyegzett Beton Kalkulátor". */
   title: string;
@@ -54,6 +61,8 @@ export interface PdfData {
   };
   /** Fájlnév prefix; a "-YYYY-MM-DD.pdf" automatikusan hozzáfűződik. */
   filenamePrefix?: string;
+  /** A Betonstamp mellé kerülő második logó (kalkulátor-specifikus). */
+  logoVariant?: PdfLogoVariant;
 }
 
 // Brand-akcens (Betonstamp sárga #fbc02d). RGB.
@@ -119,18 +128,49 @@ export async function preloadPdfFonts(): Promise<void> {
   };
 }
 
-// Betonstamp logó — a PDF jobb felső sarkába kerül minden kalkulátor PDF-jén.
-// Ugyanaz a cache + preload minta mint a fontnál: a base64 modul-szintű
-// változóban él, a `DownloadPdfButton` a mount-nál betölti.
-let CACHED_LOGO: { dataUrl: string; width: number; height: number } | null = null;
+// Logó-cache — 3 logó a PDF-fejléchez (középre igazítva a variant szerint).
+// Ugyanaz a cache + preload minta mint a fontnál: modul-szintű változóban él,
+// a `DownloadPdfButton` a mount-nál betölti mindhármat (iOS gesztus-szigor
+// miatt kritikus, hogy a tap pillanatában cache-hit legyen).
+interface LogoAsset { dataUrl: string; width: number; height: number; }
+let CACHED_BETONSTAMP_LOGO: LogoAsset | null = null;
+let CACHED_TOPCIMENT_LOGO: LogoAsset | null = null;
+let CACHED_ESTECHA_LOGO: LogoAsset | null = null;
+
+/** Előtöltő: mindhárom logó base64-ét cache-eli. Idempotens, párhuzamos. */
 export async function preloadPdfLogo(): Promise<void> {
-  if (CACHED_LOGO) return;
-  const mod = await import('./images/betonstampLogoBase64');
-  CACHED_LOGO = {
-    dataUrl: mod.BETONSTAMP_LOGO_DATAURL,
-    width: mod.BETONSTAMP_LOGO_WIDTH,
-    height: mod.BETONSTAMP_LOGO_HEIGHT,
-  };
+  const tasks: Promise<void>[] = [];
+  if (!CACHED_BETONSTAMP_LOGO) {
+    tasks.push((async () => {
+      const mod = await import('./images/betonstampLogoBase64');
+      CACHED_BETONSTAMP_LOGO = {
+        dataUrl: mod.BETONSTAMP_LOGO_DATAURL,
+        width: mod.BETONSTAMP_LOGO_WIDTH,
+        height: mod.BETONSTAMP_LOGO_HEIGHT,
+      };
+    })());
+  }
+  if (!CACHED_TOPCIMENT_LOGO) {
+    tasks.push((async () => {
+      const mod = await import('./images/topcimentLogoBase64');
+      CACHED_TOPCIMENT_LOGO = {
+        dataUrl: mod.TOPCIMENT_LOGO_DATAURL,
+        width: mod.TOPCIMENT_LOGO_WIDTH,
+        height: mod.TOPCIMENT_LOGO_HEIGHT,
+      };
+    })());
+  }
+  if (!CACHED_ESTECHA_LOGO) {
+    tasks.push((async () => {
+      const mod = await import('./images/estechaLogoBase64');
+      CACHED_ESTECHA_LOGO = {
+        dataUrl: mod.ESTECHA_LOGO_DATAURL,
+        width: mod.ESTECHA_LOGO_WIDTH,
+        height: mod.ESTECHA_LOGO_HEIGHT,
+      };
+    })());
+  }
+  if (tasks.length) await Promise.all(tasks);
 }
 
 async function registerUnicodeFont(doc: jsPDF): Promise<void> {
@@ -161,7 +201,7 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
   await registerUnicodeFont(doc);
   // Logó előtöltés fallback (ha a hívó nem preload-olta a mount-nál).
-  if (!CACHED_LOGO) {
+  if (!CACHED_BETONSTAMP_LOGO) {
     try { await preloadPdfLogo(); } catch { /* nélküle is generálható */ }
   }
   const PAGE_W = doc.internal.pageSize.getWidth();
@@ -181,33 +221,40 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   };
 
   // --- Fejléc ---
-  // Bal: brand csík + "Betonstamp" szöveg (változatlan).
-  doc.setFillColor(...BRAND);
-  doc.rect(MARGIN_X, y, 4, 22, 'F');
-  doc.setTextColor(...TEXT_DARK);
-  doc.setFont(FONT_FAMILY, 'bold');
-  doc.setFontSize(16);
-  doc.text('Betonstamp', MARGIN_X + 12, y + 16);
+  // Középen felül a logó(k): mindig Betonstamp, mellette a variant szerinti
+  // második logó (Topciment / Estecha), vagy egyedül. Egységes magasság (LOGO_H),
+  // képarányok megőrzésével. A csoport középre igazítva a PAGE_W-hez.
+  const LOGO_H = 36;
+  const LOGO_GAP = 20;
+  const variant: PdfLogoVariant = data.logoVariant ?? 'none';
+  const logoList: LogoAsset[] = [];
+  if (CACHED_BETONSTAMP_LOGO) logoList.push(CACHED_BETONSTAMP_LOGO);
+  if (variant === 'topciment' && CACHED_TOPCIMENT_LOGO) logoList.push(CACHED_TOPCIMENT_LOGO);
+  else if (variant === 'estecha' && CACHED_ESTECHA_LOGO) logoList.push(CACHED_ESTECHA_LOGO);
 
-  // Jobb felső: Betonstamp logó, alatta a dátum. A logó képarányát megőrizzük.
-  let dateY = y + 16; // fallback ha nincs logó
-  if (CACHED_LOGO) {
-    const logoH = 32;
-    const logoW = logoH * (CACHED_LOGO.width / CACHED_LOGO.height);
-    const logoX = PAGE_W - MARGIN_X - logoW;
-    const logoY = y;
-    doc.addImage(CACHED_LOGO.dataUrl, 'PNG', logoX, logoY, logoW, logoH);
-    dateY = logoY + logoH + 10; // dátum a logó alatt, 10pt gap
+  let logoBottomY = y; // ha nincs logó, a fejléc nem foglal helyet
+  if (logoList.length > 0) {
+    const widths = logoList.map((l) => LOGO_H * (l.width / l.height));
+    const totalW = widths.reduce((s, w) => s + w, 0) + LOGO_GAP * (logoList.length - 1);
+    let cx = (PAGE_W - totalW) / 2;
+    for (let i = 0; i < logoList.length; i++) {
+      const asset = logoList[i];
+      const w = widths[i];
+      doc.addImage(asset.dataUrl, 'PNG', cx, y, w, LOGO_H);
+      cx += w + LOGO_GAP;
+    }
+    logoBottomY = y + LOGO_H;
   }
+
+  // Dátum: jobb-felső sarok, kis szürke. A logó magasságához igazítva.
   doc.setFont(FONT_FAMILY, 'normal');
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setTextColor(...TEXT_MUTED);
+  const dateY = logoList.length > 0 ? y + 10 : y + 12;
   doc.text(todayISO(), PAGE_W - MARGIN_X, dateY, { align: 'right' });
 
-  // Fejléc-blokk y-lépése: a bal Betonstamp szöveg és a jobb logó+dátum
-  // közül a nagyobbat követjük, hogy a következő elem ne csússzon rá.
-  const headerBottom = Math.max(y + 32, dateY + 4);
-  y = headerBottom;
+  // A fejléc-blokk y-lépése: a logó ALATT + kis szellős tér.
+  y = logoBottomY + (logoList.length > 0 ? 12 : 0);
 
   // Kalkulátor cím
   doc.setTextColor(...TEXT_DARK);

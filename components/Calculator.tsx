@@ -2848,6 +2848,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                         // Kettős végösszeg — a képernyő VÉGÖSSZEG blokkjával egyenértékű.
                         totals: { kiszereles: grandKiszereles, anyag: grandAnyag },
                         filenamePrefix: 'betonstamp-mikrocement',
+                        logoVariant: 'topciment',
                       };
                       return data;
                     }}
