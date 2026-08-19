@@ -93,10 +93,26 @@ export default function DownloadPdfButton({
       const { blob, filename } = await generateCalculationPdf(data);
 
       if (isIOS) {
-        const url = URL.createObjectURL(blob);
+        // File objektum a Blob helyett — a File.name-t iOS Safari a Share →
+        // "Save to Files" dialogban javasolt fájlnévként átveszi (unknown.pdf
+        // helyett a valódi név). Ez a legmegbízhatóbb módszer.
+        const file = new File([blob], filename, { type: 'application/pdf' });
+        const url = URL.createObjectURL(file);
         if (iosWindow && !iosWindow.closed) {
           // Az iOS user a nyitott fülön megtekintheti / megoszthatja / mentheti.
           iosWindow.location.href = url;
+          // A fül document.title-jét is átállítjuk (némely régebbi iOS Safari
+          // a title-ből olvassa a mentési nevet). A load után hívjuk, hogy a
+          // PDF-néző ne írja felül.
+          try {
+            iosWindow.addEventListener('load', () => {
+              try { iosWindow!.document.title = filename; } catch { /* cross-origin ok */ }
+            }, { once: true });
+            // Fallback: azonnal is beállítjuk, ha a load event nem sül el.
+            setTimeout(() => {
+              try { if (iosWindow && !iosWindow.closed) iosWindow.document.title = filename; } catch { /* ok */ }
+            }, 500);
+          } catch { /* ok — nem kritikus, a File.name már elég */ }
         } else {
           // Popup blokkolva vagy zárva — inline navigálás.
           // Az aktuális fül a blob-URL-re vált; a user vissza tud lépni.
