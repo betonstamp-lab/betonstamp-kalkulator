@@ -48,7 +48,9 @@ export default function DownloadPdfButton({
       disabled={!hasResult}
       className={
         className ??
-        'inline-flex items-center justify-center gap-2 h-10 px-4 text-sm font-semibold border-2 border-brand-500 bg-white text-brand-700 rounded-lg hover:bg-brand-50 transition-colors whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed'
+        // w-full sm:w-auto: mobilon teljes szélesség (jól látható és tapintható),
+        // sm+ (≥640px) visszaáll a kompakt, tartalomhoz igazodó gombra.
+        'inline-flex items-center justify-center gap-2 w-full sm:w-auto h-10 px-4 text-sm font-semibold border-2 border-brand-500 bg-white text-brand-700 rounded-lg hover:bg-brand-50 transition-colors whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed'
       }
       aria-label="Kalkuláció letöltése PDF-ben"
     >
