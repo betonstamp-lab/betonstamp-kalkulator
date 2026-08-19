@@ -256,43 +256,43 @@ export default function VakolatCalculatorPage() {
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center p-4 pt-6 md:pt-10">
-        {/* Fehér kártya-fejléc — Mikrocement mintát követve: a logó + cím + leírás
-             egy blokkban, nem a szürke háttéren lógva. */}
-        <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-6 md:p-8 mb-6">
+        {/* EGY fehér kártya — Mikrocement mintát követve: logó + cím + leírás
+             + a teljes felület-tartalom közös blokkban. */}
+        <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-6 md:p-8">
           {/* Vakolat: BetonStamp + Estecha Hungary, Topciment NÉLKÜL (ESTonetex rendszer). */}
           <HeaderLogos bordered showTopciment={false} showEstecha />
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mt-4 mb-2 text-center">
             Vakolat kalkulátor
           </h1>
-          <p className="text-sm md:text-base text-gray-500 text-center max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-gray-500 text-center max-w-2xl mx-auto mb-6">
             ESTonetex System — falazatok (függőleges falak) anyag- és árkalkulátora.
           </p>
-        </div>
 
-        <div className="w-full max-w-3xl space-y-6">
-          {surfaces.map((surface, idx) => (
-            <SurfaceBlock
-              key={surface.id}
-              surface={surface}
-              index={idx}
-              totalSurfaces={surfaces.length}
-              isPartner={isPartner}
-              discountPercent={discountPercent}
-              onUpdate={(patch) => updateSurface(surface.id, patch)}
-              onRemove={() => removeSurface(surface.id)}
-              onCalculate={() => calculateSurfaceById(surface.id)}
-            />
-          ))}
+          <div className="space-y-6">
+            {surfaces.map((surface, idx) => (
+              <SurfaceBlock
+                key={surface.id}
+                surface={surface}
+                index={idx}
+                totalSurfaces={surfaces.length}
+                isPartner={isPartner}
+                discountPercent={discountPercent}
+                onUpdate={(patch) => updateSurface(surface.id, patch)}
+                onRemove={() => removeSurface(surface.id)}
+                onCalculate={() => calculateSurfaceById(surface.id)}
+              />
+            ))}
 
-          <button
-            onClick={addSurface}
-            className="w-full py-4 rounded-xl border-2 border-brand-500 bg-white hover:bg-brand-500 text-brand-700 hover:text-white font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>Új felület hozzáadása</span>
-          </button>
+            <button
+              onClick={addSurface}
+              className="w-full py-4 rounded-xl border-2 border-brand-500 bg-white hover:bg-brand-500 text-brand-700 hover:text-white font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Új felület hozzáadása</span>
+            </button>
+          </div>
         </div>
 
         {/* Eredmény-blokk: 1+ kalkulált felület esetén (a multi-felület összesítő csak 2+ felületnél) */}
