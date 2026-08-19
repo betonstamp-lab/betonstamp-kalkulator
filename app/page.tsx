@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/shared/supabase';
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
-import Image from 'next/image';
+import HeaderLogos from '@/components/HeaderLogos';
 
 export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -34,27 +34,12 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center p-4">
-      {/* Logo */}
-      <div className="mb-8 flex items-center gap-8">
-        <Image 
-          src="/images/betonstamp-logo.png" 
-          alt="BetonStamp" 
-          width={240} 
-          height={96}
-          className="h-24 w-auto"
-        />
-        <Image 
-          src="/images/topciment-logo.png" 
-          alt="Topciment" 
-          width={280} 
-          height={112}
-          className="h-28 w-auto"
-        />
-      </div>
+      {/* Logo — a kalkulátor fejlécével azonos, közös HeaderLogos komponens */}
+      <HeaderLogos className="mb-8" />
 
       {/* Cím */}
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">
-        Mikrocement Kalkulátor
+        Betonstamp Kalkulátor
       </h1>
 
       {/* Tab váltó */}

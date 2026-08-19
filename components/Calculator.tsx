@@ -19,6 +19,7 @@ import { PricingModeToggle } from '@/components/PricingModeToggle';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
 import type { PdfData, PdfSection, PdfLineItem } from '@/lib/shared/pdfExport';
 import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
+import HeaderLogos from '@/components/HeaderLogos';
 
 const SORTED_EFECTTO_QUARTZ_COLORS = sortEfecttoColors(EFECTTO_QUARTZ_COLORS);
 const SORTED_EFECTTO_PU_COLORS = sortEfecttoColors(EFECTTO_PU_COLORS);
@@ -1898,19 +1899,8 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
     <div className="min-h-screen bg-[#eeeeee] p-4">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8">
-          {/* Logo Banner */}
-          <div className="flex justify-center items-center gap-10 mb-1 pb-1 border-b border-gray-200 -mt-4 py-0">
-            <img 
-              src="/images/betonstamp-logo.png" 
-              alt="BetonStamp" 
-              className="h-16 md:h-20 object-contain"
-            />
-            <img 
-              src="/images/topciment-logo.png" 
-              alt="Topciment Hungary" 
-              className="h-20 md:h-28 object-contain"
-            />
-          </div>
+          {/* Logo Banner — közös HeaderLogos komponens (login/register oldallal egyezik) */}
+          <HeaderLogos bordered />
 
           <div className="flex flex-col items-center mb-6">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
