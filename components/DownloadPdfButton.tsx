@@ -5,12 +5,21 @@
 // buildData() függvényt, ami a friss result-ból építi fel a PDF adatot, majd
 // átadja a közös generátornak.
 //
-// A pricingMode-ot a hívó adja át (a saját usePricingMode()-ból), hogy a PDF
-// tükrözze, melyik módban készült.
+// iOS Safari kompatibilitás:
+//   1) Font-előtöltés a mount-nál (preloadPdfFonts) — a tap-lánc user-gesztus
+//      ablakát nem töri meg hálózati késleltetés.
+//   2) iOS-en window.open('','_blank') SZINKRON a user-gesztus alatt, majd
+//      a blob-URL beállítása a nyitott fülre. Az iOS user Save-el mentheti.
+//   3) Desktopon klasszikus <a download> anchor.click a blob-URL-lel.
 
+import { useEffect } from 'react';
 import type { UserProfile } from '@/lib/shared/supabase';
 import { canDownloadPdf } from '@/lib/shared/canDownloadPdf';
-import { generateCalculationPdf, type PdfData } from '@/lib/shared/pdfExport';
+import {
+  generateCalculationPdf,
+  preloadPdfFonts,
+  type PdfData,
+} from '@/lib/shared/pdfExport';
 
 interface Props {
   profile: UserProfile | null | undefined;
@@ -21,23 +30,83 @@ interface Props {
   className?: string;
 }
 
+function detectIOS(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  // iPhone, iPad (klasszikus), iPod
+  if (/iP(hone|od|ad)/.test(ua)) return true;
+  // iPadOS 13+ Safari (asztali user-agent) — platform=MacIntel + touch
+  const isTouch = typeof navigator.maxTouchPoints === 'number' && navigator.maxTouchPoints > 1;
+  if (isTouch && /Mac/.test(ua)) return true;
+  return false;
+}
+
+function downloadOnDesktop(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // Kis késleltetés, hogy a browser el tudja indítani a letöltést a revoke előtt.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 export default function DownloadPdfButton({
   profile,
   hasResult,
   buildData,
   className,
 }: Props) {
+  // Font-előtöltés a mount-nál — kritikus iOS Safari user-gesztus szigorához.
+  useEffect(() => {
+    if (canDownloadPdf(profile)) {
+      preloadPdfFonts().catch((err) => {
+        // eslint-disable-next-line no-console
+        console.warn('PDF font preload hiba (nem blokkoló):', err);
+      });
+    }
+  }, [profile]);
+
   if (!canDownloadPdf(profile)) return null;
 
   const handleClick = async () => {
     if (!hasResult) return;
+
+    const isIOS = detectIOS();
+    // iOS-en a window.open-t MOST kell szinkron megnyitnunk, a user-gesztus alatt.
+    // A későbbi await miatt a browser már nem engedné.
+    let iosWindow: Window | null = null;
+    if (isIOS) {
+      iosWindow = window.open('', '_blank');
+    }
+
     try {
       const data = buildData();
-      await generateCalculationPdf(data);
+      const { blob, filename } = await generateCalculationPdf(data);
+
+      if (isIOS) {
+        const url = URL.createObjectURL(blob);
+        if (iosWindow && !iosWindow.closed) {
+          // Az iOS user a nyitott fülön megtekintheti / megoszthatja / mentheti.
+          iosWindow.location.href = url;
+        } else {
+          // Popup blokkolva vagy zárva — inline navigálás.
+          // Az aktuális fül a blob-URL-re vált; a user vissza tud lépni.
+          window.location.href = url;
+        }
+        // A blob revoke-ja nem azonnal — a fül még használja.
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      } else {
+        downloadOnDesktop(blob, filename);
+      }
     } catch (err) {
+      // Ha az iOS ablak nyitva maradt de a generálás hibázott, zárjuk be.
+      if (iosWindow && !iosWindow.closed) iosWindow.close();
       // eslint-disable-next-line no-console
       console.error('PDF generálás hiba:', err);
-      alert('Nem sikerült létrehozni a PDF-et.');
+      alert('Nem sikerült létrehozni a PDF-et. Kérjük, próbáld újra.');
     }
   };
 

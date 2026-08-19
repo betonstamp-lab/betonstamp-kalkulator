@@ -98,17 +98,52 @@ function todayISO(): string {
 // karakterkészletet (á é í ó ö ő ú ü ű + nagybetűk). Dinamikus import: csak a
 // PDF-generálás pillanatában tölti be a browser, hogy a fő bundle-t ne
 // terhelje meg a ~1.7 MB base64 tartalom.
+//
+// FONT-CACHE: a font base64-eket modul-szintű változóban tartjuk, hogy a
+// tényleges tap idején az `await import` MIKROTASZK-hit legyen (nem hálózati
+// I/O). Ez kritikus iOS Safari-nál: az első valódi await hálózati késleltetés
+// után a user-gesztus ablak lezárul, és a programmatikus blob-letöltés
+// (doc.save/anchor.click) csendben blokkolt lesz. Ha a font már cache-elve
+// van a gomb mount-jánál, a tap-lánc gyakorlatilag szinkron.
 const FONT_FAMILY = 'DejaVuSans';
+let CACHED_FONTS: { regular: string; bold: string } | null = null;
+
+/** Előtöltő: hívja a `DownloadPdfButton` a mount pillanatában, hogy a tap-lánc
+ *  már cache-elt fontot használjon. Idempotens — többször hívható. */
+export async function preloadPdfFonts(): Promise<void> {
+  if (CACHED_FONTS) return;
+  const mod = await import('./fonts/dejavuSans');
+  CACHED_FONTS = {
+    regular: mod.DEJAVU_SANS_REGULAR_B64,
+    bold: mod.DEJAVU_SANS_BOLD_B64,
+  };
+}
+
 async function registerUnicodeFont(doc: jsPDF): Promise<void> {
-  const { DEJAVU_SANS_REGULAR_B64, DEJAVU_SANS_BOLD_B64 } = await import('./fonts/dejavuSans');
-  doc.addFileToVFS('DejaVuSansCondensed.ttf', DEJAVU_SANS_REGULAR_B64);
+  if (!CACHED_FONTS) {
+    // Fallback: ha a gomb nem hívta a preload-ot vagy még nem futott le,
+    // itt is beolvassuk. Cache-hit után gyors mikrotaszk lesz.
+    await preloadPdfFonts();
+  }
+  const fonts = CACHED_FONTS!;
+  doc.addFileToVFS('DejaVuSansCondensed.ttf', fonts.regular);
   doc.addFont('DejaVuSansCondensed.ttf', FONT_FAMILY, 'normal');
-  doc.addFileToVFS('DejaVuSansCondensed-Bold.ttf', DEJAVU_SANS_BOLD_B64);
+  doc.addFileToVFS('DejaVuSansCondensed-Bold.ttf', fonts.bold);
   doc.addFont('DejaVuSansCondensed-Bold.ttf', FONT_FAMILY, 'bold');
   doc.setFont(FONT_FAMILY, 'normal');
 }
 
-export async function generateCalculationPdf(data: PdfData): Promise<void> {
+/** A generált PDF a hívónak visszaadva — a letöltés/megjelenítés módja
+ *  (anchor download vs. window.open blob-URL) a hívón dől el, hogy iOS Safari
+ *  user-gesztus szigorát tiszteletben tudja tartani. */
+export interface GeneratedPdf {
+  /** A tényleges PDF Blob (application/pdf). */
+  blob: Blob;
+  /** Javasolt fájlnév (dátummal). */
+  filename: string;
+}
+
+export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPdf> {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
   await registerUnicodeFont(doc);
   const PAGE_W = doc.internal.pageSize.getWidth();
@@ -323,5 +358,6 @@ export async function generateCalculationPdf(data: PdfData): Promise<void> {
   }
 
   const filename = `${data.filenamePrefix ?? 'betonstamp-kalkulacio'}-${todayISO()}.pdf`;
-  doc.save(filename);
+  const blob = doc.output('blob');
+  return { blob, filename };
 }
