@@ -267,7 +267,7 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   doc.setFont(FONT_FAMILY, 'bold');
   doc.setFontSize(11);
   doc.setTextColor(...BRAND);
-  const modeLabel = data.pricingMode === 'partner' ? 'Ár: Partneri' : 'Ár: Általános';
+  const modeLabel = data.pricingMode === 'partner' ? 'Ár: Partner' : 'Ár: Általános';
   doc.text(modeLabel, MARGIN_X, y);
   y += 14;
 
