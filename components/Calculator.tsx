@@ -2747,7 +2747,14 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                   <DownloadPdfButton
                     profile={profile as any}
                     hasResult={true}
-                    buildData={() => {
+                    buildData={(mode) => {
+                      // Az ár-mód a választóból jön (Partner / Általános) — NEM a fejléc-váltóból.
+                      // A discountMultiplier-t lokálisan újraszámoljuk a mode alapján; így a PDF
+                      // független a fejléc pricingMode-jától.
+                      const isPartnerForPdf = isPartnerAccount && mode === 'partner';
+                      const discountForPdf = isPartnerForPdf ? (profile?.partner_discount || 0) / 100 : 0;
+                      const discountMultForPdf = 1 - discountForPdf;
+
                       const sections: PdfSection[] = [];
                       // Felületek áttekintése — minden felület a saját m²-jével és selectedColor-jával.
                       let n = 1;
@@ -2795,34 +2802,33 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           }
                         }
 
-                        // Partner qty-override figyelembe véve a kiszerelés-ár összesítéshez
-                        let partnerItemPrice = 0;
-                        if (isPartner) {
+                        // Partner qty-override figyelembe véve a kiszerelés-ár összesítéshez.
+                        // A qty-override CSAK a partner-módú fejléc szerkesztésekor kap értéket;
+                        // ha a PDF-hez általános mód van, a listaárú qty-t használjuk.
+                        let itemBasePriceForKiszereles = item.price;
+                        if (isPartnerForPdf) {
+                          let partnerItemPrice = 0;
                           item.pkgs.forEach((pkg: any, i: number) => {
                             const key = `${idx}_${i}`;
                             const effectiveQty = partnerQtyOverrides[key] !== undefined ? partnerQtyOverrides[key] : (pkg.qty || 0);
                             partnerItemPrice += pkg.price * effectiveQty;
                           });
+                          itemBasePriceForKiszereles = partnerItemPrice;
                         }
 
                         const nettoPrice = item.price - leftoverValue;
-                        // Szekció-szintű kettős részösszeg — 1:1 a képernyő PriceBreakdown-jével.
-                        const kiszerelesSubtotal = isPartner ? partnerItemPrice * discountMultiplier : item.price;
-                        const anyagSubtotal = isPartner ? nettoPrice * discountMultiplier : nettoPrice;
+                        const kiszerelesSubtotal = itemBasePriceForKiszereles * discountMultForPdf;
+                        const anyagSubtotal = nettoPrice * discountMultForPdf;
 
                         const items: PdfLineItem[] = [];
                         item.pkgs.forEach((pkg: any, i: number) => {
                           const key = `${idx}_${i}`;
-                          const effectiveQty = isPartner && partnerQtyOverrides[key] !== undefined
+                          const effectiveQty = isPartnerForPdf && partnerQtyOverrides[key] !== undefined
                             ? partnerQtyOverrides[key]
                             : (pkg.qty || 0);
                           if (effectiveQty <= 0) return;
-                          // A soron megjelenő ár = a képernyő "{pkg.price * effectiveQty} Ft"-je,
-                          // partneri módban × discountMultiplier (a képernyőn is a PriceBreakdown
-                          // szekció-szinten jelzi a discount hatását, a soron listaár szerepel).
-                          const linePrice = pkg.price * effectiveQty * discountMultiplier;
+                          const linePrice = pkg.price * effectiveQty * discountMultForPdf;
                           items.push({
-                            // A képernyő minta: "6 × Natture XL 20kg" — teljes formula a fősorban.
                             name: `${effectiveQty} × ${pkg.name}`,
                             quantity: '',
                             prices: { single: linePrice },
@@ -2843,9 +2849,8 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
 
                       const data: PdfData = {
                         title: 'Mikrocement Kalkulátor',
-                        pricingMode,
+                        pricingMode: mode,
                         sections,
-                        // Kettős végösszeg — a képernyő VÉGÖSSZEG blokkjával egyenértékű.
                         totals: { kiszereles: grandKiszereles, anyag: grandAnyag },
                         filenamePrefix: 'betonstamp-mikrocement',
                         logoVariant: 'topciment',

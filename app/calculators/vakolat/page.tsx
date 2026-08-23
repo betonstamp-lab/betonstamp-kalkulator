@@ -328,9 +328,14 @@ export default function VakolatCalculatorPage() {
               <DownloadPdfButton
                 profile={profile}
                 hasResult={true}
-                buildData={() => {
-                  // Felületek áttekintése — a kalkulált felületek finishing színe + m² a saját mezőikből.
-                  // Szín-lekérdezés: a választott FINISHING termék colors[] palettájából a finishingColorKey név-é.
+                buildData={(mode) => {
+                  // Az ár-mód a választóból jön (Partner / Általános) — NEM a fejléc-váltóból.
+                  // A discountMultiplier-t lokálisan újraszámoljuk, hogy a PDF-en a valóban
+                  // választott mód szerinti árak jelenjenek meg.
+                  const isPartnerForPdf = isPartnerAccount && mode === 'partner';
+                  const discountForPdf = isPartnerForPdf ? (profile?.partner_discount || 0) / 100 : 0;
+                  const discountMultForPdf = 1 - discountForPdf;
+
                   const surfaceSections: PdfSection[] = [];
                   let n = 1;
                   for (const s of surfaces) {
@@ -349,22 +354,17 @@ export default function VakolatCalculatorPage() {
                     n += 1;
                   }
                   const items: PdfLineItem[] = aggregated.lines.map(l => {
-                    // A discount arányos a totalBrutto → totalPartner viszonyból.
-                    const price = isPartner && aggregated.totalPartner !== undefined
-                      ? l.totalPrice * (aggregated.totalPartner / aggregated.totalBrutto)
-                      : l.totalPrice;
+                    const price = l.totalPrice * discountMultForPdf;
                     return {
                       name: l.name,
                       quantity: `${l.units} × ${l.unitSize}`,
                       prices: { single: price },
                     };
                   });
-                  const totalSingle = isPartner && aggregated.totalPartner !== undefined
-                    ? aggregated.totalPartner
-                    : aggregated.totalBrutto;
+                  const totalSingle = aggregated.totalBrutto * discountMultForPdf;
                   const data: PdfData = {
                     title: 'Vakolat Kalkulátor (ESTonetex System)',
-                    pricingMode,
+                    pricingMode: mode,
                     sections: [
                       ...surfaceSections,
                       { heading: 'Anyagok (összesített)', items },

@@ -493,7 +493,7 @@ export default function NattureCalculatorPage() {
               <DownloadPdfButton
                 profile={profile}
                 hasResult={true}
-                buildData={() => {
+                buildData={(mode) => {
                   const items: PdfLineItem[] = [
                     { name: 'Termék', quantity: result.product },
                     { name: 'Szín', quantity: result.color },
@@ -505,7 +505,7 @@ export default function NattureCalculatorPage() {
                   }));
                   const data: PdfData = {
                     title: 'Natture Pigment Kalkulátor',
-                    pricingMode,
+                    pricingMode: mode,
                     sections: [
                       { heading: 'Paraméterek', items },
                       { heading: 'Szükséges pigmentek', items: pigmentItems },
@@ -588,7 +588,7 @@ export default function NattureCalculatorPage() {
               <DownloadPdfButton
                 profile={profile}
                 hasResult={true}
-                buildData={() => {
+                buildData={(mode) => {
                   // Minden felület KÜLÖN szekció — heading: "Felület N — X m² — SZÍN"
                   const surfaceSections: PdfSection[] = m2Result.surfaces.map(r => {
                     const items: PdfLineItem[] = [
@@ -608,7 +608,7 @@ export default function NattureCalculatorPage() {
                   }));
                   const data: PdfData = {
                     title: `Natture Pigment Kalkulátor (m²) — Lakk: ${m2Result.sealerLabel}`,
-                    pricingMode,
+                    pricingMode: mode,
                     sections: [
                       ...surfaceSections,
                       {

@@ -412,14 +412,14 @@ export default function PoolCalculatorPage() {
               <DownloadPdfButton
                 profile={profile}
                 hasResult={true}
-                buildData={() => {
+                buildData={(mode) => {
                   const pigmentItems: PdfLineItem[] = result.pigments.map(p => ({
                     name: p.name,
                     quantity: `${p.grams} g`,
                   }));
                   const data: PdfData = {
                     title: 'Atlanttic Pigment Kalkulátor',
-                    pricingMode,
+                    pricingMode: mode,
                     sections: [
                       { heading: 'Paraméterek', items: [
                         { name: 'Termék', quantity: result.product },
@@ -500,7 +500,7 @@ export default function PoolCalculatorPage() {
               <DownloadPdfButton
                 profile={profile}
                 hasResult={true}
-                buildData={() => {
+                buildData={(mode) => {
                   // Minden felület KÜLÖN szekció — heading: "Felület N — X m² — BLANCO"
                   // (Atlanttic-nál a szín rendszerszinten fix BLANCO)
                   const surfaceSections: PdfSection[] = m2Result.surfaces.map(r => {
@@ -519,7 +519,7 @@ export default function PoolCalculatorPage() {
                   }));
                   const data: PdfData = {
                     title: 'Atlanttic Pigment Kalkulátor (m²) — Aquaciment XL, BLANCO',
-                    pricingMode,
+                    pricingMode: mode,
                     sections: [
                       ...surfaceSections,
                       { heading: 'Összesen', items: [{ name: 'Mikrocement összesen', quantity: `${m2Result.totalKg} kg` }] },

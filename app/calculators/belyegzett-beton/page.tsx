@@ -970,7 +970,13 @@ export default function BelyegzettBetonCalculatorPage() {
                 <DownloadPdfButton
                   profile={profile}
                   hasResult={true}
-                  buildData={() => {
+                  buildData={(mode) => {
+                    // Az ár-mód a választóból jön (Partner / Általános) — NEM a fejléc-váltóból.
+                    // A discountMultiplier-t lokálisan újraszámoljuk a mode alapján.
+                    const isPartnerForPdf = isPartnerAccount && mode === 'partner';
+                    const discountForPdf = isPartnerForPdf ? (profile?.partner_discount || 0) / 100 : 0;
+                    const discountMultForPdf = 1 - discountForPdf;
+
                     const sections: PdfData['sections'] = [];
                     // Felületek áttekintése — minden CALCULATED felület a saját színével és m²-rel.
                     // A színt a colorKey → COLORS.name lekérdezésből kapjuk (Bélyegzett = Stonecem/Arcocem,
@@ -1010,13 +1016,13 @@ export default function BelyegzettBetonCalculatorPage() {
                         }],
                       });
                     }
-                    // Poliszál + stamp/overlay tételek
+                    // Poliszál + stamp/overlay tételek — soronként a listaár × discountMultForPdf.
                     const stampItems: PdfLineItem[] = [];
                     if (aggregated.poliszalTotal) {
                       const l = aggregated.poliszalTotal;
-                      const kiszereles = isPartner ? l.totalPrice * discountMultiplier : l.totalPrice;
+                      const kiszereles = l.totalPrice * discountMultForPdf;
                       const anyagBase = l.anyagszuksegletSubtotal ?? l.totalPrice;
-                      const anyag = isPartner ? anyagBase * discountMultiplier : anyagBase;
+                      const anyag = anyagBase * discountMultForPdf;
                       stampItems.push({
                         name: l.name,
                         quantity: `${l.units} × ${l.unitSize}`,
@@ -1024,9 +1030,9 @@ export default function BelyegzettBetonCalculatorPage() {
                       });
                     }
                     for (const l of aggregated.stampAgg) {
-                      const kiszereles = isPartner ? l.totalPrice * discountMultiplier : l.totalPrice;
+                      const kiszereles = l.totalPrice * discountMultForPdf;
                       const anyagBase = l.anyagszuksegletSubtotal ?? l.totalPrice;
-                      const anyag = isPartner ? anyagBase * discountMultiplier : anyagBase;
+                      const anyag = anyagBase * discountMultForPdf;
                       stampItems.push({
                         name: l.name,
                         quantity: `${l.units} × ${l.unitSize}`,
@@ -1039,11 +1045,14 @@ export default function BelyegzettBetonCalculatorPage() {
                         items: stampItems,
                       });
                     }
-                    const kiszerelesTotal = isPartner ? aggregated.totalPartner : aggregated.total;
-                    const anyagTotal = isPartner ? aggregated.anyagszuksegletPartner : aggregated.anyagszuksegletTotal;
+                    // Végösszeg — a beton (concrete) sosem kap kedvezményt, csak a supplies.
+                    const suppliesFromAgg = aggregated.total - aggregated.concreteTotal;
+                    const anyagSuppliesFromAgg = aggregated.anyagszuksegletTotal - aggregated.concreteTotal;
+                    const kiszerelesTotal = Math.round(aggregated.concreteTotal + suppliesFromAgg * discountMultForPdf);
+                    const anyagTotal = Math.round(aggregated.concreteTotal + anyagSuppliesFromAgg * discountMultForPdf);
                     return {
                       title: 'Bélyegzett Beton Kalkulátor',
-                      pricingMode: pricingMode,
+                      pricingMode: mode,
                       sections,
                       totals: { kiszereles: kiszerelesTotal, anyag: anyagTotal },
                       filenamePrefix: 'betonstamp-belyegzett-beton',
