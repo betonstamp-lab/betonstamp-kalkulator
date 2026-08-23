@@ -29,7 +29,7 @@ import {
 } from '@/lib/calculators/belyegzett-beton/products';
 import { usePricingMode } from '@/components/PricingModeContext';
 import AppHeader from '@/components/AppHeader';
-import DownloadPdfButton from '@/components/DownloadPdfButton';
+import PdfActions from '@/components/PdfActions';
 import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
 import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 
@@ -964,13 +964,12 @@ export default function BelyegzettBetonCalculatorPage() {
               </div>
             )}
 
-            {/* Kalkuláció letöltése — csak partner user látja */}
+            {/* PDF-műveletek — csak partner user látja */}
             {aggregated && (
-              <div className="flex justify-end">
-                <DownloadPdfButton
-                  profile={profile}
-                  hasResult={true}
-                  buildData={(mode) => {
+              <PdfActions
+                profile={profile}
+                hasResult={true}
+                buildData={(mode) => {
                     // Az ár-mód a választóból jön (Partner / Általános) — NEM a fejléc-váltóból.
                     // A discountMultiplier-t lokálisan újraszámoljuk a mode alapján.
                     const isPartnerForPdf = isPartnerAccount && mode === 'partner';
@@ -1059,8 +1058,7 @@ export default function BelyegzettBetonCalculatorPage() {
                       logoVariant: 'topciment',
                     };
                   }}
-                />
-              </div>
+              />
             )}
 
             {/* Kosárba teszem */}

@@ -23,7 +23,7 @@ import {
 import { usePricingMode } from '@/components/PricingModeContext';
 import AppHeader from '@/components/AppHeader';
 import HeaderLogos from '@/components/HeaderLogos';
-import DownloadPdfButton from '@/components/DownloadPdfButton';
+import PdfActions from '@/components/PdfActions';
 import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
 import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 import {
@@ -323,12 +323,11 @@ export default function VakolatCalculatorPage() {
               </div>
             )}
 
-            {/* Kalkuláció letöltése — csak partner user látja */}
-            <div className="flex justify-end">
-              <DownloadPdfButton
-                profile={profile}
-                hasResult={true}
-                buildData={(mode) => {
+            {/* PDF-műveletek — csak partner user látja */}
+            <PdfActions
+              profile={profile}
+              hasResult={true}
+              buildData={(mode) => {
                   // Az ár-mód a választóból jön (Partner / Általános) — NEM a fejléc-váltóból.
                   // A discountMultiplier-t lokálisan újraszámoljuk, hogy a PDF-en a valóban
                   // választott mód szerinti árak jelenjenek meg.
@@ -375,8 +374,7 @@ export default function VakolatCalculatorPage() {
                   };
                   return data;
                 }}
-              />
-            </div>
+            />
 
             {/* Kosárba teszem — 1 vagy több felület esetén egyaránt megjelenik (Bélyegzett-mintára) */}
             <div className="bg-white p-5 rounded-xl border-2 border-brand-200">

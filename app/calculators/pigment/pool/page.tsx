@@ -8,7 +8,7 @@ import { ATLANTTIC_PIGMENT_RECIPES } from '@/lib/calculators/mikrocement/pigment
 import { MICROCEMENT_COVERAGE } from '@/lib/calculators/pigment/coverage';
 import AppHeader from '@/components/AppHeader';
 import { usePricingMode } from '@/components/PricingModeContext';
-import DownloadPdfButton from '@/components/DownloadPdfButton';
+import PdfActions from '@/components/PdfActions';
 import type { PdfData, PdfLineItem, PdfSection } from '@/lib/shared/pdfExport';
 import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 
@@ -408,8 +408,8 @@ export default function PoolCalculatorPage() {
                 <span className="text-gray-900">{result.totalGrams} g</span>
               </div>
             </div>
-            <div className="mt-4 flex justify-end">
-              <DownloadPdfButton
+            <div className="mt-4">
+              <PdfActions
                 profile={profile}
                 hasResult={true}
                 buildData={(mode) => {
@@ -496,8 +496,8 @@ export default function PoolCalculatorPage() {
                 </div>
               )}
             </div>
-            <div className="mt-4 flex justify-end">
-              <DownloadPdfButton
+            <div className="mt-4">
+              <PdfActions
                 profile={profile}
                 hasResult={true}
                 buildData={(mode) => {

@@ -16,7 +16,7 @@ import {
 import PriceBreakdown from '@/components/PriceBreakdown';
 import { usePricingMode } from '@/components/PricingModeContext';
 import { PricingModeToggle } from '@/components/PricingModeToggle';
-import DownloadPdfButton from '@/components/DownloadPdfButton';
+import PdfActions from '@/components/PdfActions';
 import type { PdfData, PdfSection, PdfLineItem } from '@/lib/shared/pdfExport';
 import { formatSurfaceHeader } from '@/lib/shared/pdfExport';
 import HeaderLogos from '@/components/HeaderLogos';
@@ -2742,12 +2742,11 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                   </div>
                 )}
 
-                {/* Kalkuláció letöltése — csak partner user látja */}
-                <div className="flex justify-end">
-                  <DownloadPdfButton
-                    profile={profile as any}
-                    hasResult={true}
-                    buildData={(mode) => {
+                {/* PDF-műveletek — csak partner user látja */}
+                <PdfActions
+                  profile={profile as any}
+                  hasResult={true}
+                  buildData={(mode) => {
                       // Az ár-mód a választóból jön (Partner / Általános) — NEM a fejléc-váltóból.
                       // A discountMultiplier-t lokálisan újraszámoljuk a mode alapján; így a PDF
                       // független a fejléc pricingMode-jától.
@@ -2857,8 +2856,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                       };
                       return data;
                     }}
-                  />
-                </div>
+                />
 
                 {/* Kosárba teszem gomb */}
                 <div className="bg-white p-5 rounded-xl border-2 border-brand-200">
