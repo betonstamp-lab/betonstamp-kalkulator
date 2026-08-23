@@ -50,10 +50,12 @@ export default function PriceModeChooser({
         )}
 
         <div className="flex flex-col gap-3 mt-4">
+          {/* A két opció vizuálisan egyenrangú — sem az egyik nincs kiemelt
+               "elsődleges" színnel, hogy a user tudatosan válasszon módot. */}
           <button
             type="button"
             onClick={() => onSelect('partner')}
-            className="w-full h-12 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold transition-colors"
+            className="w-full h-12 rounded-lg border-2 border-gray-300 hover:border-gray-400 bg-white text-gray-800 font-semibold transition-colors"
           >
             Partner ár
           </button>
