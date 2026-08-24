@@ -47,6 +47,28 @@ export interface PdfSection {
  */
 export type PdfLogoVariant = 'topciment' | 'estecha' | 'none';
 
+/** Hivatalos árajánlat-fejléc a kalkuláció ELÉ (cégbemutató + termékleírás).
+ *  Ha `PdfData.quoteHeader` be van állítva, a PDF fejléc-címe a
+ *  `quoteHeader.title` (default "Árajánlat") lesz a `data.title` HELYETT.
+ *  A cégbemutató és termékleírás szekciók a kalkuláció szekciói ELŐTT rendereledik. */
+export interface PdfQuoteHeader {
+  /** Cím a fejlécben. Default: "Árajánlat". */
+  title?: string;
+  /** Cégbemutató szöveg (quote_profiles.company_intro). */
+  companyIntro?: string;
+  /** Termék/technológia-leírás (auto-generált + partner által szerkesztett). */
+  productDescription?: string;
+}
+
+/** Beágyazott referenciakép a PDF végére. A dataUrl a partner Storage-ából
+ *  van előre letöltve és base64-be konvertálva (iOS gesztus szigor miatt). */
+export interface PdfImage {
+  dataUrl: string;
+  width: number;
+  height: number;
+  mimeType?: 'PNG' | 'JPEG' | 'WEBP';
+}
+
 export interface PdfData {
   /** A kalkulátor neve, pl. "Bélyegzett Beton Kalkulátor". */
   title: string;
@@ -63,6 +85,12 @@ export interface PdfData {
   filenamePrefix?: string;
   /** A Betonstamp mellé kerülő második logó (kalkulátor-specifikus). */
   logoVariant?: PdfLogoVariant;
+  /** Ha be van állítva, hivatalos árajánlatként generálódik: cégbemutató +
+   *  termékleírás szekció a kalkuláció ELŐTT, és a title-t felülírja. */
+  quoteHeader?: PdfQuoteHeader;
+  /** Ha be van állítva, a kalkuláció UTÁN egy "Referenciák" szekció, ahol
+   *  a képek 2 oszlopos rácsba beágyazódnak. */
+  referenceImages?: PdfImage[];
 }
 
 // Brand-akcens (Betonstamp sárga #fbc02d). RGB.
@@ -256,11 +284,14 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   // A fejléc-blokk y-lépése: a logó ALATT + kis szellős tér.
   y = logoBottomY + (logoList.length > 0 ? 12 : 0);
 
-  // Kalkulátor cím
+  // Cím: ha quoteHeader van, "Árajánlat" (vagy quoteHeader.title); egyébként a kalkulátor cím.
   doc.setTextColor(...TEXT_DARK);
   doc.setFont(FONT_FAMILY, 'bold');
   doc.setFontSize(13);
-  doc.text(data.title, MARGIN_X, y);
+  const headerTitle = data.quoteHeader
+    ? (data.quoteHeader.title || 'Árajánlat')
+    : data.title;
+  doc.text(headerTitle, MARGIN_X, y);
   y += 18;
 
   // Ár-mód sor
@@ -276,6 +307,37 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   doc.setLineWidth(0.5);
   doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
   y += 14;
+
+  // --- Árajánlat-fejléc szekciók (cégbemutató + termékleírás) ---
+  if (data.quoteHeader) {
+    const renderQuoteBlock = (heading: string, body: string) => {
+      if (!body || !body.trim()) return;
+      ensureRoom(30);
+      doc.setFont(FONT_FAMILY, 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(...TEXT_DARK);
+      doc.text(heading, MARGIN_X, y);
+      y += 14;
+      doc.setFont(FONT_FAMILY, 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(...TEXT_DARK);
+      // A bekezdéseket meg\ntartva tördeljük — az újsorokat követjük.
+      const paragraphs = body.split(/\r?\n/);
+      const lineHeight = 13;
+      for (const para of paragraphs) {
+        if (!para.trim()) { y += lineHeight / 2; continue; }
+        const lines = doc.splitTextToSize(para, CONTENT_W);
+        for (const line of Array.isArray(lines) ? lines : [lines]) {
+          ensureRoom(lineHeight);
+          doc.text(line, MARGIN_X, y);
+          y += lineHeight;
+        }
+      }
+      y += 8;
+    };
+    renderQuoteBlock('Cégbemutató', data.quoteHeader.companyIntro ?? '');
+    renderQuoteBlock('Termék és technológia', data.quoteHeader.productDescription ?? '');
+  }
 
   // --- Szekciók ---
   doc.setTextColor(...TEXT_DARK);
@@ -418,6 +480,58 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
         doc.text(formatFt(data.totals.anyag), PAGE_W - MARGIN_X, y, { align: 'right' });
         y += 14;
       }
+    }
+  }
+
+  // --- Referenciaképek (a végösszeg UTÁN, a lábjegyzet ELŐTT) ---
+  if (data.referenceImages && data.referenceImages.length > 0) {
+    y += 10;
+    ensureRoom(30);
+    doc.setFont(FONT_FAMILY, 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...TEXT_DARK);
+    doc.text('Referenciák', MARGIN_X, y);
+    y += 14;
+
+    // 2 oszlopos rács. Cella szélessége = fél CONTENT_W - kis rés.
+    const IMG_GAP = 12;
+    const cellW = (CONTENT_W - IMG_GAP) / 2;
+    const cellMaxH = 140; // arányos maximum, hogy egy oldalon 2 sor is elférjen
+
+    let col = 0;
+    let rowH = 0;
+    let rowStartY = y;
+    for (const img of data.referenceImages) {
+      if (!img.dataUrl || !img.width || !img.height) continue;
+      // Célméret arányosan a cellába, aránytartással.
+      const ratio = img.width / img.height;
+      let w = cellW;
+      let h = cellW / ratio;
+      if (h > cellMaxH) { h = cellMaxH; w = cellMaxH * ratio; }
+      // Új sor kell?
+      if (col === 0) {
+        // Az új sort MOST fogjuk kezdeni — ellenőrizzük, hogy elfér-e még ezen az oldalon.
+        ensureRoom(cellMaxH + 6);
+        rowStartY = y;
+        rowH = 0;
+      }
+      const cellX = MARGIN_X + col * (cellW + IMG_GAP) + (cellW - w) / 2;
+      const fmt = (img.mimeType ?? 'PNG') as 'PNG' | 'JPEG' | 'WEBP';
+      try {
+        doc.addImage(img.dataUrl, fmt, cellX, rowStartY, w, h);
+      } catch {
+        // ha a kép-formátum gond, csendben skip — a többi PDF-nek nem szabad meghalnia
+      }
+      rowH = Math.max(rowH, h);
+      col += 1;
+      if (col >= 2) {
+        col = 0;
+        y = rowStartY + rowH + IMG_GAP;
+      }
+    }
+    // Utolsó félbe maradt sor lezárása
+    if (col === 1) {
+      y = rowStartY + rowH + IMG_GAP;
     }
   }
 

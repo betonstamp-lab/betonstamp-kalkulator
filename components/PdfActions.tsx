@@ -12,6 +12,7 @@ import type { UserProfile } from '@/lib/shared/supabase';
 import type { PdfData, PdfPriceMode } from '@/lib/shared/pdfExport';
 import DownloadPdfButton from '@/components/DownloadPdfButton';
 import ShareCalculationButton from '@/components/ShareCalculationButton';
+import QuoteButton from '@/components/QuoteButton';
 
 interface Props {
   profile: UserProfile | null | undefined;
@@ -24,6 +25,7 @@ export default function PdfActions({ profile, hasResult, buildData }: Props) {
     <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3">
       <DownloadPdfButton profile={profile} hasResult={hasResult} buildData={buildData} />
       <ShareCalculationButton profile={profile} hasResult={hasResult} buildData={buildData} />
+      <QuoteButton profile={profile} hasResult={hasResult} buildData={buildData} />
     </div>
   );
 }
