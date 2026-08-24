@@ -95,6 +95,21 @@ export default function AppHeader({
         <div className="sm:flex-1 sm:min-w-0 sm:flex sm:justify-end">
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3">
             <PricingModeToggle isPartner={isPartner} />
+            {isPartner && (
+              // "Árajánlat-beállítások" — csak partnernek. Ikon mobilon, szöveg sm+.
+              <button
+                onClick={() => router.push('/arajanlat-beallitasok')}
+                className={HEADER_BUTTON_NEUTRAL}
+                aria-label="Árajánlat-beállítások"
+                title="Árajánlat-beállítások"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317a1.724 1.724 0 013.35 0l.09.372a1.724 1.724 0 002.573 1.066l.327-.196a1.724 1.724 0 012.372 2.372l-.196.327a1.724 1.724 0 001.066 2.573l.372.09a1.724 1.724 0 010 3.35l-.372.09a1.724 1.724 0 00-1.066 2.573l.196.327a1.724 1.724 0 01-2.372 2.372l-.327-.196a1.724 1.724 0 00-2.573 1.066l-.09.372a1.724 1.724 0 01-3.35 0l-.09-.372a1.724 1.724 0 00-2.573-1.066l-.327.196a1.724 1.724 0 01-2.372-2.372l.196-.327a1.724 1.724 0 00-1.066-2.573l-.372-.09a1.724 1.724 0 010-3.35l.372-.09a1.724 1.724 0 001.066-2.573l-.196-.327a1.724 1.724 0 012.372-2.372l.327.196a1.724 1.724 0 002.573-1.066l.09-.372z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span className="hidden sm:inline">Árajánlat</span>
+              </button>
+            )}
             {showBack && (
               // "Vissza a főoldalra" gomb — mobilon rejtve (a browser vissza-gomb megvan).
               <button
