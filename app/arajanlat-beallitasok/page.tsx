@@ -246,11 +246,12 @@ export default function QuoteProfileSettingsPage() {
               <span className={introOver ? 'text-red-600' : 'text-gray-500'}>
                 {companyIntro.length} / {MAX_INTRO_CHARS} karakter
               </span>
-              {savedAt && !saving && (
-                <span className="text-green-700 font-medium">✓ Mentve</span>
-              )}
+              {saveError && <span className="text-red-600">{saveError}</span>}
             </div>
-            <div className="mt-3 flex items-center gap-3 flex-wrap">
+            <div className="mt-3 flex items-center justify-end gap-3 flex-wrap">
+              {savedAt && !saving && (
+                <span className="text-sm text-green-700 font-medium">✓ Mentve</span>
+              )}
               <button
                 type="button"
                 onClick={handleSave}
@@ -259,7 +260,6 @@ export default function QuoteProfileSettingsPage() {
               >
                 {saving ? 'Mentés…' : 'Mentés'}
               </button>
-              {saveError && <span className="text-sm text-red-600">{saveError}</span>}
             </div>
           </section>
 

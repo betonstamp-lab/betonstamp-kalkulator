@@ -396,7 +396,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
               {/* Referenciaképek */}
               <section className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-gray-800">Referenciaképek</h3>
+                  <h3 className="text-sm font-semibold text-gray-800">Referenciaképek (válasszon az alábbiak közül)</h3>
                   <span className="text-xs text-gray-500">
                     {selectedIds.size} / {images.length} kiválasztva
                   </span>
