@@ -412,6 +412,7 @@ export default function PoolCalculatorPage() {
               <PdfActions
                 profile={profile}
                 hasResult={true}
+                showQuoteButton={false}
                 buildData={(mode) => {
                   const pigmentItems: PdfLineItem[] = result.pigments.map(p => ({
                     name: p.name,
@@ -500,6 +501,7 @@ export default function PoolCalculatorPage() {
               <PdfActions
                 profile={profile}
                 hasResult={true}
+                showQuoteButton={false}
                 buildData={(mode) => {
                   // Minden felület KÜLÖN szekció — heading: "Felület N — X m² — BLANCO"
                   // (Atlanttic-nál a szín rendszerszinten fix BLANCO)

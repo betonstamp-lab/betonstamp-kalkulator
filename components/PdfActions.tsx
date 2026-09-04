@@ -18,14 +18,20 @@ interface Props {
   profile: UserProfile | null | undefined;
   hasResult: boolean;
   buildData: (mode: PdfPriceMode) => PdfData;
+  /** "Hivatalos árajánlat" gomb megjelenítése (default true).
+   *  A pigment kalkulátorokon false — az árajánlat csak ügyfélnek szól, a
+   *  pigment kalkulátor kivitelezői segédeszköz. */
+  showQuoteButton?: boolean;
 }
 
-export default function PdfActions({ profile, hasResult, buildData }: Props) {
+export default function PdfActions({ profile, hasResult, buildData, showQuoteButton = true }: Props) {
   return (
     <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3">
       <DownloadPdfButton profile={profile} hasResult={hasResult} buildData={buildData} />
       <ShareCalculationButton profile={profile} hasResult={hasResult} buildData={buildData} />
-      <QuoteButton profile={profile} hasResult={hasResult} buildData={buildData} />
+      {showQuoteButton && (
+        <QuoteButton profile={profile} hasResult={hasResult} buildData={buildData} />
+      )}
     </div>
   );
 }

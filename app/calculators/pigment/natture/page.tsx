@@ -493,6 +493,7 @@ export default function NattureCalculatorPage() {
               <PdfActions
                 profile={profile}
                 hasResult={true}
+                showQuoteButton={false}
                 buildData={(mode) => {
                   const items: PdfLineItem[] = [
                     { name: 'Termék', quantity: result.product },
@@ -588,6 +589,7 @@ export default function NattureCalculatorPage() {
               <PdfActions
                 profile={profile}
                 hasResult={true}
+                showQuoteButton={false}
                 buildData={(mode) => {
                   // Minden felület KÜLÖN szekció — heading: "Felület N — X m² — SZÍN"
                   const surfaceSections: PdfSection[] = m2Result.surfaces.map(r => {

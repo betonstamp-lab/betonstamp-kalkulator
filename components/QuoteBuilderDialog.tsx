@@ -114,7 +114,7 @@ function detectSystemLabel(data: PdfData): string {
   if (/Atlanttic|Aquaciment|Pool/i.test(t)) return 'Atlanttic mikrocement pigment';
   if (/Vakolat|ESTonetex/i.test(t)) return 'ESTonetex vakolat';
   if (/B[eé]lyegzett|Overlay/i.test(t)) return 'bélyegzett beton / overlay';
-  if (/Mikrocement/i.test(t)) return 'mikrocement';
+  if (/Mikrocement/i.test(t)) return 'Topciment mikrocement';
   if (data.logoVariant === 'estecha') return 'ESTonetex vakolat';
   return 'kivitelezési';
 }
