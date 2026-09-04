@@ -109,7 +109,9 @@ const formatFt = (n: number) => `${Math.round(n).toLocaleString('hu-HU')} Ft`;
 
 /** Egységes felület-fejléc a PDF-hez. Minden kalkulátor buildData()-ja ugyanezt
  *  használja, hogy a formátum garantáltan egységes maradjon.
- *  Kimenet: "Felület 1 — 40 m² — SAMOS"  vagy  "Felület 2 — 25 m²" (ha nincs szín). */
+ *  Kimenet: "Felület 1. — 40 m² — SAMOS"  vagy  "Felület 2. — 25 m²" (ha nincs szín).
+ *  A pont a sorszám után kell — enélkül a "Felület 1 — 40 m²" félreérthető, mintha
+ *  "1-40 m²" tartomány lenne. */
 export function formatSurfaceHeader({
   index,
   area,
@@ -119,7 +121,7 @@ export function formatSurfaceHeader({
   area: number | string | null | undefined;
   color?: string | null;
 }): string {
-  const parts: string[] = [`Felület ${index}`];
+  const parts: string[] = [`Felület ${index}.`];
   if (area !== null && area !== undefined && String(area).trim() !== '') {
     parts.push(`${area} m²`);
   }
