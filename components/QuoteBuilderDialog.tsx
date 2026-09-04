@@ -28,6 +28,8 @@ import {
   type PdfData,
   type PdfPriceMode,
   type PdfImage,
+  type PdfSection,
+  type PdfLineItem,
 } from '@/lib/shared/pdfExport';
 import PriceModeChooser from '@/components/PriceModeChooser';
 
@@ -149,8 +151,34 @@ function buildAutoDescription(data: PdfData): string {
     }
   }
   lines.push('');
-  lines.push('A megajánlott anyagok bruttó árakon szerepelnek. A munkadíj külön egyeztetés tárgya.');
+  lines.push('A megajánlott anyagok bruttó árakon szerepelnek.');
   return lines.join('\n');
+}
+
+// Saját (nem-Betonstamp) tétel a dialogban. Csak session-state — nem perzisztált.
+type CustomItem = { id: string; name: string; quantity: string; packaging: string; price: string };
+// Munkadíj-tétel a dialogban. KÖTELEZŐ legalább egy érvényes (ár > 0) sor.
+type LaborItem = { id: string; name: string; quantity: string; price: string };
+
+function newId(prefix: string): string {
+  return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+/** Csak azok a saját tételek kerülnek az árajánlatra, amelyeknél a név, a
+ *  mennyiség és a pozitív ár mind ki van töltve (a kiszerelés opcionális). */
+function isValidCustom(i: CustomItem): boolean {
+  return i.name.trim().length > 0 && i.quantity.trim().length > 0 && parseFloat(i.price.replace(',', '.')) > 0;
+}
+
+/** Csak azok a munkadíj-tételek kerülnek az árajánlatra, amelyeknél a név és a
+ *  pozitív ár is ki van töltve (a mennyiség opcionális). */
+function isValidLabor(i: LaborItem): boolean {
+  return i.name.trim().length > 0 && parseFloat(i.price.replace(',', '.')) > 0;
+}
+
+function parsePrice(s: string): number {
+  const n = parseFloat(s.replace(',', '.'));
+  return isFinite(n) && n > 0 ? n : 0;
 }
 
 export default function QuoteBuilderDialog({ open, onClose, profile, userId, buildData }: Props) {
@@ -166,6 +194,14 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
   // Céges logó cache — dataURL a PDF-hez (iOS user-gesztus szigor miatt előre).
   const [companyLogo, setCompanyLogo] = useState<PdfImage | null>(null);
   const [companyLogoPreview, setCompanyLogoPreview] = useState<string | null>(null);
+
+  // Saját (nem-Betonstamp) tételek — opcionális, több sor is felvehető.
+  const [customItems, setCustomItems] = useState<CustomItem[]>([]);
+  // Munkadíj-tételek — KÖTELEZŐ legalább egy érvényes (ár > 0) sor.
+  // Egy default sorral indul, a partner írja bele az árat.
+  const [laborItems, setLaborItems] = useState<LaborItem[]>([
+    { id: 'lab-init', name: 'Munkadíj', quantity: '', price: '' },
+  ]);
 
   // Auto-termékleírás alapja — az első nyitáskor számoljuk (partner ár mód
   // alapján, de csak a section-heading-ekhez kell, ami mode-független).
@@ -270,8 +306,55 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
           height: img.height,
           mimeType: img.mimeType,
         }));
+
+      // Saját tételek és munkadíj szekció felépítése — a Betonstamp-tételek UTÁN,
+      // az Összesen ELŐTT. Az ár-mód (partner/fogyasztói) rájuk NEM vonatkozik,
+      // a beírt fix ár megy mindkét módban.
+      const validCustom = customItems.filter(isValidCustom);
+      const validLabor = laborItems.filter(isValidLabor);
+
+      const customSection: PdfSection | null = validCustom.length > 0 ? {
+        heading: 'Egyéb tételek',
+        items: validCustom.map<PdfLineItem>((i) => {
+          const price = parsePrice(i.price);
+          const pack = i.packaging.trim();
+          const namePart = pack ? `${i.name.trim()} ${pack}` : i.name.trim();
+          return {
+            name: `${i.quantity.trim()} × ${namePart}`,
+            quantity: '',
+            prices: { single: price },
+          };
+        }),
+      } : null;
+
+      const laborSection: PdfSection = {
+        heading: 'Munkadíj',
+        items: validLabor.map<PdfLineItem>((i) => {
+          const price = parsePrice(i.price);
+          const qty = i.quantity.trim();
+          return {
+            name: qty ? `${qty} — ${i.name.trim()}` : i.name.trim(),
+            quantity: '',
+            prices: { single: price },
+          };
+        }),
+      };
+
+      // Az "Ár" mező a sor teljes ára (pl. "Bontás, 40 m², 60 000 Ft" → 60 000 Ft
+      // a teljes bontásra) — a Betonstamp-tétel-sorokkal konzisztens.
+      const customTotal = validCustom.reduce((s, i) => s + parsePrice(i.price), 0);
+      const laborTotal = validLabor.reduce((s, i) => s + parsePrice(i.price), 0);
+      const baseTotalForQuote = base.totals?.single ?? base.totals?.kiszereles ?? base.totals?.anyag ?? 0;
+      const grandTotal = baseTotalForQuote + customTotal + laborTotal;
+
       const quoteData: PdfData = {
         ...base,
+        sections: [
+          ...base.sections,
+          ...(customSection ? [customSection] : []),
+          laborSection,
+        ],
+        totals: { single: grandTotal },
         quoteHeader: {
           title: 'Árajánlat',
           companyIntro,
@@ -316,6 +399,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
   if (!open) return null;
 
   const introMissing = companyIntro.trim().length === 0;
+  const laborMissing = laborItems.filter(isValidLabor).length === 0;
 
   return (
     <div
@@ -449,8 +533,126 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
                 )}
               </section>
 
+              {/* Saját tételek (opcionális) — a partner nem-Betonstamp tételeket vehet fel. */}
+              <section className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-gray-800">Saját tételek (opcionális)</h3>
+                  <button
+                    type="button"
+                    onClick={() => setCustomItems((prev) => [...prev, { id: newId('cust'), name: '', quantity: '', packaging: '', price: '' }])}
+                    className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                  >
+                    + Saját tétel hozzáadása
+                  </button>
+                </div>
+                {customItems.length === 0 ? (
+                  <p className="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg p-3">
+                    Nem-Betonstamp tételek (pl. bontás, előkészítés) — a beírt ár mindkét ár-módban változatlan.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {customItems.map((item, idx) => (
+                      <div key={item.id} className="grid grid-cols-12 gap-2 items-start p-2 bg-gray-50 border border-gray-200 rounded-lg">
+                        <input
+                          type="text"
+                          placeholder="Megnevezés"
+                          value={item.name}
+                          onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, name: e.target.value } : x))}
+                          className="col-span-12 sm:col-span-4 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Mennyiség (pl. 3 db, 40 m²)"
+                          value={item.quantity}
+                          onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, quantity: e.target.value } : x))}
+                          className="col-span-6 sm:col-span-3 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Kiszerelés (opc.)"
+                          value={item.packaging}
+                          onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, packaging: e.target.value } : x))}
+                          className="col-span-6 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                        />
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          placeholder="Ár (Ft)"
+                          value={item.price}
+                          onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, price: e.target.value } : x))}
+                          className="col-span-10 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white text-right"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setCustomItems((prev) => prev.filter((_, i) => i !== idx))}
+                          aria-label="Sor törlése"
+                          className="col-span-2 sm:col-span-1 h-9 flex items-center justify-center text-gray-400 hover:text-red-600 transition"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Munkadíj — KÖTELEZŐ legalább egy érvényes (ár > 0) sor. */}
+              <section className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-gray-800">Munkadíj <span className="text-red-600">*</span></h3>
+                  <button
+                    type="button"
+                    onClick={() => setLaborItems((prev) => [...prev, { id: newId('lab'), name: 'Munkadíj', quantity: '', price: '' }])}
+                    className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                  >
+                    + Munkadíj-sor hozzáadása
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {laborItems.map((item, idx) => (
+                    <div key={item.id} className="grid grid-cols-12 gap-2 items-start p-2 bg-blue-50/40 border border-blue-100 rounded-lg">
+                      <input
+                        type="text"
+                        placeholder="Megnevezés"
+                        value={item.name}
+                        onChange={(e) => setLaborItems((prev) => prev.map((x, i) => i === idx ? { ...x, name: e.target.value } : x))}
+                        className="col-span-12 sm:col-span-5 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Mennyiség (opc., pl. 40 m²)"
+                        value={item.quantity}
+                        onChange={(e) => setLaborItems((prev) => prev.map((x, i) => i === idx ? { ...x, quantity: e.target.value } : x))}
+                        className="col-span-8 sm:col-span-4 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                      />
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="Ár (Ft)*"
+                        value={item.price}
+                        onChange={(e) => setLaborItems((prev) => prev.map((x, i) => i === idx ? { ...x, price: e.target.value } : x))}
+                        className="col-span-3 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white text-right"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setLaborItems((prev) => prev.length === 1 ? prev : prev.filter((_, i) => i !== idx))}
+                        aria-label="Sor törlése"
+                        disabled={laborItems.length === 1}
+                        className="col-span-1 h-9 flex items-center justify-center text-gray-400 hover:text-red-600 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
               {error && (
                 <p className="text-sm text-red-600 mb-3">{error}</p>
+              )}
+
+              {laborMissing && (
+                <p className="text-xs text-red-600 mb-2 sm:text-right">A munkadíj megadása kötelező.</p>
               )}
 
               <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 pt-4 border-t border-gray-200">
@@ -464,7 +666,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
                 <button
                   type="button"
                   onClick={() => setChooserOpen(true)}
-                  disabled={generating || introMissing}
+                  disabled={generating || introMissing || laborMissing}
                   className="w-full sm:w-auto h-10 px-5 bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
                 >
                   {generating ? 'Generálás…' : 'Árajánlat letöltése'}
