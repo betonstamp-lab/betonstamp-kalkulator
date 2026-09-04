@@ -329,15 +329,13 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
     const bigTitle = (data.quoteHeader.title || 'ÁRAJÁNLAT').toUpperCase();
     doc.text(bigTitle, MARGIN_X, titleY);
 
-    // Ár-mód (kisebb, sárga, a cím alatt)
-    doc.setFont(FONT_FAMILY, 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(...BRAND);
-    const modeLabelQ = data.pricingMode === 'partner' ? 'Ár: Partner' : 'Ár: Általános';
-    doc.text(modeLabelQ, MARGIN_X, titleY + 14);
+    // Az ügyfélnek szóló hivatalos árajánlaton NEM tüntetjük fel az "Ár: Partner /
+    // Általános" belső ár-mód feliratot — a választott mód csak az árakat
+    // vezérli, a fejlécen a mód elrejtve marad.
 
-    // Fejléc-lezárás: sötétkék vastag vonal
-    const headerEndY = Math.max(bigLogoBottom, rightBottomY + 14, titleY + 22);
+    // Fejléc-lezárás: sötétkék vastag vonal (közelebb a címhez, mert a
+    // mód-felirat helye üres — a layout tömörebb marad).
+    const headerEndY = Math.max(bigLogoBottom, rightBottomY + 14, titleY + 8);
     doc.setDrawColor(...BRAND_DARK);
     doc.setLineWidth(1.5);
     doc.line(MARGIN_X, headerEndY, PAGE_W - MARGIN_X, headerEndY);
