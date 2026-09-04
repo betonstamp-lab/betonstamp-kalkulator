@@ -390,6 +390,10 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
 
   // Szekció-cím szín: árajánlat-módban brand sötétkék, egyébként a kalkuláció fekete.
   const headingColor = data.quoteHeader ? BRAND_DARK : TEXT_DARK;
+  // Árajánlat-mód: az "(összesített)" toldalékot NE mutassuk (a kalkulátor
+  // buildData-ban maradhat, hogy a kalkuláció-PDF változatlan legyen).
+  const cleanQuoteText = (s: string): string =>
+    data.quoteHeader ? s.replace(/\s*\(összesített\)/gi, '') : s;
 
   // --- Árajánlat-fejléc szekciók (cégbemutató + termékleírás) ---
   if (data.quoteHeader) {
@@ -431,7 +435,7 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
       doc.setFont(FONT_FAMILY, 'bold');
       doc.setFontSize(11);
       doc.setTextColor(...headingColor);
-      doc.text(section.heading, MARGIN_X, y);
+      doc.text(cleanQuoteText(section.heading), MARGIN_X, y);
       y += 14;
     }
 
@@ -444,7 +448,8 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
       doc.setFont(FONT_FAMILY, 'normal');
       doc.setFontSize(10);
       doc.setTextColor(...TEXT_DARK);
-      // Szélesség-biztosítás: ha nagyon hosszú a név, a splitTextToSize több sorba tördel
+      // Árajánlat-módban: CSAK a kiszerelés szerinti ár (a single vagy kiszereles),
+      // anyagszükséglet nélkül. Kalkuláció-módban a régi logika (single → kiszereles).
       const priceMain =
         item.prices?.single !== undefined
           ? formatFt(item.prices.single)
@@ -454,46 +459,50 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
       const priceWidth = priceMain
         ? doc.getTextWidth(priceMain) + 6
         : 0;
-      // A splitTextToSize üres tömböt tud visszaadni, ha a maxW extrém kicsi;
-      // védekezésképpen minimumot tartunk (a font-metrikák per-glyph pontatlansága
-      // ellen is véd — DejaVu Sans Condensed-nél volt reprodukálható eset).
       const nameMaxW = Math.max(60, CONTENT_W - priceWidth);
-      const nameLines = doc.splitTextToSize(item.name, nameMaxW);
-      if (item.name) {
+      const nameText = cleanQuoteText(item.name);
+      const nameLines = doc.splitTextToSize(nameText, nameMaxW);
+      if (nameText) {
         doc.text(nameLines, MARGIN_X, y);
       }
       if (priceMain) {
         doc.text(priceMain, PAGE_W - MARGIN_X, y, { align: 'right' });
       }
-      // Név-blokk MINIMUM egy sor magas — akkor is, ha nameLines.length === 0.
       const nameLineHeight = 12;
       const linesCount = Array.isArray(nameLines) ? nameLines.length : 1;
       const nameHeight = Math.max(1, linesCount) * nameLineHeight;
       y += nameHeight;
 
-      // Mennyiség + secondary ár (anyag) sor. Csak akkor rajzoljuk, ha VAN mit
-      // rajzolni — de az y-lépést mindig alkalmazzuk, hogy a tétel-blokk
-      // magassága konzisztens legyen.
-      doc.setFontSize(9);
-      doc.setTextColor(...TEXT_MUTED);
-      if (item.quantity) {
-        doc.text(item.quantity, MARGIN_X + 8, y);
+      // Mennyiség + secondary ár (anyag) sor.
+      // Árajánlat-módban az anyagszükséglet-árat NEM mutatjuk; a mennyiség sor
+      // megmaradhat (a tétel-név gyakran maga tartalmazza a "N × KISZERELÉS"-t,
+      // de ha van külön quantity, azt is kiírjuk halványan).
+      const showAnyag = !data.quoteHeader && item.prices?.anyag !== undefined;
+      if (item.quantity || showAnyag) {
+        doc.setFontSize(9);
+        doc.setTextColor(...TEXT_MUTED);
+        if (item.quantity) {
+          doc.text(item.quantity, MARGIN_X + 8, y);
+        }
+        if (showAnyag) {
+          doc.text(
+            `Anyagszükséglet: ${formatFt(item.prices!.anyag!)}`,
+            PAGE_W - MARGIN_X,
+            y,
+            { align: 'right' }
+          );
+        }
+        y += 12;
       }
-      if (item.prices?.anyag !== undefined) {
-        doc.text(
-          `Anyagszükséglet: ${formatFt(item.prices.anyag)}`,
-          PAGE_W - MARGIN_X,
-          y,
-          { align: 'right' }
-        );
-      }
-      y += 12;
 
       y += 4; // sor közötti szellős tér
     }
 
     // Kettős szekció-részösszeg — ha subtotalPrices van, felülírja a subtotal-t.
-    if (section.subtotalPrices && (section.subtotalPrices.kiszereles !== undefined || section.subtotalPrices.anyag !== undefined)) {
+    // Árajánlat-módban a szekció-részösszegeket SEHOL nem mutatjuk (tisztább kép).
+    if (data.quoteHeader) {
+      // skip a részösszeg-blokkot árajánlat-módban
+    } else if (section.subtotalPrices && (section.subtotalPrices.kiszereles !== undefined || section.subtotalPrices.anyag !== undefined)) {
       ensureRoom(36);
       doc.setDrawColor(...RULE);
       doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
@@ -535,39 +544,19 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   if (data.totals && (data.totals.kiszereles !== undefined || data.totals.anyag !== undefined || data.totals.single !== undefined)) {
     ensureRoom(60);
     if (data.quoteHeader) {
-      // ÁRAJÁNLAT: sötétkék háttér-blokk fehér szöveggel — hangsúlyos brand-lezárás.
-      const blockH = data.totals.single !== undefined
-        ? 32
-        : 20 + (data.totals.kiszereles !== undefined ? 16 : 0) + (data.totals.anyag !== undefined ? 16 : 0);
+      // ÁRAJÁNLAT: sötétkék háttér-blokk fehér szöveggel — HANGSÚLYOS brand-lezárás.
+      // Egyetlen ár: a kiszerelés szerinti (vagy single, ha nincs kettős bontás).
+      const quoteTotal = data.totals.single ?? data.totals.kiszereles ?? data.totals.anyag ?? 0;
+      const blockH = 32;
       doc.setFillColor(...BRAND_DARK);
       doc.rect(MARGIN_X, y, PAGE_W - MARGIN_X * 2, blockH, 'F');
       const innerX = MARGIN_X + 12;
-      let innerY = y + 20;
+      const innerY = y + 20;
       doc.setFont(FONT_FAMILY, 'bold');
       doc.setFontSize(12);
       doc.setTextColor(255, 255, 255);
       doc.text('Összesen', innerX, innerY);
-
-      if (data.totals.single !== undefined) {
-        doc.text(formatFt(data.totals.single), PAGE_W - MARGIN_X - 12, innerY, { align: 'right' });
-      } else {
-        innerY += 16;
-        doc.setFontSize(10);
-        if (data.totals.kiszereles !== undefined) {
-          doc.setTextColor(220, 220, 220);
-          doc.text('Kiszerelés szerint', innerX + 6, innerY);
-          doc.setTextColor(255, 255, 255);
-          doc.text(formatFt(data.totals.kiszereles), PAGE_W - MARGIN_X - 12, innerY, { align: 'right' });
-          innerY += 14;
-        }
-        if (data.totals.anyag !== undefined) {
-          doc.setTextColor(220, 220, 220);
-          doc.text('Anyagszükséglet szerint', innerX + 6, innerY);
-          doc.setTextColor(255, 255, 255);
-          doc.text(formatFt(data.totals.anyag), PAGE_W - MARGIN_X - 12, innerY, { align: 'right' });
-          innerY += 14;
-        }
-      }
+      doc.text(formatFt(quoteTotal), PAGE_W - MARGIN_X - 12, innerY, { align: 'right' });
       y += blockH + 8;
     } else {
       // Kalkuláció-PDF (változatlan)
