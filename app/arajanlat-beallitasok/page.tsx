@@ -18,6 +18,9 @@ import {
   uploadReferenceImage,
   deleteReferenceImage,
   getReferenceImageUrl,
+  uploadCompanyLogo,
+  deleteCompanyLogo,
+  getCompanyLogoUrl,
   type QuoteReferenceImage,
 } from '@/lib/quoteProfile';
 
@@ -48,6 +51,12 @@ export default function QuoteProfileSettingsPage() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Céges logó
+  const [companyLogoUrl, setCompanyLogoUrl] = useState<string | null>(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
+  const [logoDeleting, setLogoDeleting] = useState(false);
+
   // Auth guard + kezdeti betöltés
   useEffect(() => {
     (async () => {
@@ -72,13 +81,15 @@ export default function QuoteProfileSettingsPage() {
       }
       setProfile(profileData);
 
-      // Párhuzamos betöltés: quote_profile + képek
+      // Párhuzamos betöltés: quote_profile + képek + céglogó
       try {
-        const [prof, images] = await Promise.all([
+        const [prof, images, logoUrl] = await Promise.all([
           getQuoteProfile(session.user.id),
           listReferenceImages(session.user.id),
+          getCompanyLogoUrl(session.user.id).catch(() => null),
         ]);
         if (prof) setCompanyIntro(prof.company_intro ?? '');
+        setCompanyLogoUrl(logoUrl);
         const items: GalleryItem[] = images.map((img) => ({ image: img, url: null }));
         setGallery(items);
         // Signed URL-ek háttérben — ne blokkolja a UI-t
@@ -134,6 +145,43 @@ export default function QuoteProfileSettingsPage() {
     },
     [userId, gallery.length]
   );
+
+  const handleLogoSelected = useCallback(
+    async (file: File | null) => {
+      if (!userId || !file) return;
+      setLogoError(null);
+      setLogoUploading(true);
+      try {
+        await uploadCompanyLogo(userId, file);
+        const url = await getCompanyLogoUrl(userId);
+        setCompanyLogoUrl(url);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Céglogó feltöltés hiba:', err);
+        setLogoError('A logó feltöltése nem sikerült. Ellenőrizd a fájl típusát (PNG/JPG/WEBP) és méretét.');
+      } finally {
+        setLogoUploading(false);
+      }
+    },
+    [userId]
+  );
+
+  const handleLogoDelete = useCallback(async () => {
+    if (!userId) return;
+    const confirmed = window.confirm('Biztosan törlöd a céges logót?');
+    if (!confirmed) return;
+    setLogoDeleting(true);
+    try {
+      await deleteCompanyLogo(userId);
+      setCompanyLogoUrl(null);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Céglogó törlés hiba:', err);
+      alert('A logó törlése nem sikerült.');
+    } finally {
+      setLogoDeleting(false);
+    }
+  }, [userId]);
 
   const handleDelete = useCallback(
     async (imageId: string) => {
@@ -212,6 +260,56 @@ export default function QuoteProfileSettingsPage() {
                 {saving ? 'Mentés…' : 'Mentés'}
               </button>
               {saveError && <span className="text-sm text-red-600">{saveError}</span>}
+            </div>
+          </section>
+
+          {/* Céges logó — egyetlen kép, a PDF bal-felső sarkába kerül nagyban */}
+          <section className="mb-8">
+            <h2 className="text-sm font-semibold text-gray-800 mb-2">Céges logó</h2>
+            <p className="text-xs text-gray-500 mb-3">
+              A hivatalos árajánlat bal-felső sarkába kerül nagyban. PNG (átlátszó háttér ajánlott), JPG vagy WEBP. Csak egy logó — új feltöltés lecseréli a régit.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
+              {companyLogoUrl && (
+                <div className="w-32 h-32 border border-gray-200 rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={companyLogoUrl} alt="Céges logó" className="max-w-full max-h-full object-contain p-2" />
+                </div>
+              )}
+              <div className="flex flex-col gap-2 flex-1">
+                <label
+                  className={`inline-flex items-center justify-center gap-2 h-10 px-4 rounded-lg border-2 text-sm font-semibold cursor-pointer transition-colors w-full sm:w-auto ${
+                    !logoUploading
+                      ? 'border-brand-500 bg-white text-brand-700 hover:bg-brand-50'
+                      : 'border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    disabled={logoUploading}
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] ?? null;
+                      handleLogoSelected(f);
+                      e.target.value = '';
+                    }}
+                  />
+                  {logoUploading ? 'Feltöltés…' : companyLogoUrl ? 'Csere' : '+ Logó feltöltése'}
+                </label>
+                {companyLogoUrl && (
+                  <button
+                    type="button"
+                    onClick={handleLogoDelete}
+                    disabled={logoDeleting}
+                    className="inline-flex items-center justify-center h-10 px-4 rounded-lg border-2 border-red-300 hover:border-red-500 text-sm font-semibold text-red-600 hover:text-red-700 bg-white transition-colors w-full sm:w-auto disabled:opacity-50"
+                  >
+                    {logoDeleting ? 'Törlés…' : 'Törlés'}
+                  </button>
+                )}
+                {logoError && <p className="text-sm text-red-600">{logoError}</p>}
+              </div>
             </div>
           </section>
 

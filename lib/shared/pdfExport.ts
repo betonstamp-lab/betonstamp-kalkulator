@@ -52,12 +52,15 @@ export type PdfLogoVariant = 'topciment' | 'estecha' | 'none';
  *  `quoteHeader.title` (default "Árajánlat") lesz a `data.title` HELYETT.
  *  A cégbemutató és termékleírás szekciók a kalkuláció szekciói ELŐTT rendereledik. */
 export interface PdfQuoteHeader {
-  /** Cím a fejlécben. Default: "Árajánlat". */
+  /** Cím a fejlécben. Default: "ÁRAJÁNLAT". */
   title?: string;
   /** Cégbemutató szöveg (quote_profiles.company_intro). */
   companyIntro?: string;
   /** Termék/technológia-leírás (auto-generált + partner által szerkesztett). */
   productDescription?: string;
+  /** Partner céges logója (előre dataURL-be cache-elve). Ha nincs, a PDF
+   *  a beágyazott Betonstamp logót használja fallbackként. */
+  companyLogo?: PdfImage;
 }
 
 /** Beágyazott referenciakép a PDF végére. A dataUrl a partner Storage-ából
@@ -95,9 +98,12 @@ export interface PdfData {
 
 // Brand-akcens (Betonstamp sárga #fbc02d). RGB.
 const BRAND: [number, number, number] = [251, 192, 45];
+// Betonstamp sötétkék (#053d57) — hivatalos árajánlat brand-arculatához.
+const BRAND_DARK: [number, number, number] = [5, 61, 87];
 const TEXT_DARK: [number, number, number] = [30, 30, 30];
 const TEXT_MUTED: [number, number, number] = [110, 110, 110];
 const RULE: [number, number, number] = [220, 220, 220];
+const RULE_LIGHT: [number, number, number] = [230, 230, 230];
 
 const formatFt = (n: number) => `${Math.round(n).toLocaleString('hu-HU')} Ft`;
 
@@ -249,64 +255,141 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   };
 
   // --- Fejléc ---
-  // Középen felül a logó(k): mindig Betonstamp, mellette a variant szerinti
-  // második logó (Topciment / Estecha), vagy egyedül. Egységes magasság (LOGO_H),
-  // képarányok megőrzésével. A csoport középre igazítva a PAGE_W-hez.
-  const LOGO_H = 36;
-  const LOGO_GAP = 20;
   const variant: PdfLogoVariant = data.logoVariant ?? 'none';
-  const logoList: LogoAsset[] = [];
-  if (CACHED_BETONSTAMP_LOGO) logoList.push(CACHED_BETONSTAMP_LOGO);
-  if (variant === 'topciment' && CACHED_TOPCIMENT_LOGO) logoList.push(CACHED_TOPCIMENT_LOGO);
-  else if (variant === 'estecha' && CACHED_ESTECHA_LOGO) logoList.push(CACHED_ESTECHA_LOGO);
+  const secondaryLogo: LogoAsset | null =
+    variant === 'topciment' ? (CACHED_TOPCIMENT_LOGO ?? null) :
+    variant === 'estecha'   ? (CACHED_ESTECHA_LOGO ?? null) :
+    null;
 
-  let logoBottomY = y; // ha nincs logó, a fejléc nem foglal helyet
-  if (logoList.length > 0) {
-    const widths = logoList.map((l) => LOGO_H * (l.width / l.height));
-    const totalW = widths.reduce((s, w) => s + w, 0) + LOGO_GAP * (logoList.length - 1);
-    let cx = (PAGE_W - totalW) / 2;
-    for (let i = 0; i < logoList.length; i++) {
-      const asset = logoList[i];
-      const w = widths[i];
-      doc.addImage(asset.dataUrl, 'PNG', cx, y, w, LOGO_H);
-      cx += w + LOGO_GAP;
+  if (data.quoteHeader) {
+    // HIVATALOS ÁRAJÁNLAT dizájn: bal-fent NAGY céges logó (fallback Betonstamp),
+    // alatta "ÁRAJÁNLAT" nagy sötétkék felirat. Jobb-fent kisebb rendszer-logók
+    // (Betonstamp + Topciment/Estecha) + dátum. Sötétkék elválasztó vonal alatta.
+    const COMPANY_LOGO_MAX_H = 84;
+    const COMPANY_LOGO_MAX_W = 200;
+    const RIGHT_LOGO_H = 22;
+    const RIGHT_LOGO_GAP = 10;
+
+    // Bal: partner céglogó vagy Betonstamp fallback
+    const bigLogo = data.quoteHeader.companyLogo
+      ? {
+          dataUrl: data.quoteHeader.companyLogo.dataUrl,
+          width: data.quoteHeader.companyLogo.width,
+          height: data.quoteHeader.companyLogo.height,
+          mime: (data.quoteHeader.companyLogo.mimeType ?? 'PNG') as 'PNG' | 'JPEG' | 'WEBP',
+        }
+      : CACHED_BETONSTAMP_LOGO
+        ? {
+            dataUrl: CACHED_BETONSTAMP_LOGO.dataUrl,
+            width: CACHED_BETONSTAMP_LOGO.width,
+            height: CACHED_BETONSTAMP_LOGO.height,
+            mime: 'PNG' as const,
+          }
+        : null;
+
+    let bigLogoBottom = y;
+    if (bigLogo) {
+      const ratio = bigLogo.width / bigLogo.height;
+      let h = COMPANY_LOGO_MAX_H;
+      let w = h * ratio;
+      if (w > COMPANY_LOGO_MAX_W) { w = COMPANY_LOGO_MAX_W; h = w / ratio; }
+      try {
+        doc.addImage(bigLogo.dataUrl, bigLogo.mime, MARGIN_X, y, w, h);
+      } catch { /* ok */ }
+      bigLogoBottom = y + h;
     }
-    logoBottomY = y + LOGO_H;
+
+    // Jobb: rendszer-logók egymás mellett (Betonstamp + esetleg Topciment/Estecha)
+    const rightList: LogoAsset[] = [];
+    if (CACHED_BETONSTAMP_LOGO) rightList.push(CACHED_BETONSTAMP_LOGO);
+    if (secondaryLogo) rightList.push(secondaryLogo);
+    let rightBottomY = y;
+    if (rightList.length > 0) {
+      const widths = rightList.map((l) => RIGHT_LOGO_H * (l.width / l.height));
+      const totalW = widths.reduce((s, w) => s + w, 0) + RIGHT_LOGO_GAP * (rightList.length - 1);
+      let cx = PAGE_W - MARGIN_X - totalW;
+      for (let i = 0; i < rightList.length; i++) {
+        try { doc.addImage(rightList[i].dataUrl, 'PNG', cx, y, widths[i], RIGHT_LOGO_H); } catch { /* ok */ }
+        cx += widths[i] + RIGHT_LOGO_GAP;
+      }
+      rightBottomY = y + RIGHT_LOGO_H;
+    }
+
+    // Dátum jobb-felső logó ALATT, kis szürke
+    doc.setFont(FONT_FAMILY, 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...TEXT_MUTED);
+    doc.text(todayISO(), PAGE_W - MARGIN_X, rightBottomY + 12, { align: 'right' });
+
+    // Nagy "ÁRAJÁNLAT" felirat a bal-oldali logó ALATT
+    const titleY = bigLogoBottom + 22;
+    doc.setFont(FONT_FAMILY, 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(...BRAND_DARK);
+    const bigTitle = (data.quoteHeader.title || 'ÁRAJÁNLAT').toUpperCase();
+    doc.text(bigTitle, MARGIN_X, titleY);
+
+    // Ár-mód (kisebb, sárga, a cím alatt)
+    doc.setFont(FONT_FAMILY, 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(...BRAND);
+    const modeLabelQ = data.pricingMode === 'partner' ? 'Ár: Partner' : 'Ár: Általános';
+    doc.text(modeLabelQ, MARGIN_X, titleY + 14);
+
+    // Fejléc-lezárás: sötétkék vastag vonal
+    const headerEndY = Math.max(bigLogoBottom, rightBottomY + 14, titleY + 22);
+    doc.setDrawColor(...BRAND_DARK);
+    doc.setLineWidth(1.5);
+    doc.line(MARGIN_X, headerEndY, PAGE_W - MARGIN_X, headerEndY);
+    y = headerEndY + 16;
+  } else {
+    // KALKULÁCIÓ-PDF (változatlan) — Betonstamp + kalkulátor-specifikus közép,
+    // dátum jobb-felül, cím + ár-mód + halvány elválasztó.
+    const LOGO_H = 36;
+    const LOGO_GAP = 20;
+    const logoList: LogoAsset[] = [];
+    if (CACHED_BETONSTAMP_LOGO) logoList.push(CACHED_BETONSTAMP_LOGO);
+    if (secondaryLogo) logoList.push(secondaryLogo);
+
+    let logoBottomY = y;
+    if (logoList.length > 0) {
+      const widths = logoList.map((l) => LOGO_H * (l.width / l.height));
+      const totalW = widths.reduce((s, w) => s + w, 0) + LOGO_GAP * (logoList.length - 1);
+      let cx = (PAGE_W - totalW) / 2;
+      for (let i = 0; i < logoList.length; i++) {
+        doc.addImage(logoList[i].dataUrl, 'PNG', cx, y, widths[i], LOGO_H);
+        cx += widths[i] + LOGO_GAP;
+      }
+      logoBottomY = y + LOGO_H;
+    }
+    doc.setFont(FONT_FAMILY, 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...TEXT_MUTED);
+    const dateY = logoList.length > 0 ? y + 10 : y + 12;
+    doc.text(todayISO(), PAGE_W - MARGIN_X, dateY, { align: 'right' });
+    y = logoBottomY + (logoList.length > 0 ? 12 : 0);
+
+    doc.setTextColor(...TEXT_DARK);
+    doc.setFont(FONT_FAMILY, 'bold');
+    doc.setFontSize(13);
+    doc.text(data.title, MARGIN_X, y);
+    y += 18;
+
+    doc.setFont(FONT_FAMILY, 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...BRAND);
+    const modeLabel = data.pricingMode === 'partner' ? 'Ár: Partner' : 'Ár: Általános';
+    doc.text(modeLabel, MARGIN_X, y);
+    y += 14;
+
+    doc.setDrawColor(...RULE);
+    doc.setLineWidth(0.5);
+    doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
+    y += 14;
   }
 
-  // Dátum: jobb-felső sarok, kis szürke. A logó magasságához igazítva.
-  doc.setFont(FONT_FAMILY, 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(...TEXT_MUTED);
-  const dateY = logoList.length > 0 ? y + 10 : y + 12;
-  doc.text(todayISO(), PAGE_W - MARGIN_X, dateY, { align: 'right' });
-
-  // A fejléc-blokk y-lépése: a logó ALATT + kis szellős tér.
-  y = logoBottomY + (logoList.length > 0 ? 12 : 0);
-
-  // Cím: ha quoteHeader van, "Árajánlat" (vagy quoteHeader.title); egyébként a kalkulátor cím.
-  doc.setTextColor(...TEXT_DARK);
-  doc.setFont(FONT_FAMILY, 'bold');
-  doc.setFontSize(13);
-  const headerTitle = data.quoteHeader
-    ? (data.quoteHeader.title || 'Árajánlat')
-    : data.title;
-  doc.text(headerTitle, MARGIN_X, y);
-  y += 18;
-
-  // Ár-mód sor
-  doc.setFont(FONT_FAMILY, 'bold');
-  doc.setFontSize(11);
-  doc.setTextColor(...BRAND);
-  const modeLabel = data.pricingMode === 'partner' ? 'Ár: Partner' : 'Ár: Általános';
-  doc.text(modeLabel, MARGIN_X, y);
-  y += 14;
-
-  // Szeparátor
-  doc.setDrawColor(...RULE);
-  doc.setLineWidth(0.5);
-  doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
-  y += 14;
+  // Szekció-cím szín: árajánlat-módban brand sötétkék, egyébként a kalkuláció fekete.
+  const headingColor = data.quoteHeader ? BRAND_DARK : TEXT_DARK;
 
   // --- Árajánlat-fejléc szekciók (cégbemutató + termékleírás) ---
   if (data.quoteHeader) {
@@ -315,7 +398,7 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
       ensureRoom(30);
       doc.setFont(FONT_FAMILY, 'bold');
       doc.setFontSize(11);
-      doc.setTextColor(...TEXT_DARK);
+      doc.setTextColor(...headingColor);
       doc.text(heading, MARGIN_X, y);
       y += 14;
       doc.setFont(FONT_FAMILY, 'normal');
@@ -347,6 +430,7 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
     if (section.heading) {
       doc.setFont(FONT_FAMILY, 'bold');
       doc.setFontSize(11);
+      doc.setTextColor(...headingColor);
       doc.text(section.heading, MARGIN_X, y);
       y += 14;
     }
@@ -450,35 +534,73 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
   // --- Végösszegek ---
   if (data.totals && (data.totals.kiszereles !== undefined || data.totals.anyag !== undefined || data.totals.single !== undefined)) {
     ensureRoom(60);
-    doc.setDrawColor(...TEXT_DARK);
-    doc.setLineWidth(0.8);
-    doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
-    y += 16;
+    if (data.quoteHeader) {
+      // ÁRAJÁNLAT: sötétkék háttér-blokk fehér szöveggel — hangsúlyos brand-lezárás.
+      const blockH = data.totals.single !== undefined
+        ? 32
+        : 20 + (data.totals.kiszereles !== undefined ? 16 : 0) + (data.totals.anyag !== undefined ? 16 : 0);
+      doc.setFillColor(...BRAND_DARK);
+      doc.rect(MARGIN_X, y, PAGE_W - MARGIN_X * 2, blockH, 'F');
+      const innerX = MARGIN_X + 12;
+      let innerY = y + 20;
+      doc.setFont(FONT_FAMILY, 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(255, 255, 255);
+      doc.text('Összesen', innerX, innerY);
 
-    doc.setFont(FONT_FAMILY, 'bold');
-    doc.setFontSize(12);
-    doc.setTextColor(...TEXT_DARK);
-    doc.text('Összesen', MARGIN_X, y);
-
-    if (data.totals.single !== undefined) {
-      doc.text(formatFt(data.totals.single), PAGE_W - MARGIN_X, y, { align: 'right' });
-      y += 18;
-    } else {
-      y += 16;
-      doc.setFontSize(10);
-      if (data.totals.kiszereles !== undefined) {
-        doc.setTextColor(...TEXT_MUTED);
-        doc.text('Kiszerelés szerint', MARGIN_X + 10, y);
-        doc.setTextColor(...TEXT_DARK);
-        doc.text(formatFt(data.totals.kiszereles), PAGE_W - MARGIN_X, y, { align: 'right' });
-        y += 14;
+      if (data.totals.single !== undefined) {
+        doc.text(formatFt(data.totals.single), PAGE_W - MARGIN_X - 12, innerY, { align: 'right' });
+      } else {
+        innerY += 16;
+        doc.setFontSize(10);
+        if (data.totals.kiszereles !== undefined) {
+          doc.setTextColor(220, 220, 220);
+          doc.text('Kiszerelés szerint', innerX + 6, innerY);
+          doc.setTextColor(255, 255, 255);
+          doc.text(formatFt(data.totals.kiszereles), PAGE_W - MARGIN_X - 12, innerY, { align: 'right' });
+          innerY += 14;
+        }
+        if (data.totals.anyag !== undefined) {
+          doc.setTextColor(220, 220, 220);
+          doc.text('Anyagszükséglet szerint', innerX + 6, innerY);
+          doc.setTextColor(255, 255, 255);
+          doc.text(formatFt(data.totals.anyag), PAGE_W - MARGIN_X - 12, innerY, { align: 'right' });
+          innerY += 14;
+        }
       }
-      if (data.totals.anyag !== undefined) {
-        doc.setTextColor(...TEXT_MUTED);
-        doc.text('Anyagszükséglet szerint', MARGIN_X + 10, y);
-        doc.setTextColor(...TEXT_DARK);
-        doc.text(formatFt(data.totals.anyag), PAGE_W - MARGIN_X, y, { align: 'right' });
-        y += 14;
+      y += blockH + 8;
+    } else {
+      // Kalkuláció-PDF (változatlan)
+      doc.setDrawColor(...TEXT_DARK);
+      doc.setLineWidth(0.8);
+      doc.line(MARGIN_X, y, PAGE_W - MARGIN_X, y);
+      y += 16;
+
+      doc.setFont(FONT_FAMILY, 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(...TEXT_DARK);
+      doc.text('Összesen', MARGIN_X, y);
+
+      if (data.totals.single !== undefined) {
+        doc.text(formatFt(data.totals.single), PAGE_W - MARGIN_X, y, { align: 'right' });
+        y += 18;
+      } else {
+        y += 16;
+        doc.setFontSize(10);
+        if (data.totals.kiszereles !== undefined) {
+          doc.setTextColor(...TEXT_MUTED);
+          doc.text('Kiszerelés szerint', MARGIN_X + 10, y);
+          doc.setTextColor(...TEXT_DARK);
+          doc.text(formatFt(data.totals.kiszereles), PAGE_W - MARGIN_X, y, { align: 'right' });
+          y += 14;
+        }
+        if (data.totals.anyag !== undefined) {
+          doc.setTextColor(...TEXT_MUTED);
+          doc.text('Anyagszükséglet szerint', MARGIN_X + 10, y);
+          doc.setTextColor(...TEXT_DARK);
+          doc.text(formatFt(data.totals.anyag), PAGE_W - MARGIN_X, y, { align: 'right' });
+          y += 14;
+        }
       }
     }
   }
@@ -489,7 +611,7 @@ export async function generateCalculationPdf(data: PdfData): Promise<GeneratedPd
     ensureRoom(30);
     doc.setFont(FONT_FAMILY, 'bold');
     doc.setFontSize(11);
-    doc.setTextColor(...TEXT_DARK);
+    doc.setTextColor(...headingColor);
     doc.text('Referenciák', MARGIN_X, y);
     y += 14;
 

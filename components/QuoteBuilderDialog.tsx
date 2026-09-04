@@ -18,6 +18,7 @@ import {
   getQuoteProfile,
   listReferenceImages,
   getReferenceImageUrl,
+  getCompanyLogoUrl,
   type QuoteReferenceImage,
 } from '@/lib/quoteProfile';
 import {
@@ -139,6 +140,10 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Céges logó cache — dataURL a PDF-hez (iOS user-gesztus szigor miatt előre).
+  const [companyLogo, setCompanyLogo] = useState<PdfImage | null>(null);
+  const [companyLogoPreview, setCompanyLogoPreview] = useState<string | null>(null);
+
   // Auto-termékleírás alapja — az első nyitáskor számoljuk (partner ár mód
   // alapján, de csak a section-heading-ekhez kell, ami mode-független).
   const autoDescription = useMemo(() => {
@@ -157,12 +162,28 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
     void preloadPdfLogo().catch(() => { /* ok */ });
     (async () => {
       try {
-        const [prof, imgs] = await Promise.all([
+        const [prof, imgs, logoUrl] = await Promise.all([
           getQuoteProfile(userId),
           listReferenceImages(userId),
+          getCompanyLogoUrl(userId).catch(() => null),
         ]);
         if (cancelled) return;
         setCompanyIntro(prof?.company_intro ?? '');
+        // Céges logó dataURL cache-elés — a PDF-generálás szinkron lehessen.
+        if (logoUrl) {
+          setCompanyLogoPreview(logoUrl);
+          void (async () => {
+            try {
+              const data = await fetchImageAsDataUrl(logoUrl);
+              if (!cancelled) setCompanyLogo({
+                dataUrl: data.dataUrl,
+                width: data.width,
+                height: data.height,
+                mimeType: data.mimeType,
+              });
+            } catch { /* ok — a PDF Betonstamp-fallbackkel megy */ }
+          })();
+        }
         // Először előnézet-URL-lel jelenítjük meg (gyors), közben dataURL cache-elés
         const initial: CachedImage[] = imgs.map((m) => ({
           meta: m, dataUrl: null, width: 0, height: 0, mimeType: 'JPEG', previewUrl: null,
@@ -232,6 +253,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
           title: 'Árajánlat',
           companyIntro,
           productDescription,
+          companyLogo: companyLogo ?? undefined,
         },
         referenceImages: chosenImages,
         filenamePrefix: 'betonstamp-arajanlat',
@@ -266,7 +288,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
     } finally {
       setGenerating(false);
     }
-  }, [buildData, images, selectedIds, companyIntro, productDescription, onClose]);
+  }, [buildData, images, selectedIds, companyIntro, productDescription, companyLogo, onClose]);
 
   if (!open) return null;
 
@@ -295,6 +317,28 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
             </div>
           ) : (
             <>
+              {/* Céges logó előnézet (a PDF bal-felső sarkába kerül) */}
+              <section className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">Céges logó</h3>
+                {companyLogoPreview ? (
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-20 border border-gray-200 rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={companyLogoPreview} alt="Céges logó" className="max-w-full max-h-full object-contain p-1" />
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      A PDF bal-felső sarkába kerül nagyban. Cseréd az{' '}
+                      <Link href="/arajanlat-beallitasok" className="underline">Árajánlat-beállításokban</Link>.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-500 bg-gray-50 border border-gray-200 rounded-lg p-3">
+                    Nincs feltöltött céges logó — a PDF a Betonstamp logóval készül.{' '}
+                    <Link href="/arajanlat-beallitasok" className="underline font-medium">Céges logó feltöltése</Link>.
+                  </div>
+                )}
+              </section>
+
               {/* Cégbemutató előnézet */}
               <section className="mb-6">
                 <h3 className="text-sm font-semibold text-gray-800 mb-2">Cégbemutató</h3>
