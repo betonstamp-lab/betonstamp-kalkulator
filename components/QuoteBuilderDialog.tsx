@@ -394,7 +394,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
     } finally {
       setGenerating(false);
     }
-  }, [buildData, images, selectedIds, companyIntro, productDescription, companyLogo, onClose]);
+  }, [buildData, images, selectedIds, companyIntro, productDescription, companyLogo, customItems, laborItems, onClose]);
 
   if (!open) return null;
 
