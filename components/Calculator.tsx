@@ -2754,6 +2754,18 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                       const discountForPdf = isPartnerForPdf ? (profile?.partner_discount || 0) / 100 : 0;
                       const discountMultForPdf = 1 - discountForPdf;
 
+                      // Efectto Quartz szemcse-tételek a forrás-adatban rendszernév-prefix nélkül
+                      // szerepelnek ("Big grain", "Small grain", stb.), mert a Shoprenter SKU-kulcs
+                      // erre a nyers névre épül. A képernyőn a rendszerválasztó kártya kommunikálja,
+                      // hogy Efectto rendszerről van szó — de az ügyfél a PDF-en / árajánlaton ezt
+                      // nem látja, ezért itt a PDF-adatban prefixeljük.
+                      const prefixSystemName = (raw: string): string => {
+                        if (system === 'effectoQuartz' && /\b(Big|Small|Medium|Super) grain\b/.test(raw) && !raw.includes('Efectto')) {
+                          return `Efectto ${raw}`;
+                        }
+                        return raw;
+                      };
+
                       const sections: PdfSection[] = [];
                       // Felületek áttekintése — minden felület a saját m²-jével és selectedColor-jával.
                       let n = 1;
@@ -2828,7 +2840,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
                           if (effectiveQty <= 0) return;
                           const linePrice = pkg.price * effectiveQty * discountMultForPdf;
                           items.push({
-                            name: `${effectiveQty} × ${pkg.name}`,
+                            name: `${effectiveQty} × ${prefixSystemName(pkg.name)}`,
                             quantity: '',
                             prices: { single: linePrice },
                           });
@@ -2836,7 +2848,7 @@ export default function Calculator({ profile }: { profile?: { role?: string; par
 
                         if (items.length > 0) {
                           sections.push({
-                            heading: item.cat,
+                            heading: prefixSystemName(item.cat),
                             items,
                             subtotalPrices: { kiszereles: kiszerelesSubtotal, anyag: anyagSubtotal },
                             subtotalLabel: 'Részösszeg',
