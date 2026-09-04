@@ -156,22 +156,27 @@ function buildAutoDescription(data: PdfData): string {
 }
 
 // Saját (nem-Betonstamp) tétel a dialogban. Csak session-state — nem perzisztált.
-type CustomItem = { id: string; name: string; quantity: string; packaging: string; price: string };
+// A quantity szabad szám-input, a unit legördülőből (opciók lent). A m² felső
+// indexes 2-jét nehéz gépelni, ezért egység-legördülő.
+type CustomItem = { id: string; name: string; quantity: string; unit: string; packaging: string; price: string };
 // Munkadíj-tétel a dialogban. KÖTELEZŐ legalább egy érvényes (ár > 0) sor.
-type LaborItem = { id: string; name: string; quantity: string; price: string };
+type LaborItem = { id: string; name: string; quantity: string; unit: string; price: string };
+
+// Egység-opciók a legördülőben. Az üres opció ("nincs egység") az alapértelmezett.
+const UNIT_OPTIONS: string[] = ['', 'm²', 'm', 'm³', 'db', 'kg', 'L', 'óra', 'alkalom'];
 
 function newId(prefix: string): string {
   return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-/** Csak azok a saját tételek kerülnek az árajánlatra, amelyeknél a név, a
- *  mennyiség és a pozitív ár mind ki van töltve (a kiszerelés opcionális). */
+/** Csak azok a saját tételek kerülnek az árajánlatra, amelyeknél a név és a
+ *  pozitív ár ki van töltve (mennyiség, egység, kiszerelés opcionális). */
 function isValidCustom(i: CustomItem): boolean {
-  return i.name.trim().length > 0 && i.quantity.trim().length > 0 && parseFloat(i.price.replace(',', '.')) > 0;
+  return i.name.trim().length > 0 && parseFloat(i.price.replace(',', '.')) > 0;
 }
 
 /** Csak azok a munkadíj-tételek kerülnek az árajánlatra, amelyeknél a név és a
- *  pozitív ár is ki van töltve (a mennyiség opcionális). */
+ *  pozitív ár is ki van töltve (a mennyiség/egység opcionális). */
 function isValidLabor(i: LaborItem): boolean {
   return i.name.trim().length > 0 && parseFloat(i.price.replace(',', '.')) > 0;
 }
@@ -179,6 +184,15 @@ function isValidLabor(i: LaborItem): boolean {
 function parsePrice(s: string): number {
   const n = parseFloat(s.replace(',', '.'));
   return isFinite(n) && n > 0 ? n : 0;
+}
+
+/** Mennyiség + egység összefűzése egy megjelenítendő stringgé. Üres eredmény,
+ *  ha nincs mennyiség (az egységet önmagában NEM írjuk ki). */
+function formatQty(quantity: string, unit: string): string {
+  const q = quantity.trim();
+  if (!q) return '';
+  const u = unit.trim();
+  return u ? `${q} ${u}` : q;
 }
 
 export default function QuoteBuilderDialog({ open, onClose, profile, userId, buildData }: Props) {
@@ -200,7 +214,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
   // Munkadíj-tételek — KÖTELEZŐ legalább egy érvényes (ár > 0) sor.
   // Egy default sorral indul, a partner írja bele az árat.
   const [laborItems, setLaborItems] = useState<LaborItem[]>([
-    { id: 'lab-init', name: 'Munkadíj', quantity: '', price: '' },
+    { id: 'lab-init', name: 'Munkadíj', quantity: '', unit: '', price: '' },
   ]);
 
   // Auto-termékleírás alapja — az első nyitáskor számoljuk (partner ár mód
@@ -319,8 +333,10 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
           const price = parsePrice(i.price);
           const pack = i.packaging.trim();
           const namePart = pack ? `${i.name.trim()} ${pack}` : i.name.trim();
+          const qty = formatQty(i.quantity, i.unit);
+          // Ha van mennyiség: "40 m² × Zsalúzás"; ha nincs: csak "Zsalúzás".
           return {
-            name: `${i.quantity.trim()} × ${namePart}`,
+            name: qty ? `${qty} × ${namePart}` : namePart,
             quantity: '',
             prices: { single: price },
           };
@@ -331,7 +347,8 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
         heading: 'Munkadíj',
         items: validLabor.map<PdfLineItem>((i) => {
           const price = parsePrice(i.price);
-          const qty = i.quantity.trim();
+          const qty = formatQty(i.quantity, i.unit);
+          // Ha van mennyiség: "80 m² — Munkadíj"; ha nincs: csak "Munkadíj".
           return {
             name: qty ? `${qty} — ${i.name.trim()}` : i.name.trim(),
             quantity: '',
@@ -539,7 +556,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
                   <h3 className="text-sm font-semibold text-gray-800">Saját tételek (opcionális)</h3>
                   <button
                     type="button"
-                    onClick={() => setCustomItems((prev) => [...prev, { id: newId('cust'), name: '', quantity: '', packaging: '', price: '' }])}
+                    onClick={() => setCustomItems((prev) => [...prev, { id: newId('cust'), name: '', quantity: '', unit: '', packaging: '', price: '' }])}
                     className="text-xs font-semibold text-brand-600 hover:text-brand-700"
                   >
                     + Saját tétel hozzáadása
@@ -562,17 +579,28 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
                         />
                         <input
                           type="text"
-                          placeholder="Mennyiség (pl. 3 db, 40 m²)"
+                          inputMode="decimal"
+                          placeholder="Menny."
                           value={item.quantity}
                           onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, quantity: e.target.value } : x))}
-                          className="col-span-6 sm:col-span-3 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                          className="col-span-5 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
                         />
+                        <select
+                          value={item.unit}
+                          onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, unit: e.target.value } : x))}
+                          className="col-span-3 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                          aria-label="Egység"
+                        >
+                          {UNIT_OPTIONS.map((u) => (
+                            <option key={u} value={u}>{u === '' ? '—' : u}</option>
+                          ))}
+                        </select>
                         <input
                           type="text"
                           placeholder="Kiszerelés (opc.)"
                           value={item.packaging}
                           onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, packaging: e.target.value } : x))}
-                          className="col-span-6 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                          className="col-span-4 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
                         />
                         <input
                           type="text"
@@ -580,7 +608,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
                           placeholder="Ár (Ft)"
                           value={item.price}
                           onChange={(e) => setCustomItems((prev) => prev.map((x, i) => i === idx ? { ...x, price: e.target.value } : x))}
-                          className="col-span-10 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white text-right"
+                          className="col-span-10 sm:col-span-1 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white text-right"
                         />
                         <button
                           type="button"
@@ -602,7 +630,7 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
                   <h3 className="text-sm font-semibold text-gray-800">Munkadíj <span className="text-red-600">*</span></h3>
                   <button
                     type="button"
-                    onClick={() => setLaborItems((prev) => [...prev, { id: newId('lab'), name: 'Munkadíj', quantity: '', price: '' }])}
+                    onClick={() => setLaborItems((prev) => [...prev, { id: newId('lab'), name: 'Munkadíj', quantity: '', unit: '', price: '' }])}
                     className="text-xs font-semibold text-brand-600 hover:text-brand-700"
                   >
                     + Munkadíj-sor hozzáadása
@@ -616,15 +644,26 @@ export default function QuoteBuilderDialog({ open, onClose, profile, userId, bui
                         placeholder="Megnevezés"
                         value={item.name}
                         onChange={(e) => setLaborItems((prev) => prev.map((x, i) => i === idx ? { ...x, name: e.target.value } : x))}
-                        className="col-span-12 sm:col-span-5 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                        className="col-span-12 sm:col-span-4 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
                       />
                       <input
                         type="text"
-                        placeholder="Mennyiség (opc., pl. 40 m²)"
+                        inputMode="decimal"
+                        placeholder="Menny."
                         value={item.quantity}
                         onChange={(e) => setLaborItems((prev) => prev.map((x, i) => i === idx ? { ...x, quantity: e.target.value } : x))}
-                        className="col-span-8 sm:col-span-4 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                        className="col-span-5 sm:col-span-3 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
                       />
+                      <select
+                        value={item.unit}
+                        onChange={(e) => setLaborItems((prev) => prev.map((x, i) => i === idx ? { ...x, unit: e.target.value } : x))}
+                        className="col-span-3 sm:col-span-2 p-2 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                        aria-label="Egység"
+                      >
+                        {UNIT_OPTIONS.map((u) => (
+                          <option key={u} value={u}>{u === '' ? '—' : u}</option>
+                        ))}
+                      </select>
                       <input
                         type="text"
                         inputMode="decimal"
