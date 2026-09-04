@@ -71,36 +71,59 @@ function downloadOnDesktop(blob: Blob, filename: string) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/** Egy signed URL-t fetch-el, blob-ból dataURL-t + méretet ad vissza. */
+/** Egy signed URL-t fetch-el, canvas-on át PNG dataURL-lé konvertál + méretet
+ *  ad vissza. A jsPDF WEBP-et NEM támogat, ezért mindent PNG-vé alakítunk —
+ *  így bármilyen bemeneti formátum (JPEG/PNG/WEBP/GIF) garantáltan beágyazható. */
 async function fetchImageAsDataUrl(url: string): Promise<{ dataUrl: string; width: number; height: number; mimeType: 'PNG' | 'JPEG' | 'WEBP' }> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const blob = await res.blob();
-  const dataUrl = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(blob);
-  });
-  const dims = await new Promise<{ width: number; height: number }>((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
-    img.onerror = () => reject(new Error('image decode failed'));
-    img.src = dataUrl;
-  });
-  const mt = blob.type;
-  const mimeType: 'PNG' | 'JPEG' | 'WEBP' =
-    mt === 'image/png' ? 'PNG' :
-    mt === 'image/webp' ? 'WEBP' :
-    'JPEG';
-  return { dataUrl, width: dims.width, height: dims.height, mimeType };
+  // Blob → HTMLImageElement (Object URL-lel gyorsabb, mint dataURL-en át).
+  const objectUrl = URL.createObjectURL(blob);
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const el = new Image();
+      el.onload = () => resolve(el);
+      el.onerror = () => reject(new Error('image decode failed'));
+      el.src = objectUrl;
+    });
+    const width = img.naturalWidth;
+    const height = img.naturalHeight;
+    if (!width || !height) throw new Error('image has zero dimensions');
+
+    // Canvas → PNG dataURL. Ez a lépés a WEBP-et is normál PNG-vé alakítja.
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('canvas 2d context unavailable');
+    ctx.drawImage(img, 0, 0, width, height);
+    const dataUrl = canvas.toDataURL('image/png');
+    return { dataUrl, width, height, mimeType: 'PNG' };
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+/** Kalkulátor-specifikus rendszer-név a PdfData alapján (title + logoVariant).
+ *  Ezt írja a bevezető mondatba a "BetonStamp Kft. által forgalmazott {X}"
+ *  helyre. */
+function detectSystemLabel(data: PdfData): string {
+  const t = data.title || '';
+  if (/Natture/i.test(t)) return 'Natture mikrocement pigment';
+  if (/Atlanttic|Aquaciment|Pool/i.test(t)) return 'Atlanttic mikrocement pigment';
+  if (/Vakolat|ESTonetex/i.test(t)) return 'ESTonetex vakolat';
+  if (/B[eé]lyegzett|Overlay/i.test(t)) return 'bélyegzett beton / overlay';
+  if (/Mikrocement/i.test(t)) return 'mikrocement';
+  if (data.logoVariant === 'estecha') return 'ESTonetex vakolat';
+  return 'kivitelezési';
 }
 
 /** Auto-termékleírás a kalkulátor buildData(mode='partner') alapján — a partner
- *  a dialog textareájában bármit módosíthat. Az alapszöveg a title-ból és
- *  a section-headingekből épül. */
+ *  a dialog textareájában bármit módosíthat. Kalkulátoronként specifikus
+ *  bevezető mondat, alatta felület- és rendszer-elem lista. */
 function buildAutoDescription(data: PdfData): string {
-  const title = data.title.replace(/\s*Kalkul[aá]tor.*$/i, '').trim() || 'Rendszer';
+  const systemLabel = detectSystemLabel(data);
   const surfaceSectionHeadings = data.sections
     .map((s) => s.heading ?? '')
     .filter((h) => /^Fel[uü]let/i.test(h));
@@ -110,7 +133,7 @@ function buildAutoDescription(data: PdfData): string {
     .slice(0, 6);
 
   const lines: string[] = [];
-  lines.push(`Ajánlatunkban a ${title} rendszer szerinti kivitelezésre teszünk javaslatot.`);
+  lines.push(`Ajánlatunkban a(z) BetonStamp Kft. által forgalmazott ${systemLabel} rendszer szerinti kivitelezésre teszünk javaslatot.`);
   if (surfaceSectionHeadings.length > 0) {
     lines.push('');
     lines.push('Érintett felületek:');
