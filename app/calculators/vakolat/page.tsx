@@ -576,13 +576,13 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
         />
       </div>
 
-      {/* ============ 4. Mintázás (opcionális) ============ */}
+      {/* ============ 4. Bélyegzés ============ */}
       <div className={cardClass}>
-        <SectionHeader num={4} title="Mintázás (opcionális)" />
-        {/* Leválasztó a mintázó eszközökhöz */}
+        <SectionHeader num={4} title="Bélyegzés" />
+        {/* Leválasztó a bélyegzéshez */}
         <div>
           <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-            Leválasztó a mintázáshoz
+            Leválasztó a bélyegzéshez
             <Tooltip text={RELEASE_WARNING} />
           </label>
           <div className="grid grid-cols-2 gap-3">
