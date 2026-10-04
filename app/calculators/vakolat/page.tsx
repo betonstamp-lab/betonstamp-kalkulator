@@ -576,43 +576,47 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
         />
       </div>
 
-      {/* ============ 4. Felületvédelem ============ */}
+      {/* ============ 4. Mintázás (opcionális) ============ */}
       <div className={cardClass}>
-        <SectionHeader num={4} title="Felületvédelem" />
-        <div className="space-y-6">
-          {/* Leválasztó alszekció */}
-          <div>
-            <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-              Leválasztó (opcionális)
-              <Tooltip text={RELEASE_WARNING} />
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => onUpdate({ releaseOn: false })}
-                className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
-                  !surface.releaseOn
-                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-                }`}
-              >
-                Nem kérek
-              </button>
-              <button
-                onClick={() => onUpdate({ releaseOn: true })}
-                className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
-                  surface.releaseOn
-                    ? 'border-brand-500 bg-white text-gray-900 shadow-md'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
-                }`}
-              >
-                EST-Release
-              </button>
-            </div>
-            {surface.releaseOn && (
-              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-2">{RELEASE_WARNING}</p>
-            )}
+        <SectionHeader num={4} title="Mintázás (opcionális)" />
+        {/* Leválasztó a mintázó eszközökhöz */}
+        <div>
+          <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+            Leválasztó a mintázáshoz
+            <Tooltip text={RELEASE_WARNING} />
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => onUpdate({ releaseOn: false })}
+              className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                !surface.releaseOn
+                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+              }`}
+            >
+              Nem kérek
+            </button>
+            <button
+              onClick={() => onUpdate({ releaseOn: true })}
+              className={`p-3 rounded-lg border-2 text-sm font-semibold transition-all ${
+                surface.releaseOn
+                  ? 'border-brand-500 bg-white text-gray-900 shadow-md'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-brand-500'
+              }`}
+            >
+              EST-Release
+            </button>
           </div>
+          {surface.releaseOn && (
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2 mt-2">{RELEASE_WARNING}</p>
+          )}
+        </div>
+      </div>
 
+      {/* ============ 5. Felületvédelem ============ */}
+      <div className={cardClass}>
+        <SectionHeader num={5} title="Felületvédelem" />
+        <div className="space-y-6">
           {/* Impregnálás alszekció */}
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
@@ -639,9 +643,9 @@ function SurfaceBlock({ surface, index, totalSurfaces, isPartner, discountPercen
         </div>
       </div>
 
-      {/* ============ 5. Eredmény és kosár ============ */}
+      {/* ============ 6. Eredmény és kosár ============ */}
       <div className={cardClass}>
-        <SectionHeader num={5} title="Eredmény és kosár" />
+        <SectionHeader num={6} title="Eredmény és kosár" />
 
         {/* Kalkuláció gomb (brand-500 sárga elsődleges CTA) */}
         <button

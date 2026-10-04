@@ -232,7 +232,7 @@ export const RELEASE: PackOption[] = [
   { label: '25 L', price: 130910, m2: 250, sku: 'EST-DESMOL25' },
 ];
 export const RELEASE_WARNING =
-  'A leválasztó folyadék csak akkor szükséges, ha a felületet textúrázod vagy bélyegzed. Sima vakolt felülethez nem kell.';
+  'A leválasztó azért kell, hogy a mintázó eszközök (bélyegzők, textúrázó hengerek, minták) ne ragadjanak a friss vakolathoz. Csak textúrázott vagy bélyegzett felületnél szükséges, sima vakolathoz nem kell.';
 
 // ---------------------------------------------------------------------------
 // 6) IMPREGNÁLÁS (EST-3 plusz koncentrátum) — OPCIONÁLIS.
